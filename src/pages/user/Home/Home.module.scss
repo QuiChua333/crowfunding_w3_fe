@@ -1,0 +1,135 @@
+.wrapper {
+}
+
+.inner {
+  margin: 0 120px;
+}
+
+.title {
+  font-family: var(--title-font);
+  font-size: 2.4rem;
+  font-weight: 400;
+}
+
+.category-interest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  .title {
+    font-family: var(--title-font);
+    font-size: 3rem;
+    margin-bottom: 0;
+  }
+
+  .content {
+    text-align: justify;
+    font-weight: 300;
+    margin-top: 24px;
+    margin-bottom: 0;
+  }
+
+  .column {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
+  .column img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+  }
+
+  .categoryText {
+    font-size: 1.3rem;
+    margin-top: 16px;
+    font-weight: 300;
+  }
+}
+
+.list-popular-projects {
+  .icon-switch {
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    &:hover {
+      background-color: #2a2a2a;
+      color: var(--white);
+    }
+
+    .icon {
+      font-size: 2.4rem;
+    }
+  }
+}
+.backTheProjectSection-imageWrapper {
+  padding-bottom: 0px;
+  height: 350px;
+
+  .backTheProjectSection-iamge {
+    background-image: url(https://c4.iggcdn.com/indiegogo-media-prod-cld/image/upload/c_fit,w_auto,g_center,q_auto:best,dpr_1.3,f_auto/homepage/cf-bg-desktop-lg.jpg);
+    text-decoration: none;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 0 20px;
+    color: #2a2a2a;
+
+    .title {
+      font-family: var(--title-font);
+      font-size: 3rem;
+      margin-bottom: 0;
+    }
+
+    .content {
+      width: 54%;
+      text-align: justify;
+      font-weight: 300;
+      margin-top: 24px;
+      margin-bottom: 0;
+    }
+
+    .link {
+      margin-top: 24px;
+      font-weight: 500;
+      font-size: 1.8rem;
+      &:hover {
+        color: #e51075;
+      }
+    }
+  }
+}
+
+.carsousel-wrapper {
+  position: relative;
+  .carousel {
+    padding: 0 4px;
+  }
+  .button-group {
+    position: absolute;
+    top: -60px;
+    right: 0px;
+  }
+}

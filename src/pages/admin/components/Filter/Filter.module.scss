@@ -1,0 +1,60 @@
+.wrapper {
+    .filter {
+        width: 170px;
+        padding: 10px 15px;
+        background-color: #ffffff;
+        border: 1px solid #c8c8c8;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 20px;
+        color: #6a6a6a;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+
+
+        .conditions-wrapper {
+            animation: fadeIn .3s linear;
+            position: absolute;
+            z-index: 10;
+            top: calc(100% + 2px);
+            left: 0;
+            width: 100%;
+            border: 1px solid #ccc;
+
+            &.show {
+                opacity: 1;
+            }
+     
+            div {
+                display: block;
+                font-weight: 700;
+                font-size: 14px;
+                color: #6a6a6a;
+                padding: 10px;
+                background-color: #fff;
+
+             
+                &:hover {
+                    background: #a4a2a2;
+                    color: #ffffff;
+                }
+            }
+            div + div {
+                border-top: 1px solid #ccc;
+            }
+            
+        }
+    }
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+}

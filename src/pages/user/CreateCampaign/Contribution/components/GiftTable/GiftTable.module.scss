@@ -1,0 +1,88 @@
+.wrapper {
+    table {
+        width: 100%;
+   
+        border-collapse: collapse;
+    }
+
+    thead th {
+        font-weight: 400;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+    tr td {
+        font-weight: 300;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+
+
+    thead th {
+        padding: 14px 0;
+        background-color: #f5f5f5;
+    }
+    tr td {
+        padding: 18px 0;
+    }
+    tr {
+        cursor: pointer;
+        border: 1px solid #c8c8c8;
+        background-color: #fff;
+        &:hover {
+            background-color: #eee5f2;
+        }
+    }
+
+    th.checkbox, td.checkbox {
+        width: 40px;
+        padding-left: 16px;
+        padding-right: 16px;
+        
+    }
+
+    th.email, td.email {
+        width: auto;;
+        padding-left: 48px;
+    }
+
+    th.perk, td.perk {
+        width: 200px;
+        padding-left: 12px;
+        white-space: nowrap;
+        overflow: hidden !important;
+        text-overflow: ellipsis;
+    }
+
+
+    
+
+    th.date, td.date {
+        width: 220px;
+        padding-left: 12px;
+    }
+    td.date {
+        padding-left: 48px;
+    }
+
+    th.status, td.status {
+        width: 140px;
+        padding-left: 12px;
+        padding-right: 30px;
+    }
+
+
+    
+   
+}
+
+@keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+

@@ -1,0 +1,27 @@
+.wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    .controlBar {
+        width: 100%;
+
+        top: 0;
+        background-color: #f5f5f5;
+        
+    }
+    .controlBar-container {
+        padding: 40px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #C8C8C8;
+        margin-top: 1px;
+    }
+    
+    .controlBar-content {
+        flex: 1;
+        color: #2a2a2a;
+        font-weight: 500;
+    
+    }
+}

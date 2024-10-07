@@ -1,0 +1,215 @@
+.wrapper {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+
+    .modal {
+        width: 60%;
+        background-color: #fff;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        padding: 10px 30px;
+        margin-top: 40px;
+        position: absolute;
+        margin-left: 200px;
+
+        .header-modal {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .title {
+                font-size: 25px;
+                color: #000;
+                font-weight: 400;
+            }
+
+            .close {
+                font-size: 32px;
+                padding: 0 15px;
+                border-radius: 50%;
+                color: #000;
+                font-weight: 500;
+                user-select: none;
+
+                &:hover {
+                    background-color: #f4f4f4;
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .separate {
+            height: 6px;
+            border-radius: 10px;
+            background-color: #009f6d;
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .content-modal {
+            display: flex;
+            padding: 10px 20px;
+
+            .content-left {
+                display: flex;
+                flex-direction: column;
+                width: 55%;
+                margin-right: 50px;
+
+                .container-input {
+                    display: flex;
+                    flex-direction: column;
+                    margin: 5px 0;
+
+                    .title {
+                        font-size: 16px;
+                        font-weight: 600;
+                    }
+
+                    input {
+                        border: 1.5px solid #ccc;
+                        margin: 5px 0;
+                        padding: 6px 10px;
+                        border-radius: 2px;
+                        color: #747474;
+                    }
+                    input::-webkit-outer-spin-button,
+                    input::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                    input[type=number] {
+                        -moz-appearance: textfield;
+                    }
+                    input[type=date] {
+                        user-select: none;
+                    }
+
+                    .input-autosize {
+                        resize: none;
+                        border: 1.5px solid #ccc;
+                        margin: 5px 0;
+                        padding: 8px 10px;
+                        text-align: justify;
+                        border-radius: 2px;
+                        color: #747474;
+                        outline: none;
+                        overflow-y: hidden;
+                    }
+                }
+            }
+
+            .content-right {
+                display: flex;
+                flex-direction: column;
+                width: 45%;
+                margin-left: 20px;
+
+                .container-input {
+                    display: flex;
+                    flex-direction: column;
+                    margin: 5px 0;
+
+                    .title {
+                        font-size: 16px;
+                        font-weight: 600;
+                    }
+
+                    input {
+                        border: 1.5px solid #ccc;
+                        margin: 5px 0;
+                        padding: 6px 10px;
+                        border-radius: 2px;
+                        color: #747474;
+                    }
+
+                    input::-webkit-outer-spin-button,
+                    input::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                    input[type=number] {
+                        -moz-appearance: textfield;
+                    }
+
+                    .input-autosize {
+                        resize: none;
+                        border: 1.5px solid #ccc;
+                        margin: 5px 0;
+                        padding: 8px 10px;
+                        border-radius: 2px;
+                        color: #747474;
+                        outline: none;
+                        overflow-y: hidden;
+                    }
+                }
+
+                .container-img {
+                    margin: 5px 0;
+                    .title {
+                        font-size: 16px;
+                        font-weight: 600;
+                    }
+                    .frame-img {
+                        width: 100%;
+                        height: 180px;
+                        border-radius: 10px;
+                        margin: 5px 0;
+                        border: 1px solid #ccc;
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 10px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            span {
+                font-weight: bold;
+            }
+            .btn-confirm {
+                width: 140px;
+                background-color: #000;
+                border-radius: 4px;
+                color: #fff;
+                font-weight: 550;
+                justify-content: center;
+                display: flex;
+                padding: 8px;
+                &:hover {
+                    cursor: pointer;
+                    opacity: 0.9;
+                }
+            }
+        }
+
+        .not-verify {
+            height: 300px;
+            width: 100%;
+            font-size: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ccc;
+            text-transform: uppercase;
+        }
+    }
+}

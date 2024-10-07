@@ -1,0 +1,104 @@
+.wrapper {
+    position: fixed;
+    background-color: rgba(0,0,0,0.5);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+    overflow-y: scroll;
+    .container-body {
+        margin-bottom: 200px;
+        position: relative;
+        top: 120px;
+        left: 50%;
+        transform: translateX(-45%);
+        width: 50%;
+        background-color: #fff;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        .btn-continue {
+            background-color: #000;
+            color: #fff;
+            width: 240px;
+            padding: 12px 0;
+            align-self: center;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+        .container-1 {
+            display: flex;
+            margin: 10px 30px 0;
+            justify-content: space-between;
+            .title {
+                font-size: 24px;
+                font-weight: 500;
+                margin: 10px 0 0 10px;
+            }
+            .btn-close {
+                width: 40px;
+                text-align: center;
+                font-size: 40px;
+                color: #606060;
+            
+                &:hover {
+                    color: #000;
+                }
+            }
+        }
+
+        .container-2 {
+            display: flex;
+            margin: 0 30px 40px;
+            
+            .container-list-perk {
+                margin: 0 24px 30px;
+                border-bottom: 1px solid #ccc;
+                .container-options {
+                    display: flex;
+                    margin: 10px 0;
+                    gap: 24px;
+                    align-items: center;
+                    .name {
+                        font-size: 16px;
+                        font-weight: 500;
+                        margin-left: 10px;
+                    }
+                    select {
+                       
+                        width: 200px;
+                        height: 40px;
+                        border: 1px solid #ccc;
+                        outline: none;
+                        padding: 0 20px;
+                    }
+                }
+            }
+        }
+    }
+    .editFile-icon {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #eee5f2;
+        border-radius: 50%;
+        cursor: pointer;
+        &:hover {
+            background-color: #e3d1eb;
+        }
+        transition: .1s all ease-in;
+    }
+}
+
+
+
+

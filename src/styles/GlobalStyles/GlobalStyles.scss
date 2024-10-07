@@ -1,0 +1,89 @@
+// @import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #df1c1c;
+    --black: #000;
+    --white: #fff;
+    --text-color: #161823;
+
+    --title-font: 'ShipporiMincho', serif;
+    --sub-font: 'WorkSans', sans-serif;
+    --primary-font: 'Poppins', sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  html {
+    font-size: 62.5%;
+  }
+
+  body {
+    font-family: var(--sub-font);
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizespeed;
+    color: var(--text-color);
+    overflow-y: overlay;
+  }
+
+  button,
+  input,
+  [tabindex] {
+    outline: none;
+    border: none;
+  }
+
+  a {
+    color: var(--text-color);
+    text-decoration: none;
+  }
+}
+
+@layer utilities {
+}
+
+// Fonts emmbeded
+// @font-face {
+//     font-family: ShipporiMincho;
+//     src: url('../../../src/assets/fonts/ShipporiMincho-Regular.ttf'), format('ttf');
+//     font-weight: 400;
+// }
+
+// @font-face {
+//     font-family: ShipporiMincho;
+//     src: url('../../../src/assets/fonts/ShipporiMincho-Medium.ttf');
+//     font-weight: 500;
+// }
+
+// @font-face {
+//     font-family: ShipporiMincho;
+//     src: url('../../../src/assets/fonts/ShipporiMincho-SemiBold.ttf');
+//     font-weight: 600;
+// }
+
+// @font-face {
+//     font-family: ShipporiMincho;
+//     src: url('../../../src/assets/fonts/ShipporiMincho-Bold.ttf');
+//     font-weight: 700;
+// }
+
+// @font-face {
+//     font-family: ShipporiMincho;
+//     src: url('../../../src/assets/fonts/ShipporiMincho-ExtraBold.ttf');
+//     font-weight: 800;
+// }
+
+// @font-face {
+//     font-family: WorkSans;
+//     src: url('../../../src/assets/fonts/WorkSans-VariableFont_wght.ttf');
+//     font-weight: 400;
+// }

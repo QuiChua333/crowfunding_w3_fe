@@ -1,0 +1,27 @@
+.wrapper {
+    .inner {
+    
+        margin-top: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .back-btn {
+        margin-top: 24px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        color: #fff;
+        padding: 12px 24px;
+        background-color: #089978;
+        border-radius: 8px;
+
+        &:hover {
+            background-color: #0ab48c;
+        }
+        transition: .2s all linear;
+    }
+}

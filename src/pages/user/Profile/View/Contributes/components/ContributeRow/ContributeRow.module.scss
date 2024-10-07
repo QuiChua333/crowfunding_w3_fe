@@ -1,0 +1,106 @@
+.wrapper {
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        border: 1px solid #c8c8c8;
+    }
+
+    th {
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+        text-align: center;
+        padding: 14px 0;
+        background-color: #f5f5f5;
+    }
+
+    td {
+        font-weight: 300;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        padding: 10px 4px;
+        text-align: center;
+        color: #626262;
+        font-weight: 400;
+    }
+
+    tr {
+        cursor: pointer;
+        border: 1px solid #c8c8c8;
+        background-color: #fff;
+
+        &:hover {
+            background-color: #fafafa;
+        }
+    }
+
+   
+}
+
+.action-doc {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+        border-color: #989898;
+    }
+    position: relative;
+}
+
+.dropdown-wrapper {
+    position: absolute;
+    display: none;
+    top: calc(100% + 2px);
+    z-index: 100;
+    right: -70px;
+    animation: fadeIn .3s linear;
+}
+
+.action {
+    padding: 0 20px;
+}
+
+.un-response {
+    padding: 5px 10px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #f01911;
+    margin: 0 auto;
+    width: 120px;
+    align-self: center;
+    justify-content: center;
+    display: flex;
+    font-size: 12px;
+}
+
+.responsed {
+    padding: 5px 10px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #08c684;
+    width: 120px;
+    align-self: center;
+    justify-content: center;
+    margin: 0 auto;
+    display: flex;
+    font-size: 12px;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

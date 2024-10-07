@@ -1,0 +1,97 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f4f4f4;
+
+    .container-header {
+        width: 100%;
+        height: 360px;
+        background-color: #15293b;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        img {
+            width: 100px;
+            height: 90px;
+            margin-bottom: 60px;
+        }
+        .text-about-us {
+            font-size: 40px;
+            color: #fff;
+            font-weight: bold;
+        }
+        .container-link {
+            display: flex;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 10px 0;
+            span {
+                margin: 0 6px;
+                color: #fff;
+                opacity: 0.7;
+            }
+            .back-home {
+                color: #fff ;
+                cursor: pointer;
+            }
+
+            .back-us {
+                color: #fff;
+                opacity: 0.7;
+                cursor: pointer;
+            }
+        }
+    }
+
+
+    .container-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .logo {
+            margin: 40px 0 10px;
+            width: 300px;
+            height: 220px;
+        }
+
+        .text-under-logo {
+            margin: 40px 0;
+            font-size: 22px; 
+            width: 40%;   
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .paragraph {
+            text-align: center;
+            max-width: 50%;
+            margin: 10px 0;
+            color: #626262;
+        }
+    }
+
+    .btn-explore {
+        background-color: #15293b;
+       
+        width: 200px;
+        font-weight: bold;
+        padding: 10px 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 50px 0;
+        border-radius: 4px;
+        cursor: pointer;
+        a {
+            color: #fff;
+        }
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+}

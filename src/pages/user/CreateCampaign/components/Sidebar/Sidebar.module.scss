@@ -1,0 +1,144 @@
+.wrapper {
+    width: 230px;
+    min-width: 230px;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 13px;
+
+    -webkit-font-smoothing: antialiased;
+
+    .campaignInfo {
+        background-image: linear-gradient(rgba(42, 42, 42, 0.5) 0px, rgb(42, 42, 42) 100%), 
+        url(https://c3.iggcdn.com/indiegogo-media-prod-cld/image/upload/c_fill,w_230,g_center,q_auto:best,dpr_1.3,f_auto,h_230/kkm1kzwamwukkszcmszq);
+        display: flex;
+        flex-direction: column;
+        height: 230px;
+        background-size: 100%;
+        justify-content: flex-end;
+        padding-left: 24px;
+        font-size: 13px;
+    
+        .campaignPhase {
+        
+    
+            span {
+                display: inline-block;
+                border-radius: 2px;
+                color: #2a2a2a;
+                border: 1px solid #fdde86;
+                background-color: #fdde86;
+                padding: 1px 5px;
+    
+                text-transform: uppercase;
+                letter-spacing: 0.8.2px;
+                font-weight: 500;
+            }
+        
+        }
+    
+        .campaignTitle  {
+            margin-top: 8px;
+            color: #c8c8c8;
+            text-transform: uppercase;
+            padding-right: 1.5rem;
+            display: inline-block;
+            width: 180px;
+            white-space: nowrap;
+            overflow: hidden !important;
+            text-overflow: ellipsis;
+          
+        }
+    }
+    
+    
+    
+    
+    
+    .navItems  {
+        margin-top: 48px;
+       
+    }
+    
+    .navItem  {
+        margin-top: 12px;
+        letter-spacing: 0.8px;
+        text-decoration: none;
+        text-transform: uppercase;
+        min-height: 50px;
+    
+        &:hover {
+            color: #fff;
+            background-color: #7a69b3;
+        }
+    
+        &:hover .navItem-link{
+            color: #fff;
+        }
+    }
+    
+    .navItem-link {
+        color: #c8c8c8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 24px;
+        font-size: 13px;
+    }
+    
+    .navSection  {
+     
+    
+    }
+    
+    
+    
+    .navSection-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #c8c8c8;
+        letter-spacing: 0.8px;
+        text-decoration: none;
+        text-transform: uppercase;
+        min-height: 50px;
+        padding: 16px 24px;
+        &:hover {
+            color: #fff;
+            background-color: #7a69b3;
+        }
+        .icon {
+            font-size: 16px;
+        }
+    }
+    
+    .navItem--child {
+        background-color: #000;
+       
+        &.navItem {
+            margin-top: 0;
+        }
+    
+        &.navItem--current {
+            border-left: 8px solid #7a69b3;
+            font-weight: 700;
+           
+        }
+    
+    
+        & .navItem-link {
+            padding: 16px 16px 16px 40px;
+        }
+    
+        &.navItem--current  .navItem-link{
+            padding: 16px 16px 16px 32px;
+            color: #fff;
+        }
+        
+        
+    }
+    
+    
+    
+    
+}
+

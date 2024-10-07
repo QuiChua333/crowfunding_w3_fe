@@ -1,0 +1,63 @@
+.wrapper {
+    .inner {
+        display: flex;
+        gap: 6px;
+        .avatar {
+            img {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+        }
+
+        .commen-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            .action {
+                opacity: 0;
+                transition: opacity .2s linear;
+            }
+
+            &:hover .action {
+                opacity: 1;
+            }
+        }   
+        .content-wrapper {
+            
+            flex: 1;
+            .like-action {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-left: 12px;
+                margin-top: 4px;
+            }
+        }
+        .comment_content {
+            background-color: #f0f2f5;
+            border-radius: 20px;
+            flex: 1;
+            padding: 8px 16px;
+
+            .input-edit {
+                margin-top: 4px;
+                border: 1px solid #ccc;
+                width: 100%;
+                border-radius: 10px;
+                padding: 10px 16px;
+                background-color: transparent;
+            color: #111;
+
+            outline: none;
+            }
+        }
+
+        .fullName {
+            font-weight: 600;
+            font-size: 14px;
+        }
+    }
+   
+}

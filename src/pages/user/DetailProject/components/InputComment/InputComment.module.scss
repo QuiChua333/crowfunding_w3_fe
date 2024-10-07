@@ -1,0 +1,37 @@
+.wrapper {
+    .comment_input {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px 16px;
+        // style={{
+        //     filter: 'invert(0)',
+        //     color: '#111',
+        //     background: 'rgba(0,0,0,.03)',
+        // }} 
+        input {
+            flex: 1;
+            background-color: transparent;
+            color: #111;
+
+            outline: none;
+
+        }
+    }
+    .right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .postBtn {
+        color: rgb(0, 149, 246);
+        background-color: transparent;
+        outline: none;
+        border: none;
+
+        .span {
+            font-weight: 700;
+        }
+    }
+}

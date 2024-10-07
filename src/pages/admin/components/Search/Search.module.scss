@@ -1,0 +1,32 @@
+.wrapper {
+    .main-search {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid #c8c8c8;
+        padding: 0px 10px;
+    }
+    
+    .main-icon-search {
+        padding: 5px;
+        font-size: 20px;
+        margin-top: -4px;
+        cursor: pointer;
+    }
+    
+    .main-input {
+        width: 100%;
+        color: #888;
+        font-size: 15px;
+    
+    
+    }
+    
+    .main-icon-close {
+        padding: 5px;
+        font-size: 20px;
+        margin-top: -4px;
+        cursor: pointer;
+    }
+}

@@ -1,0 +1,130 @@
+.wrapper {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    z-index: 1000;
+
+    .modal {
+        overflow-y: scroll;
+        width: 450px;
+        background-color: #fff;
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+        border-radius: 4px;
+
+        .btn-close {
+            font-size: 42px;
+            width: 50px;
+            text-align: center;
+            align-self: flex-end;
+            margin-right: 10px;
+            color: #747474;
+
+            &:hover {
+                color: #000;
+                cursor: pointer;
+            }
+        }
+
+        .title-modal {
+            font-size: 22px;
+            margin-top: -40px;
+            font-weight: 500;
+        }
+
+        .container-body {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 90%;
+
+            .title-contribute {
+                font-size: 18px;
+                font-weight: 400;
+            }
+            .container-list-perks {
+                height: auto;
+            }
+
+            .container-layout-input {
+                width: 100%;
+                height: auto;
+                border: 1px solid #c8c8c8;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 30px;
+                background-color: #fafafa;
+
+                .container-input {
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                    align-items: center;
+
+                    .input-price {
+                        width: 60%;
+                        border: 1px solid #ccc;
+                        height: 46px;
+                        padding: 0 10px;
+                        font-size: 18px;
+                        font-weight: 200;
+                        border-radius: 2px;
+
+                        &:focus {
+                            border: 1px solid #858585;
+                        }
+                    }
+
+                    .input-price::-webkit-outer-spin-button,
+                    .input-price::-webkit-inner-spin-button {
+                        /* display: none; <- Crashes Chrome on hover */
+                        -webkit-appearance: none;
+                        margin: 0;
+                        /* <-- Apparently some margin are still there even though it's hidden */
+                    }
+
+                    .btn-continue {
+                        width: 35%;
+                        height: 46px;
+                        background-color: #000;
+                        color: #fff;
+                        border-radius: 2px;
+                        font-weight: 400;
+
+                        &:hover {
+                            opacity: 0.8;
+                        }
+                    }
+                }
+
+                .title-under-input {
+                    color: #575757;
+                    font-size: 12px;
+                    margin-bottom: 0;
+                }
+            }
+        }
+
+    }
+
+    .modal::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+

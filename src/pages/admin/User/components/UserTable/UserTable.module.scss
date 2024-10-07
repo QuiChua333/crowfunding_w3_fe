@@ -1,0 +1,58 @@
+.wrapper {
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        border: 1px solid #c8c8c8;
+    }
+    th {
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 0.5px;
+        text-align: center;
+        padding: 14px 0;
+        background-color: #f5f5f5; 
+    }
+    td {
+        font-weight: 300;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        padding: 12px 4px;
+        text-align: center;
+        color: #626262;
+        font-weight: 400;
+    }
+    tr {
+        cursor: pointer;
+        border: 1px solid #c8c8c8;
+        background-color: #fff;
+        &:hover {
+            background-color: #fafafa;
+        }
+    }
+    .checkbox {
+        padding-left: 16px;
+        padding-right: 16px;
+        
+    }
+    .featured {
+        font-size: 14px;
+        padding: 4px 8px;
+        background-color: #e51075;
+        color: #fff;
+    }  
+}
+
+@keyframes fadeIn {
+    0%{
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+
