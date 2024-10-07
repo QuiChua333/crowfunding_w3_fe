@@ -97,59 +97,61 @@ function Login() {
   };
 
   return (
-    <div className={cx('login_container')}>
-      <div className={cx('login_form_container')}>
-        <div className={cx('left')}>
-          <form className={cx('form_container')} onSubmit={handleSubmit}>
-            <h2>Đăng nhập</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                placeholder="Địa chỉ email"
-                name="email"
-                className={cx('inputInfo')}
-              />
-              <span className={cx('text-validate')}>{textValidateEmail}</span>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', height: '70px', marginTop: '10px' }}>
-              <div className={cx('container-pass')}>
+    <div className={cx('responsive')}>
+      <div className={cx('login_container')}>
+        <div className={cx('login_form_container')}>
+          <div className={cx('left')}>
+            <form className={cx('form_container')} onSubmit={handleSubmit}>
+              <h2>Đăng nhập</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
                 <input
-                  type={showPass ? 'text' : 'password'}
-                  placeholder="Mật khẩu"
-                  name="password"
-                  value={pass}
-                  onChange={(e) => setPass(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  placeholder="Địa chỉ email"
+                  name="email"
                   className={cx('inputInfo')}
                 />
-                {showPass ? (
-                  <FaEye className={cx('eye-icon')} onClick={handleShowAndHidePass} />
-                ) : (
-                  <FaEyeSlash className={cx('eye-icon')} onClick={handleShowAndHidePass} />
-                )}
+                <span className={cx('text-validate')}>{textValidateEmail}</span>
               </div>
-              <span className={cx('text-validate')}>{textValidatePass}</span>
-            </div>
 
-            {error && <div className={cx('error_msg')}>{error}</div>}
-            <button type="submit" className={cx('green_btn')}>
-              Đăng nhập
-            </button>
-            <Link to="/forgot">
-              <span className={cx('text-forgot')}>Quên mật khẩu ?</span>
+              <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }} className={cx('form_password')}>
+                <div className={cx('container-pass')}>
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    placeholder="Mật khẩu"
+                    name="password"
+                    value={pass}
+                    onChange={(e) => setPass(e.target.value)}
+                    className={cx('inputInfo')}
+                  />
+                  {showPass ? (
+                    <FaEye className={cx('eye-icon')} onClick={handleShowAndHidePass} />
+                  ) : (
+                    <FaEyeSlash className={cx('eye-icon')} onClick={handleShowAndHidePass} />
+                  )}
+                </div>
+                <span className={cx('text-validate')}>{textValidatePass}</span>
+              </div>
+
+              {error && <div className={cx('error_msg')}>{error}</div>}
+              <button type="submit" className={cx('green_btn')}>
+                Đăng nhập
+              </button>
+              <Link to="/forgot">
+                <span className={cx('text-forgot')}>Quên mật khẩu ?</span>
+              </Link>
+            </form>
+          </div>
+          <div className={cx('right')}>
+            <img style={{ width: '120px', height: '120px' }} src={logoTrangNho} alt="logo" />
+            <span>Bạn chưa có tài khoản?</span>
+            <Link to="/sign-up">
+              <button type="button" className={cx('white_btn')}>
+                Đăng ký
+              </button>
             </Link>
-          </form>
-        </div>
-        <div className={cx('right')}>
-          <img style={{ width: '120px', height: '120px' }} src={logoTrangNho} alt="logo" />
-          <span>Bạn chưa có tài khoản ?</span>
-          <Link to="/sign-up">
-            <button type="button" className={cx('white_btn')}>
-              Đăng ký
-            </button>
-          </Link>
+          </div>
         </div>
       </div>
     </div>

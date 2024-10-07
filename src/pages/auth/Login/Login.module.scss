@@ -1,141 +1,235 @@
 .login_container {
-	width: 100%;
-	min-height: 100vh;
-	background-color: #f5f5f5;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login_form_container {
-	width: 900px;
-	height: 520px;
-	display: flex;
-	border-radius: 10px;
-	box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%),
-		0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
+  background-color: #fff;
+  width: 900px;
+  max-width: 80%;
+  height: 520px;
+  display: flex;
+  border-radius: 10px;
+  box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
 }
 
 .left {
-	flex: 2;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
-	background-color: white;
-	border-top-left-radius: 10px;
-	border-bottom-left-radius: 10px;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: white;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 .form_container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .form_container h2 {
-	font-size: 36px;
-    width: 100%;
-    text-align: center;
-	margin-top: 80px;
-    margin-bottom: 40px;
-    font-weight: 600;
+  font-size: 36px;
+  width: 100%;
+  text-align: center;
+  margin-top: 80px;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.form_password {
+  margin-top: 10px;
 }
 
 .inputInfo {
-	outline: none;
-	border: none;
-	width: 370px;
-	padding: 15px 50px 15px 15px;
-	border-radius: 10px;
-	background-color: #edf5f3;
-	margin: 5px 0;
-	font-size: 16px;
+  outline: none;
+  border: none;
+  width: 370px;
+  padding: 15px 50px 15px 15px;
+  border-radius: 10px;
+  background-color: #edf5f3;
+  margin: 5px 0;
+  font-size: 16px;
 }
 
 .error_msg {
-	width: 370px;
-	padding: 15px;
-	margin: 5px 0;
-	font-size: 14px;
-	background-color: #f34646;
-	color: white;
-	border-radius: 5px;
-	text-align: center;
+  width: 370px;
+  padding: 15px;
+  margin: 5px 0;
+  font-size: 14px;
+  background-color: #f34646;
+  color: white;
+  border-radius: 5px;
+  text-align: center;
 }
 .text-validate {
-    font-size: 10px;
-    width: 100%;
-    text-align: start;
-    margin-left: 10px;
-    color: #f34646;
-    margin-top: 2px;
+  font-size: 10px;
+  width: 100%;
+  text-align: start;
+  margin-left: 10px;
+  color: #f34646;
+  margin-top: 2px;
 }
 .container-pass {
-    display: flex;
-    align-items: center;
-    position: relative
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 .eye-icon {
-    position: absolute;
-    right: 0;
-    margin-right: 14px;
-    color: #6e6e6e;
-    font-size: 22px;
-    &:hover {
-        cursor: pointer;
-        opacity: 0.8;
-    }
+  position: absolute;
+  right: 0;
+  margin-right: 14px;
+  color: #6e6e6e;
+  font-size: 22px;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
 }
 .right {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	background-color: #3bb19b;
-	border-top-right-radius: 10px;
-	border-bottom-right-radius: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #3bb19b;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .right span {
-	color: white;
-	font-size: 20px;
-	align-self: center;
-    width: 70%;
-	text-align: center;
-    font-weight: 600;
-	margin-top: 60px;
+  color: white;
+  font-size: 20px;
+  align-self: center;
+  width: 70%;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 60px;
 }
 
 .white_btn,
 .green_btn {
-	border: none;
-	outline: none;
-	padding: 12px 0;
-	background-color: white;
-	border-radius: 20px;
-	width: 180px;
-	font-weight: bold;
-	font-size: 14px;
-    margin-top: 20px;
-	cursor: pointer;
-    &:hover {
-        opacity: 0.8;
-    }
+  border: none;
+  outline: none;
+  padding: 12px 0;
+  background-color: white;
+  border-radius: 20px;
+  width: 180px;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 20px;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 .green_btn {
-	background-color: #3bb19b;
-	color: white;
-	margin-top: 20px;
-	margin-bottom: 20px;
+  background-color: #3bb19b;
+  color: white;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .text-forgot {
-	color: #3bb19b;
-	text-decoration: underline;
-	&:hover {
-		opacity: 0.7;
-	}
+  color: #3bb19b;
+  text-decoration: underline;
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.responsive {
+  @media only screen and (max-width: 739px) {
+    .login_form_container {
+      min-width: 270px;
+      flex-direction: column;
+      width: 60%;
+
+      h2 {
+        font-size: 28px;
+      }
+    }
+
+    .inputInfo {
+      width: 240px;
+      padding: 10px 30px 10px 15px;
+      font-size: 14px;
+    }
+
+    .form_password {
+      margin-top: 0px;
+    }
+
+    .white_btn,
+    .green_btn {
+      padding: 8px 0;
+    }
+    .white_btn {
+      margin-top: 8px;
+    }
+    .left {
+      border-top-right-radius: 10px;
+    }
+
+    .right {
+      margin-top: 20px;
+      padding-bottom: 24px;
+      img {
+        display: none;
+      }
+
+      span {
+        margin-top: 20px;
+        font-size: 16px;
+      }
+
+      border-top-right-radius: 0px;
+      border-bottom-left-radius: 10px;
+    }
+  }
+
+  @media only screen and (min-width: 740px) and (max-width: 1023px) {
+    .login_form_container {
+      // width: 80%;
+
+      h2 {
+        font-size: 24px;
+      }
+    }
+
+    .inputInfo {
+      width: 280px;
+      padding: 10px 30px 10px 15px;
+    }
+    .form_password {
+      margin-top: 0px;
+    }
+
+    .white_btn,
+    .green_btn {
+      padding: 10px 0;
+    }
+    .left {
+      min-width: 350px;
+    }
+    .right {
+      min-width: 200px;
+      span {
+        font-size: 18px;
+      }
+    }
+    .white_btn {
+      width: 160px;
+    }
+  }
+
+  @media only screen and (min-width: 1024px) {
+  }
 }
