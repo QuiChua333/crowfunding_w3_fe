@@ -57,31 +57,33 @@ function ForgetPassword() {
   };
 
   return (
-    <div className={cx('container')}>
-      <form className={cx('form_container')} onSubmit={handleSubmit}>
-        <h1>Quên mật khẩu</h1>
-        <span className={cx('title')}>
-          Chúng tôi sẽ gửi thông tin đổi mật khẩu đến địa chỉ email của bạn. Vui lòng kiểm tra email để cập nhật lại mật
-          khẩu.
-        </span>
-        <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            placeholder="Địa chỉ email"
-            name="email"
-            className={cx('inputInfo')}
-          />
-        </div>
-        {error && <div className={cx('error_msg')}>{error}</div>}
-        {msg && <div className={cx('success_msg')}>{msg}</div>}
-        {showButtonAccept && (
-          <button type="submit" className={cx('green_btn')}>
-            Xác nhận
-          </button>
-        )}
-      </form>
+    <div className={cx('responsive')}>
+      <div className={cx('container')}>
+        <form className={cx('form_container')} onSubmit={handleSubmit}>
+          <h1>Quên mật khẩu</h1>
+          <span className={cx('title')}>
+            Chúng tôi sẽ gửi thông tin đổi mật khẩu đến địa chỉ email của bạn. Vui lòng kiểm tra email để cập nhật lại
+            mật khẩu.
+          </span>
+          <div style={{ display: 'flex', justifyContent: 'center' }} className={cx('input-wrapper')}>
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Địa chỉ email"
+              name="email"
+              className={cx('inputInfo')}
+            />
+          </div>
+          {error && <div className={cx('error_msg')}>{error}</div>}
+          {msg && <div className={cx('success_msg')}>{msg}</div>}
+          {showButtonAccept && (
+            <button type="submit" className={cx('green_btn')}>
+              Xác nhận
+            </button>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { logoTrangNho } from '~/assets/images';
 import { CustomAxios } from '~/config';
+import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function SignUp() {
@@ -121,87 +122,89 @@ function SignUp() {
   };
 
   return (
-    <div className={cx('signup_container')}>
-      <div className={cx('signup_form_container')}>
-        <div className={cx('left')}>
-          <img style={{ width: '120px', height: '120px' }} src={logoTrangNho} alt="logo" />
-          <h2>Chào mừng bạn quay lại</h2>
-          <a href="/login">
-            <button type="button" className={cx('white_btn')}>
-              Đăng nhập
-            </button>
-          </a>
-        </div>
-        <div className={cx('right')}>
-          <form className={cx('form_container')} onSubmit={handleSubmit}>
-            <h1>Đăng ký tài khoản</h1>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
-              <input
-                type="text"
-                placeholder="Họ và tên"
-                name="fullName"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className={cx('inputInfo')}
-              />
-              <span className={cx('text-validate')}>{textValidateName}</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
-              <input
-                type="email"
-                placeholder="Địa chỉ email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={cx('inputInfo')}
-              />
-              <span className={cx('text-validate')}>{textValidateEmail}</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
-              <div className={cx('container-pass')}>
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  placeholder="Mật khẩu"
-                  name="password"
-                  value={pass}
-                  onChange={(e) => setPass(e.target.value)}
-                  className={cx('inputInfo')}
-                />
-                {showPass ? (
-                  <FaEye className={cx('eye-icon')} onClick={handleShowAndHidePass} />
-                ) : (
-                  <FaEyeSlash className={cx('eye-icon')} onClick={handleShowAndHidePass} />
-                )}
-              </div>
-              <span className={cx('text-validate')}>{textValidatePass}</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
-              <div className={cx('container-pass')}>
-                <input
-                  type={showConfirmPass ? 'text' : 'password'}
-                  placeholder="Xác nhận lại mật khẩu"
-                  name="confirmPassword"
-                  value={confirmPass}
-                  onChange={(e) => setConfirmPass(e.target.value)}
-                  className={cx('inputInfo')}
-                />
-                {showConfirmPass ? (
-                  <FaEye className={cx('eye-icon')} onClick={handleShowAndHideConfirmPass} />
-                ) : (
-                  <FaEyeSlash className={cx('eye-icon')} onClick={handleShowAndHideConfirmPass} />
-                )}
-              </div>
-
-              <span className={cx('text-validate')}>{textValidateConfirmPass}</span>
-            </div>
-            {error && <div className={cx('error_msg')}>{error}</div>}
-            {msg && <div className={cx('success_msg')}>{msg}</div>}
-            {showButtonRegister && (
-              <button type="submit" className={cx('green_btn')}>
-                Đăng ký
+    <div className={cx('responsive')}>
+      <div className={cx('signup_container')}>
+        <div className={cx('signup_form_container')}>
+          <div className={cx('left')}>
+            <img style={{ width: '120px', height: '120px' }} src={logoTrangNho} alt="logo" />
+            <h2>Bạn đã có tài khoản?</h2>
+            <Link to="/login">
+              <button type="button" className={cx('white_btn')}>
+                Đăng nhập
               </button>
-            )}
-          </form>
+            </Link>
+          </div>
+          <div className={cx('right')}>
+            <form className={cx('form_container')} onSubmit={handleSubmit}>
+              <h1>Đăng ký tài khoản</h1>
+              <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
+                <input
+                  type="text"
+                  placeholder="Họ và tên"
+                  name="fullName"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={cx('inputInfo')}
+                />
+                <span className={cx('text-validate')}>{textValidateName}</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
+                <input
+                  type="email"
+                  placeholder="Địa chỉ email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={cx('inputInfo')}
+                />
+                <span className={cx('text-validate')}>{textValidateEmail}</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
+                <div className={cx('container-pass')}>
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    placeholder="Mật khẩu"
+                    name="password"
+                    value={pass}
+                    onChange={(e) => setPass(e.target.value)}
+                    className={cx('inputInfo')}
+                  />
+                  {showPass ? (
+                    <FaEye className={cx('eye-icon')} onClick={handleShowAndHidePass} />
+                  ) : (
+                    <FaEyeSlash className={cx('eye-icon')} onClick={handleShowAndHidePass} />
+                  )}
+                </div>
+                <span className={cx('text-validate')}>{textValidatePass}</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', height: '70px' }}>
+                <div className={cx('container-pass')}>
+                  <input
+                    type={showConfirmPass ? 'text' : 'password'}
+                    placeholder="Xác nhận lại mật khẩu"
+                    name="confirmPassword"
+                    value={confirmPass}
+                    onChange={(e) => setConfirmPass(e.target.value)}
+                    className={cx('inputInfo')}
+                  />
+                  {showConfirmPass ? (
+                    <FaEye className={cx('eye-icon')} onClick={handleShowAndHideConfirmPass} />
+                  ) : (
+                    <FaEyeSlash className={cx('eye-icon')} onClick={handleShowAndHideConfirmPass} />
+                  )}
+                </div>
+
+                <span className={cx('text-validate')}>{textValidateConfirmPass}</span>
+              </div>
+              {error && <div className={cx('error_msg')}>{error}</div>}
+              {msg && <div className={cx('success_msg')}>{msg}</div>}
+              {showButtonRegister && (
+                <button type="submit" className={cx('green_btn')}>
+                  Đăng ký
+                </button>
+              )}
+            </form>
+          </div>
         </div>
       </div>
     </div>
