@@ -4,7 +4,7 @@ import { GrFormClose } from 'react-icons/gr';
 import { IoCloseSharp } from 'react-icons/io5';
 import { AiOutlinePlus } from 'react-icons/ai';
 
-import styles from '../../../CampaignStyle.module.scss';
+import styles from '../NewPerk.module.scss';
 
 const cx = classNames.bind(styles);
 

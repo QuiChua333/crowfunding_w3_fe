@@ -3,7 +3,7 @@ import SidebarCampaign from '../components/Sidebar';
 
 import Footer from '~/layout/components/Footer';
 import { FaCheck } from 'react-icons/fa6';
-import styles from '../CampaignStyle.module.scss';
+import styles from './Funding.module.scss';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TiCancel } from 'react-icons/ti';
@@ -134,7 +134,7 @@ function FundingCampaign() {
     if (flagGoal && flagMomo && flagMomoConfirm) {
       dispatch(setLoading(true));
       try {
-        const res = await CustomAxios.patch(`${baseURL}/campaign/editCampaign/${id}`, body);
+        await CustomAxios.patch(`${baseURL}/campaign/editCampaign/${id}`, body);
         dispatch(setLoading(false));
         window.location.href = `/campaigns/${id}/edit/settings`;
       } catch (error) {
@@ -175,6 +175,7 @@ function FundingCampaign() {
   }, [campagin]);
   const [showErrorDelete, setShowErrorDelete] = useState(false);
   const [contentError, setContentError] = useState('');
+
   return (
     <>
       <div className={cx('wrapper')}>
@@ -194,22 +195,13 @@ function FundingCampaign() {
                 <div className={cx('controlBar-content')}>Chiến dịch / Gây quỹ</div>
               </div>
               {showErrorDelete && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: '#ff324b',
-                    paddingLeft: '40px',
-                    height: '80px',
-                  }}
-                >
-                  <span style={{ color: '#fff' }}>
-                    <TiCancel style={{ color: '#fff', fontSize: '48px' }} /> {contentError}
-                  </span>
+                <div className={cx('container-error')}>
+                  <TiCancel className={cx('icon-error')} />
+                  <span>{contentError}</span>
                 </div>
               )}
             </div>
-            <div className={cx('body')}>
+            <div className={cx('body-content')}>
               <div className={cx('entreSection')}>
                 <div className={cx('entreField-header')}>
                   Số Tiền Mục Tiêu Của Chiến Dịch <span className={cx('entreField-required')}>*</span>
@@ -220,7 +212,7 @@ function FundingCampaign() {
                 </div>
 
                 <div className={cx('entreField')}>
-                  <div className={cx('inputCurrencyField')} style={{ width: '50%' }}>
+                  <div className={cx('inputCurrencyField')}>
                     <input
                       placeholder={'Ví dụ: 10000000'}
                       type="text"
@@ -249,16 +241,20 @@ function FundingCampaign() {
 
                 <div className={cx('entreField')}>
                   {!campagin.owner?.isVerifiedUser ? (
-                    <a onClick={handleClickVerifyUser} className={cx('btn', 'btn-ok')} style={{ marginLeft: '0' }}>
+                    <span onClick={handleClickVerifyUser} className={cx('btn-ok')} style={{ marginLeft: '0' }}>
                       XÁC MINH ID
-                    </a>
+                    </span>
                   ) : (
-                    <a onClick={handleClickVerifyUser} className={cx('btn', 'btn-green')} style={{ marginLeft: '0' }}>
-                      TÀI KHOẢN ĐÃ XÁC MINH{' '}
+                    <div
+                      onClick={handleClickVerifyUser}
+                      className={cx('btn-green', 'inline-flex items-center gap-2')}
+                      style={{ marginLeft: '0' }}
+                    >
+                      TÀI KHOẢN ĐÃ XÁC MINH
                       <span style={{ marginBottom: '2px', fontSize: '16px' }}>
                         <FaCheck />
                       </span>
-                    </a>
+                    </div>
                   )}
                 </div>
 
@@ -305,12 +301,10 @@ function FundingCampaign() {
                   />
                   <span className={cx('entreField-validationLabel')}>{textValidateMomoConfirm}</span>
                 </div>
-                <div
-                  style={{ marginTop: '60px', borderTop: '1px solid #C8C8C8', paddingTop: '60px', textAlign: 'right' }}
-                >
-                  <a onClick={handleClickSaveContinue} className={cx('btn', 'btn-ok')}>
+                <div className={cx('container-btn')}>
+                  <span onClick={handleClickSaveContinue} className={cx('btn-ok')}>
                     LƯU VÀ TIẾP TỤC
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>

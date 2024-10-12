@@ -7,7 +7,7 @@ import { useRef, useEffect } from 'react';
 import { FaAngleDown } from 'react-icons/fa';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import { useState } from 'react';
-import styles from '../CampaignStyle.module.scss';
+import styles from './Basic.module.scss';
 import MenuDropDown from './components/MenuDropDown';
 import { useParams } from 'react-router-dom';
 import baseURL from '~/utils/baseURL';
@@ -285,18 +285,9 @@ function BasicCampaign() {
               <div className={cx('controlBar-content')}>Chiến dịch / Cơ bản</div>
             </div>
             {showErrorDelete && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  backgroundColor: '#ff324b',
-                  paddingLeft: '40px',
-                  height: '80px',
-                }}
-              >
-                <span style={{ color: '#fff' }}>
-                  <TiCancel style={{ color: '#fff', fontSize: '48px' }} /> {contentError}
-                </span>
+              <div className={cx('container-error')}>
+                <TiCancel className={cx('icon-error')} />
+                <span>{contentError}</span>
               </div>
             )}
           </div>
@@ -356,7 +347,6 @@ function BasicCampaign() {
                       inputImage.current.click();
                     }}
                     className={cx('entreField-input-image')}
-                    style={{ width: '400px', height: '400px' }}
                   >
                     {!campaginState.cardImage?.url && (
                       <div className={cx('tertiaryAction')}>
@@ -417,8 +407,8 @@ function BasicCampaign() {
                   Chọn vị trí nơi bạn đang/sẽ chạy chiến dịch. Vị trí này sẽ hiển thị trên trang chiến dịch của bạn để
                   mọi người có thể xem.
                 </div>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', width: '48%' }}>
+                <div className={cx('layout-input')}>
+                  <div className={cx('container-input')}>
                     <input
                       type="text"
                       placeholder="Quốc gia"
@@ -429,7 +419,7 @@ function BasicCampaign() {
                     />
                     <span className={cx('entreField-validationLabel')}>{textValidateCountry}</span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', width: '48%' }}>
+                  <div className={cx('container-input')}>
                     <input
                       type="text"
                       placeholder="Thành phố"
@@ -492,15 +482,8 @@ function BasicCampaign() {
                 <span className={cx('entreField-validationLabel')}>{textValidateDuration}</span>
               </div>
 
-              <div
-                style={{
-                  marginTop: '60px',
-                  borderTop: '1px solid #C8C8C8',
-                  paddingTop: '60px',
-                  textAlign: 'right',
-                }}
-              >
-                <a onClick={handleClickSaveContinue} className={cx('btn', 'btn-ok')}>
+              <div className={cx('container-btn')}>
+                <a onClick={handleClickSaveContinue} className={cx('btn-ok')}>
                   LƯU & TIẾP TỤC
                 </a>
               </div>

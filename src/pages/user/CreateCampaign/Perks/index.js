@@ -6,7 +6,7 @@ import PerkTable from './components/PerkTable';
 
 import { TiCancel } from 'react-icons/ti';
 
-import styles from '../CampaignStyle.module.scss';
+import styles from './Perks.module.scss';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -130,7 +130,6 @@ function PerksCampaign() {
   useEffect(() => {
     let edit = false;
   }, [campagin]);
-  // style={{ pointerEvents: !isEditAll && 'none' }}
   const [showErrorDelete, setShowErrorDelete] = useState(false);
   const [contentError, setContentError] = useState('');
   return (
@@ -152,23 +151,13 @@ function PerksCampaign() {
                 <div className={cx('controlBar-content')}>Chiến dịch / Đặc quyền</div>
               </div>
               {showErrorDelete && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: '#ff324b',
-                    paddingLeft: '40px',
-                    height: '80px',
-                  }}
-                >
-                  <span style={{ color: '#fff' }}>
-                    <TiCancel style={{ color: '#fff', fontSize: '48px' }} /> {contentError}
-                  </span>
+                <div className={cx('container-error')}>
+                  <TiCancel className={cx('icon-error')} />
+                  <span>{contentError}</span>
                 </div>
               )}
             </div>
             <div className={cx('body')}>
-              {/* Khi chưa có perk */}
               {listPerks?.length > 0 && (
                 <div>
                   <div className={cx('entreSection')}>
@@ -191,18 +180,18 @@ function PerksCampaign() {
                       </div>
                     }
 
-                    <div>
-                      <div
-                        style={{
-                          display: 'inline-block',
-                          marginLeft: '24px',
-                          pointerEvents: !isEditComponent && 'none',
-                        }}
-                      >
-                        <Link to={`/campaigns/${id}/edit/perks/new`} className={cx('btn', 'btn-ok')}>
-                          TẠO ĐẶC QUYỀN
-                        </Link>
-                      </div>
+                    <div
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: '24px',
+                        pointerEvents: !isEditComponent && 'none',
+                        width: '100%',
+                        textAlign: 'right',
+                      }}
+                    >
+                      <Link to={`/campaigns/${id}/edit/perks/new`} className={cx('btn', 'btn-ok')}>
+                        TẠO ĐẶC QUYỀN
+                      </Link>
                     </div>
                   </div>
                   <div style={{ marginTop: '40px' }}>
@@ -219,7 +208,7 @@ function PerksCampaign() {
               )}
               {listPerks?.length === 0 && (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <div style={{ width: '800px', textAlign: 'center' }}>
+                  <div className={cx('container-body')}>
                     <div style={{ fontSize: '24px', fontWeight: '600', marginTop: '32px' }}>
                       Bạn chưa tạo bất kỳ đặc quyền nào{' '}
                     </div>
@@ -232,10 +221,7 @@ function PerksCampaign() {
                         chiến dịch của mình.
                       </span>
                     </div>
-                    <img
-                      src={noPerk}
-                      style={{ width: '600', height: '270px', objectFit: 'cover', marginTop: '32px' }}
-                    />
+                    <img src={noPerk} className={cx('img-no-perk')} />
 
                     <div style={{ marginTop: '40px' }}>Bắt đầu nào!</div>
                     <div style={{ fontSize: '14px', color: '#a8a8a8' }}>Tạo đặc quyền của bạn ở đây.</div>
@@ -256,15 +242,7 @@ function PerksCampaign() {
 
               {/* Footer */}
               {listPerks?.length === 0 && (
-                <div
-                  style={{
-                    marginTop: '60px',
-                    marginBottom: '60px',
-                    borderTop: '1px solid #C8C8C8',
-                    paddingTop: '60px',
-                    textAlign: 'right',
-                  }}
-                >
+                <div className={cx('btn-final')}>
                   <a href="#" className={cx('btn', 'btn-ok')}>
                     TIẾP TỤC
                   </a>
@@ -272,9 +250,7 @@ function PerksCampaign() {
               )}
 
               {listPerks?.length > 0 && (
-                <div
-                  style={{ marginTop: '60px', borderTop: '1px solid #C8C8C8', paddingTop: '60px', textAlign: 'right' }}
-                >
+                <div className={cx('btn-final')}>
                   <Link to={`/campaigns/${id}/edit/items/table`} className={cx('btn', 'btn-ok')}>
                     TIẾP TỤC
                   </Link>

@@ -17,7 +17,7 @@ import baseURL from '~/utils/baseURL';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
 
-import styles from '../../CampaignStyle.module.scss';
+import styles from './NewPerk.module.scss';
 import ItemShipping from './ItemShipping';
 import { Link } from 'react-router-dom';
 import ItemInclude from './ItemInclude';
@@ -44,7 +44,6 @@ function NewPerk() {
   const perkImageElement = useRef();
   const dateInputElement = useRef(null);
   const [showBtnAddShip, setShowBtnAddShip] = useState(true);
-  // const elementLocation = useRef([]);
 
   const handleMouseOverDateFilter = () => {
     dateInputElement.current?.showPicker();
@@ -63,7 +62,6 @@ function NewPerk() {
       setCampaign({ ...infoBasic });
     } catch (error) {}
   };
-
   const getPerk = async () => {
     try {
       if (idPerk === 'new') {
@@ -195,7 +193,6 @@ function NewPerk() {
   useEffect(() => {
     console.log(perkState);
   }, [perkState]);
-
   const handleChangeDateInput = (e) => {
     let value = e.target.value;
     if (!value) {
@@ -215,9 +212,6 @@ function NewPerk() {
     }));
   };
   const addNewItem = async (item) => {
-    // Lưu item + thuộc tính lên csdl {itemName, listOption}
-    // setListItem(prev => [...prev, { ...item, quantity: 1 }])
-    // setListItemsAvailable(prev => [...prev, { ...item }]);
     try {
       const res = await CustomAxios.post(`${baseURL}/item/addItem`, { ...item, campaign: id });
       getItemsByCampaign();
@@ -227,8 +221,6 @@ function NewPerk() {
     }
   };
   const updateItem = (item, index) => {
-    console.log('udpate nè');
-    // Lưu item + thuộc tính lên csdl {itemName, listOption}
     handleChangeItemInclude(item, index);
     setListItemsAvailable((prev) => [...prev, { ...item, quantity: null }]);
   };
@@ -243,7 +235,6 @@ function NewPerk() {
       }));
     }
   };
-
   const handleChangePerkImage = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
@@ -306,7 +297,6 @@ function NewPerk() {
     const list = perkState.items?.filter((item) => item.name !== '');
     setListItemChoosen(list?.map((item) => item.name));
   }, [perkState.items]);
-
   const handleChangeItemShipping = (itemChange, indexChange) => {
     setPerkState((prev) => ({
       ...prev,
@@ -323,7 +313,6 @@ function NewPerk() {
       listShippingFee: [...prev.listShippingFee].filter((item, index2) => index2 !== index),
     }));
   };
-
   const handleChangeItemInclude = (itemChange, indexChange) => {
     setPerkState((prev) => ({
       ...prev,
@@ -334,7 +323,6 @@ function NewPerk() {
       }),
     }));
   };
-
   const handleRemoveItemInclude = (index) => {
     setPerkState((prev) => ({
       ...prev,
@@ -378,7 +366,6 @@ function NewPerk() {
       }
     }
   };
-
   const [isEditAll, setEditAll] = useState(null);
   const currentUser = useSelector((state) => state.user.currentUser);
   useEffect(() => {
@@ -638,7 +625,6 @@ function NewPerk() {
                         perkImageElement.current.click();
                       }}
                       className={cx('entreField-input-image')}
-                      style={{ width: '330px', height: '220px' }}
                       ref={inputPerkImageWrapperElement}
                     >
                       {!perkState.perkImage?.url && (
@@ -653,12 +639,7 @@ function NewPerk() {
 
                       {perkState.perkImage?.url && (
                         <div>
-                          <img
-                            style={{ position: 'relative', objectFit: 'cover' }}
-                            width="330"
-                            height="220"
-                            src={perkState.perkImage?.url}
-                          />
+                          <img className={cx('img-copntainer-perk')} src={perkState.perkImage?.url} />
                           <div className={cx('editFile')}>
                             <span className={cx('editFile-icon')}>
                               <MdEdit style={{ color: '#7a69b3', fontSize: '18px' }} />
@@ -697,8 +678,7 @@ function NewPerk() {
                   </div>
                   <input
                     type="text"
-                    className={cx('itext-field')}
-                    style={{ width: '200px' }}
+                    className={cx('itext-field-2')}
                     name="quantity"
                     value={perkState.quantity}
                     onChange={handleChangeInputText}
@@ -719,8 +699,7 @@ function NewPerk() {
                   <div style={{ position: 'relative', width: 'fit-content' }}>
                     <input
                       type="text"
-                      className={cx('itext-field')}
-                      style={{ width: '200px' }}
+                      className={cx('itext-field-2')}
                       name="estDelivery"
                       value={perkState.estDelivery}
                       disabled

@@ -6,7 +6,7 @@ import { HiCamera } from 'react-icons/hi';
 import { MdEdit } from 'react-icons/md';
 import { IoCloseSharp } from 'react-icons/io5';
 import { FaPlus } from 'react-icons/fa';
-import styles from '../CampaignStyle.module.scss';
+import styles from './Content.module.scss';
 import SidebarCampaign from '../components/Sidebar';
 import FAQ from './components/FAQ';
 import { useParams } from 'react-router-dom';
@@ -237,18 +237,9 @@ function ContentCampaign() {
               <div className={cx('controlBar-content')}>Chiến dịch / Nội dung</div>
             </div>
             {showErrorDelete && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  backgroundColor: '#ff324b',
-                  paddingLeft: '40px',
-                  height: '80px',
-                }}
-              >
-                <span style={{ color: '#fff' }}>
-                  <TiCancel style={{ color: '#fff', fontSize: '48px' }} /> {contentError}
-                </span>
+              <div className={cx('container-error')}>
+                <TiCancel className={cx('icon-error')} />
+                <span>{contentError}</span>
               </div>
             )}
           </div>
@@ -328,8 +319,7 @@ function ContentCampaign() {
                       {urlEmbedVideo && (
                         <iframe
                           src={urlEmbedVideo}
-                          width="695"
-                          height="460"
+                          className={cx('container-iframe')}
                           scrolling="no"
                           title="YouTube embed"
                           frameborder="0"
@@ -360,7 +350,6 @@ function ContentCampaign() {
                           inputImage.current.click();
                         }}
                         className={cx('entreField-input-image')}
-                        style={{ width: '695px', height: '460px' }}
                       >
                         {!campaginState.imageDetailPage?.url && (
                           <div className={cx('tertiaryAction')}>
@@ -374,12 +363,7 @@ function ContentCampaign() {
 
                         {campaginState.imageDetailPage?.url && (
                           <div className={cx('image-upload')}>
-                            <img
-                              style={{ position: 'relative', objectFit: 'cover' }}
-                              width="695"
-                              height="460"
-                              src={campaginState.imageDetailPage?.url}
-                            />
+                            <img className={cx('container-image-upload')} src={campaginState.imageDetailPage?.url} />
                             <div className={cx('editFile')}>
                               <span className={cx('editFile-icon')}>
                                 <MdEdit style={{ color: '#7a69b3', fontSize: '18px' }} />
@@ -559,15 +543,8 @@ function ContentCampaign() {
                 <span style={{ color: '#7a69b3', fontWeight: '600' }}>THÊM CÂU HỎI KHÁC</span>
               </div>
 
-              <div
-                style={{
-                  marginTop: '60px',
-                  borderTop: '1px solid #C8C8C8',
-                  paddingTop: '60px',
-                  textAlign: 'right',
-                }}
-              >
-                <a onClick={handleClickSaveContinue} className={cx('btn', 'btn-ok')}>
+              <div className={cx('container-btn')}>
+                <a onClick={handleClickSaveContinue} className={cx('btn-ok')}>
                   LƯU & TIẾP TỤC
                 </a>
               </div>

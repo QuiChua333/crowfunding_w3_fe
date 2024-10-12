@@ -1,133 +1,360 @@
-.wrapper {
+@media only screen and (min-width: 1200px) {
+  .wrapper {
     table {
-        width: 100%;
-   
-        border-collapse: collapse;
+      width: 100%;
+      text-align: center;
+      border-collapse: collapse;
     }
 
     thead th {
-        font-weight: 400;
-        font-size: 15px;
-        letter-spacing: 0.5px;
+      font-weight: 400;
+      font-size: 15px;
+      letter-spacing: 0.5px;
     }
     tr td {
-        font-weight: 300;
-        font-size: 15px;
-        letter-spacing: 0.5px;
+      font-weight: 300;
+      font-size: 15px;
+      letter-spacing: 0.5px;
     }
-
 
     thead th {
-        padding: 14px 0;
-        background-color: #f5f5f5;
+      padding: 14px 0;
+      background-color: #f5f5f5;
     }
     tr td {
-        padding: 18px 0;
+      padding: 18px 0;
     }
     tr {
-        cursor: pointer;
-        border: 1px solid #c8c8c8;
-        background-color: #fff;
-        &:hover {
-            background-color: #eee5f2;
-        }
+      cursor: pointer;
+      border: 1px solid #c8c8c8;
+      background-color: #fff;
+      &:hover {
+        background-color: #eee5f2;
+      }
     }
 
-    th.checkbox, td.checkbox {
-        width: 40px;
-        padding-left: 16px;
-        padding-right: 16px;
-        
+    th.checkbox,
+    td.checkbox {
+      width: 40px;
+      padding-left: 16px;
+      padding-right: 16px;
     }
 
-    th.title, td.title {
-        width: auto;;
-        padding-left: 48px;
+    th.title,
+    td.title {
+      width: auto;
+      padding-left: 48px;
     }
 
     td.title span {
-        color: rgb(106, 106, 106);
-        font-size: 12px;
+      color: rgb(106, 106, 106);
+      font-size: 12px;
     }
 
-    th.price, td.price {
-        width: 200px;
-        padding-left: 12px;
-    }
-    
-
-    th.type, td.type {
-        width: 140px;
-        padding-left: 12px;
+    th.price,
+    td.price {
+      width: 200px;
+      padding-left: 12px;
     }
 
-    th.quantity, td.quantity {
-        width: 160px;
-        padding-left: 12px;
+    th.type,
+    td.type {
+      width: 140px;
+      padding-left: 12px;
+    }
+
+    th.quantity,
+    td.quantity {
+      width: 160px;
+      padding-left: 12px;
     }
     td.quantity {
-        padding-left: 30px;
+      padding-left: 30px;
     }
 
-    th.est, td.est {
-        width: 180px;
-        padding-left: 12px;
+    th.est,
+    td.est {
+      width: 180px;
+      padding-left: 12px;
     }
 
-    th.action, td.action {
-        width: 100px;
-        padding-left: 12px;
-        padding-right: 8px;
-        text-align: right;
-
+    th.action,
+    td.action {
+      width: 100px;
+      padding-left: 12px;
+      padding-right: 8px;
+      text-align: right;
     }
     .featured {
-        font-size: 14px;
-        padding: 4px 8px;
-        background-color: #e51075;
-        color: #fff;
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #e51075;
+      color: #fff;
     }
 
     .action-doc {
-        display: inline-flex;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        border: 1px solid #ccc;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        &:hover {
-            border-color: #989898;
-        }
-        position: relative;
-
-        
-        
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      &:hover {
+        border-color: #989898;
+      }
+      position: relative;
     }
 
     .dropdown-wrapper {
-        position: absolute;
-        display: none;
-        top: calc(100% + 6px);
-        z-index: 100;
-        right: -8px;
-        animation: fadeIn .3s linear;
-        
+      position: absolute;
+      display: none;
+      top: calc(100% + 6px);
+      z-index: 100;
+      right: -8px;
+      animation: fadeIn 0.3s linear;
+    }
+  }
+}
+@media (min-width: 768px) and (max-width: 1200px) {
+  .wrapper {
+    table {
+      text-align: center;
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    
-   
+    thead th {
+      font-weight: 400;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+    tr td {
+      font-weight: 300;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    thead th {
+      padding: 14px 0;
+      background-color: #f5f5f5;
+    }
+    tr td {
+      padding: 18px 0;
+    }
+    tr {
+      cursor: pointer;
+      border: 1px solid #c8c8c8;
+      background-color: #fff;
+      &:hover {
+        background-color: #eee5f2;
+      }
+    }
+
+    th.checkbox,
+    td.checkbox {
+      width: 40px;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    th.title,
+    td.title {
+      width: auto;
+      padding-left: 48px;
+    }
+
+    td.title span {
+      color: rgb(106, 106, 106);
+      font-size: 12px;
+    }
+
+    th.price,
+    td.price {
+      width: 180px;
+      padding-left: 12px;
+    }
+
+    th.type,
+    td.type {
+      width: 120px;
+      padding-left: 12px;
+    }
+
+    th.quantity,
+    td.quantity {
+      width: 140px;
+      padding-left: 12px;
+    }
+    td.quantity {
+      padding-left: 30px;
+    }
+
+    th.est,
+    td.est {
+      width: 160px;
+      padding-left: 12px;
+    }
+
+    th.action,
+    td.action {
+      width: 80px;
+      padding-left: 12px;
+      padding-right: 8px;
+      text-align: right;
+    }
+    .featured {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #e51075;
+      color: #fff;
+    }
+
+    .action-doc {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      &:hover {
+        border-color: #989898;
+      }
+      position: relative;
+    }
+
+    .dropdown-wrapper {
+      position: absolute;
+      display: none;
+      top: calc(100% + 6px);
+      z-index: 100;
+      right: -8px;
+      animation: fadeIn 0.3s linear;
+    }
+  }
+}
+@media only screen and (max-width: 768px) {
+  .wrapper {
+    table {
+      text-align: center;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      font-weight: 400;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    tr td {
+      font-weight: 300;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    thead th {
+      padding: 14px 0;
+      background-color: #f5f5f5;
+    }
+    tr td {
+      padding: 18px 0;
+    }
+    tr {
+      cursor: pointer;
+      border: 1px solid #c8c8c8;
+      background-color: #fff;
+      &:hover {
+        background-color: #eee5f2;
+      }
+    }
+
+    th.checkbox,
+    td.checkbox {
+      width: 40px;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    th.title,
+    td.title {
+      width: auto;
+    }
+
+    td.title span {
+      color: rgb(106, 106, 106);
+      font-size: 12px;
+    }
+
+    th.price,
+    td.price {
+      width: 180px;
+    }
+
+    th.type,
+    td.type {
+      width: 120px;
+    }
+
+    th.quantity,
+    td.quantity {
+      width: 140px;
+    }
+    td.quantity {
+      padding-left: 30px;
+    }
+
+    th.est,
+    td.est {
+      width: 160px;
+    }
+
+    th.action,
+    td.action {
+      width: 80px;
+      padding-right: 10px;
+      text-align: right;
+    }
+    .featured {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #e51075;
+      color: #fff;
+    }
+
+    .action-doc {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      &:hover {
+        border-color: #989898;
+      }
+      position: relative;
+    }
+
+    .dropdown-wrapper {
+      position: absolute;
+      display: none;
+      top: calc(100% + 6px);
+      z-index: 100;
+      right: -8px;
+      animation: fadeIn 0.3s linear;
+    }
+  }
 }
 
 @keyframes fadeIn {
-    0%{
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
-
-
-

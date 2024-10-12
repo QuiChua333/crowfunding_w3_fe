@@ -11,7 +11,7 @@ import GiftTable from './components/GiftTable';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 import { TiCancel } from 'react-icons/ti';
 
-import styles from '../CampaignStyle.module.scss';
+import styles from './Contribution.module.scss';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -158,23 +158,17 @@ function ContributionCampaign() {
   }, []);
 
   const getAllContributions = async () => {
-    // setLoadingData(true)
     try {
       const res = await CustomAxios.get(pathWithQuery);
-      // setLoadingData(false)
       setContributions(res.data.data.contributions);
-      // setCampaignsOrigin(res.data.data.campaigns)
       setTotalPages(res.data.data.totalPages);
     } catch (error) {}
   };
 
   const getAllGifts = async () => {
-    // setLoadingData(true)
     try {
       const res = await CustomAxios.get(pathWithQueryGift);
-      // setLoadingData(false)
       setGifts(res.data.data.gifts);
-      // setCampaignsOrigin(res.data.data.campaigns)
       setTotalPagesGift(res.data.data.totalPages);
     } catch (error) {}
   };
@@ -321,18 +315,9 @@ function ContributionCampaign() {
                 <div className={cx('controlBar-content')}>Chiến dịch / Đóng góp</div>
               </div>
               {showErrorDelete && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: '#ff324b',
-                    paddingLeft: '40px',
-                    height: '80px',
-                  }}
-                >
-                  <span style={{ color: '#fff' }}>
-                    <TiCancel style={{ color: '#fff', fontSize: '48px' }} /> {contentError}
-                  </span>
+                <div className={cx('container-error')}>
+                  <TiCancel className={cx('icon-error')} />
+                  <span>{contentError}</span>
                 </div>
               )}
             </div>
@@ -584,21 +569,22 @@ function ContributionCampaign() {
               )}
               {campagin.status === 'Bản nháp' && (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <div style={{ width: '800px', textAlign: 'center' }}>
+                  <div className={cx('container-layout')}>
                     <div style={{ fontSize: '24px', fontWeight: '600', marginTop: '32px' }}>
                       CHIẾN DỊCH CỦA BẠN CHƯA ĐƯỢC PHÁT HÀNH{' '}
                     </div>
                     <div style={{ marginTop: '12px' }}>
                       <span>Mục này ghi nhận lại lịch sử đóng góp của người ủng hộ cho chiến dịch của bạn</span>
                     </div>
-                    <img
-                      src={noPerk}
-                      style={{ width: '600', height: '270px', objectFit: 'cover', marginTop: '32px' }}
-                    />
+                    <img src={noPerk} className={cx('img-frame')} alt="Không có vật phẩm" />
 
                     <div style={{ marginTop: '40px' }}>Phát hành chiến dịch thôi nào!</div>
                     <div style={{ fontSize: '14px', color: '#a8a8a8' }}>Phát hành ở đây.</div>
-                    <img src={arrow} style={{ width: '40px', height: '60px', objectFit: 'cover', marginTop: '32px' }} />
+                    <img
+                      src={arrow}
+                      style={{ width: '40px', height: '60px', objectFit: 'cover', marginTop: '32px' }}
+                      alt="phát hành"
+                    />
 
                     <div style={{ marginTop: '40px' }}>
                       <Link

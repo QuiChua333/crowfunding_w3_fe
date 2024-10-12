@@ -39,7 +39,6 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
   }, [statusElement]);
   const handleClickItemStatus = (item) => {
     setStatus(item);
-    // dispatch(handleChangeOrderStatus({index, status: item}))
   };
   const handleClickSave = async () => {
     if (status !== (gift.isFinish ? 'Đã gửi' : 'Chưa gửi')) {

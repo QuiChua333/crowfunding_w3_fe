@@ -7,7 +7,7 @@ import { IoSquareOutline, IoCheckboxSharp } from 'react-icons/io5';
 import { TiCancel } from 'react-icons/ti';
 import { setMessageBox } from '~/redux/slides/GlobalApp';
 
-import styles from '../CampaignStyle.module.scss';
+import styles from './Teams.module.scss';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -233,8 +233,8 @@ function TeamCampaign() {
 
                 <div className={cx('entreField')}>
                   <label className={cx('entreField-label')}>Email Thành Viên Mới</label>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ flex: '1' }}>
+                  <div className={cx('container-input')}>
+                    <div style={{ flex: '1' }} class>
                       <input
                         type="email"
                         className={cx('itext-field')}
@@ -272,7 +272,7 @@ function TeamCampaign() {
                     </label>
 
                     <div style={{ marginTop: '32px' }}>
-                      <div className={cx('team-orner')}>
+                      <div className={cx('team-owner')}>
                         <label className={cx('entreField-label')}>Chủ sỡ hữu</label>
                         <div style={{ borderTop: '1px solid #C8C8C8' }}></div>
                         <TeamMember

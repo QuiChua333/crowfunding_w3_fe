@@ -1,0 +1,500 @@
+@media only screen and (min-width: 1200px) {
+  .container-error {
+    display: flex;
+    align-items: center;
+    background-color: #ff324b;
+    padding-left: 40px;
+    color: #fff;
+    height: 80px;
+    .icon-error {
+      color: #fff;
+      font-size: 48px;
+      margin-right: 20px;
+    }
+  }
+  .wrapper {
+    display: flex;
+    color: #2a2a2a;
+  }
+
+  .content {
+    background-color: #fafafa;
+  }
+
+  .controlBar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: #f5f5f5;
+  }
+  .controlBar-container {
+    padding: 40px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c8c8c8;
+    border-left: none;
+    border-right: none;
+    margin-top: 1px;
+  }
+
+  .controlBar-content {
+    flex: 1;
+    color: #2a2a2a;
+    font-weight: 550;
+  }
+
+  .btn {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 15px;
+    min-height: 40px;
+    min-width: 86px;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+      color: #ffffff;
+    }
+  }
+
+  .btn-ok {
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+  }
+  .btn-green {
+    background-color: #34ca96;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #2eb183;
+      color: #ffffff;
+    }
+  }
+
+  .btn-cancel {
+    background-color: transparent;
+    color: #7a69b3;
+
+    &:hover {
+      background-color: #eee5f2;
+      border-color: #eee5f2;
+      color: #7a69b3;
+    }
+  }
+
+  .container-body {
+    width: 800px;
+    text-align: center;
+  }
+
+  .img-no-perk {
+    width: 600px;
+    height: 270px;
+    object-fit: contain;
+    margin-top: 32px;
+  }
+  .btn-final {
+    margin: 60px 0;
+    border-top: 1px soli0d #c8c8c8;
+    padding-top: 60px;
+    text-align: right;
+  }
+  .body {
+    padding: 30px 50px;
+    min-height: 900px;
+  }
+
+  .entreSection {
+    width: 756px;
+    margin-bottom: 60px;
+  }
+
+  .entreField-header {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .entreField-subHeader {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  .entreField-required {
+    color: #ff324b;
+  }
+  .entreField {
+    margin: 40px 0;
+  }
+
+  .entreField-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .perkTable-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+@media (min-width: 768px) and (max-width: 1200px) {
+  .container-error {
+    display: flex;
+    align-items: center;
+    background-color: #ff324b;
+    padding-left: 40px;
+    color: #fff;
+    height: 80px;
+    .icon-error {
+      color: #fff;
+      font-size: 48px;
+      margin-right: 20px;
+    }
+  }
+  .wrapper {
+    display: flex;
+    color: #2a2a2a;
+  }
+
+  .content {
+    background-color: #fafafa;
+  }
+
+  .controlBar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: #f5f5f5;
+  }
+  .controlBar-container {
+    padding: 40px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c8c8c8;
+    border-left: none;
+    border-right: none;
+    margin-top: 1px;
+  }
+
+  .controlBar-content {
+    flex: 1;
+    color: #2a2a2a;
+    font-weight: 550;
+  }
+
+  .btn {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 15px;
+    min-height: 40px;
+    min-width: 86px;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+      color: #ffffff;
+    }
+  }
+
+  .btn-ok {
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+  }
+  .btn-green {
+    background-color: #34ca96;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #2eb183;
+      color: #ffffff;
+    }
+  }
+
+  .btn-cancel {
+    background-color: transparent;
+    color: #7a69b3;
+
+    &:hover {
+      background-color: #eee5f2;
+      border-color: #eee5f2;
+      color: #7a69b3;
+    }
+  }
+
+  .container-body {
+    width: 100%;
+    text-align: center;
+  }
+
+  .img-no-perk {
+    width: 80%;
+    height: 270px;
+    object-fit: contain;
+    margin-top: 32px;
+  }
+  .btn-final {
+    margin: 60px 0;
+    border-top: 1px soli0d #c8c8c8;
+    padding-top: 60px;
+    text-align: right;
+  }
+  .body {
+    padding: 30px 50px;
+    min-height: 900px;
+  }
+
+  .entreSection {
+    width: 100%;
+    margin-bottom: 60px;
+  }
+
+  .entreField-header {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .entreField-subHeader {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  .entreField-required {
+    color: #ff324b;
+  }
+  .entreField {
+    margin: 40px 0;
+  }
+
+  .entreField-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .perkTable-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .container-error {
+    display: flex;
+    align-items: center;
+    background-color: #ff324b;
+    padding-left: 40px;
+    color: #fff;
+    height: 80px;
+    .icon-error {
+      color: #fff;
+      font-size: 48px;
+      margin-right: 20px;
+    }
+  }
+  .wrapper {
+    display: flex;
+    color: #2a2a2a;
+  }
+
+  .content {
+    background-color: #fafafa;
+  }
+
+  .controlBar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: #f5f5f5;
+  }
+  .controlBar-container {
+    padding: 40px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c8c8c8;
+    border-left: none;
+    border-right: none;
+    margin-top: 1px;
+  }
+
+  .controlBar-content {
+    flex: 1;
+    color: #2a2a2a;
+    font-weight: 550;
+  }
+
+  .btn {
+    width: 300px;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 15px;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+      color: #ffffff;
+    }
+  }
+
+  .btn-ok {
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+  }
+  .btn-green {
+    background-color: #34ca96;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #2eb183;
+      color: #ffffff;
+    }
+  }
+
+  .btn-cancel {
+    background-color: transparent;
+    color: #7a69b3;
+
+    &:hover {
+      background-color: #eee5f2;
+      border-color: #eee5f2;
+      color: #7a69b3;
+    }
+  }
+
+  .container-body {
+    width: 100%;
+    text-align: center;
+  }
+
+  .img-no-perk {
+    width: 80%;
+    height: 270px;
+    object-fit: contain;
+    margin-top: 32px;
+  }
+  .btn-final {
+    margin: 60px 0;
+    border-top: 1px soli0d #c8c8c8;
+    padding-top: 60px;
+    text-align: right;
+  }
+  .body {
+    padding: 30px 50px;
+    min-height: 900px;
+  }
+
+  .entreSection {
+    width: 100%;
+    margin-bottom: 60px;
+  }
+
+  .entreField-header {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .entreField-subHeader {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  .entreField-required {
+    color: #ff324b;
+  }
+  .entreField {
+    margin: 40px 0;
+  }
+
+  .entreField-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .perkTable-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@keyframes modalIn {
+  0% {
+    transform: translateY(5%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes modalOut {
+  0% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(5%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
