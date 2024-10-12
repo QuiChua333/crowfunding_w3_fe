@@ -4,7 +4,7 @@ import { TiCancel } from 'react-icons/ti';
 
 import Footer from '~/layout/components/Footer';
 
-import styles from '../CampaignStyle.module.scss';
+import styles from './Setting.module.scss';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -135,18 +135,9 @@ function SettingCampaign() {
                 <div className={cx('controlBar-content')}>Chiến dịch / Cài đặt</div>
               </div>
               {showErrorDelete && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: '#ff324b',
-                    paddingLeft: '40px',
-                    height: '80px',
-                  }}
-                >
-                  <span style={{ color: '#fff' }}>
-                    <TiCancel style={{ color: '#fff', fontSize: '48px' }} /> {contentError}
-                  </span>
+                <div className={cx('container-error')}>
+                  <TiCancel className={cx('icon-error')} />
+                  <span>{contentError}</span>
                 </div>
               )}
             </div>
@@ -161,56 +152,28 @@ function SettingCampaign() {
 
               <div className={cx('entreSection')}>
                 {campagin.status === 'Bản nháp' && (
-                  <div
-                    style={{
-                      marginTop: '60px',
-                      borderBottom: '1px solid #C8C8C8',
-                      paddingBottom: '30px',
-                      textAlign: 'left',
-                    }}
-                  >
+                  <div className={cx('container-btn text-left')}>
                     <a onClick={handleClickLaunchCampaign} className={cx('btn', 'btn-ok')} style={{ marginLeft: '0' }}>
                       PHÁT HÀNH CHIẾN DỊCH
                     </a>
                   </div>
                 )}
                 {campagin.status === 'Đang tạm ngưng' && (
-                  <div
-                    style={{
-                      marginTop: '60px',
-                      borderBottom: '1px solid #C8C8C8',
-                      paddingBottom: '30px',
-                      textAlign: 'left',
-                    }}
-                  >
-                    <a className={cx('btn', 'btn-ok')} style={{ marginLeft: '0' }}>
+                  <div className={cx('container-btn text-left')}>
+                    <a className={cx('btn-ok')} style={{ marginLeft: '0' }}>
                       CHIẾN DỊCH ĐANG BỊ TẠM NGƯNG
                     </a>
                   </div>
                 )}
                 {campagin.status === 'Đang gây quỹ' && (
-                  <div
-                    style={{
-                      marginTop: '60px',
-                      borderBottom: '1px solid #C8C8C8',
-                      paddingBottom: '30px',
-                      textAlign: 'left',
-                    }}
-                  >
-                    <a className={cx('btn', 'btn-ok')} style={{ marginLeft: '0' }}>
+                  <div className={cx('container-btn text-left')}>
+                    <a className={cx('btn-ok')} style={{ marginLeft: '0' }}>
                       CHIẾN DỊCH ĐÃ PHÁT HÀNH
                     </a>
                   </div>
                 )}
                 {campagin.status === 'Đã kết thúc' && (
-                  <div
-                    style={{
-                      marginTop: '60px',
-                      borderBottom: '1px solid #C8C8C8',
-                      paddingBottom: '30px',
-                      textAlign: 'left',
-                    }}
-                  >
+                  <div className={cx('container-btn')}>
                     <a className={cx('btn')} style={{ marginLeft: '0', background: '#a8a8a8', color: '#fff' }}>
                       CHIẾN DỊCH ĐÃ KẾT THÚC
                     </a>

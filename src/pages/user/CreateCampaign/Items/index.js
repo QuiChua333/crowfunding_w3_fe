@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import SidebarCampaign from '../components/Sidebar';
 import Footer from '~/layout/components/Footer';
 
-import styles from '../CampaignStyle.module.scss';
+import styles from './Items.module.scss';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ItemTable from './components/ItemTable';
@@ -98,23 +98,13 @@ function ItemsCampaign() {
                 <div className={cx('controlBar-content')}>Chiến dịch / Vật phẩm</div>
               </div>
               {showErrorDelete && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: '#ff324b',
-                    paddingLeft: '40px',
-                    height: '80px',
-                  }}
-                >
-                  <span style={{ color: '#fff' }}>
-                    <TiCancel style={{ color: '#fff', fontSize: '48px' }} /> {contentError}
-                  </span>
+                <div className={cx('container-error')}>
+                  <TiCancel className={cx('icon-error')} />
+                  <span>{contentError}</span>
                 </div>
               )}
             </div>
             <div className={cx('body')}>
-              {/* Khi có item */}
               {listItems?.length > 0 && (
                 <div>
                   <div className={cx('entreSection')} style={{ width: '80%' }}>
@@ -128,7 +118,7 @@ function ItemsCampaign() {
                       <div style={{ display: 'inline-block', pointerEvents: !isEditComponent && 'none' }}>
                         <Link
                           to={`/campaigns/${id}/edit/items/new`}
-                          className={cx('btn', 'btn-ok')}
+                          className={cx('btn-ok')}
                           style={{ marginLeft: '0' }}
                         >
                           TẠO MỚI VẬT PHẨM
@@ -143,17 +133,14 @@ function ItemsCampaign() {
               )}
               {listItems?.length === 0 && (
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <div style={{ width: '580px', textAlign: 'center' }}>
+                  <div className={cx('container-layout')}>
                     <div style={{ fontSize: '24px', fontWeight: '400', marginTop: '32px' }}>
                       Xem tất cả các vật phẩm của bạn và quản lý chúng ở đây.{' '}
                     </div>
                     <div style={{ marginTop: '12px' }}>
                       <span>Vật phẩm là những gì bạn cung cấp cho người ủng hộ khi họ yêu cầu đặc quyền.</span>
                     </div>
-                    <img
-                      src={noItem}
-                      style={{ width: '600', height: '200px', objectFit: 'cover', marginTop: '32px' }}
-                    />
+                    <img src={noItem} className={cx('img-frame')} />
 
                     <div style={{ marginTop: '40px' }}>Bạn chưa có bất kỳ vật phẩm nào.</div>
                     <div style={{ fontSize: '14px', color: '#a8a8a8' }}>
@@ -164,7 +151,7 @@ function ItemsCampaign() {
                     <div style={{ marginTop: '40px' }}>
                       <a
                         href={`/campaigns/${id}/edit/perks/table`}
-                        className={cx('btn', 'btn-ok')}
+                        className={cx('btn-ok')}
                         style={{ fontSize: '16px' }}
                       >
                         ĐI ĐẾN TRANG ĐẶC QUYỀN{' '}

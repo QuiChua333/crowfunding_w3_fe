@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import { IoCloseSharp } from 'react-icons/io5';
 
 import { useEffect, useState } from 'react';
-import styles from '../../../CampaignStyle.module.scss';
+import styles from '../../Content.module.scss';
 
 const cx = classNames.bind(styles);
 

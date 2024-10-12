@@ -53,8 +53,6 @@ function PerkRow({ index, perk, setChecked, getPerksByCampaignId, isEditComponen
   };
   return (
     <tr onClick={handleClickPerk}>
-      {/* <Link to='/campaigns/:id/edit/perks/new' style={{position: 'relative', zIndex: '10'}}></Link> */}
-
       <td className={cx('title')}>
         {perk.title}
         {!perk.isVisible && (

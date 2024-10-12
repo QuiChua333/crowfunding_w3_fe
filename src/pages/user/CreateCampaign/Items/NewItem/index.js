@@ -7,7 +7,7 @@ import { IoCloseSharp } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import { TiCancel } from 'react-icons/ti';
 
-import styles from '../../CampaignStyle.module.scss';
+import styles from './NewItem.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
@@ -294,22 +294,10 @@ function NewItem() {
                   </a>
                 </div>
               </div>
-              {/* <div className={cx('controlBar-loadingBar')}>
-
-                            </div> */}
               {showErrorDelete && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    backgroundColor: '#ff324b',
-                    paddingLeft: '40px',
-                    height: '80px',
-                  }}
-                >
-                  <span style={{ color: '#fff' }}>
-                    <TiCancel style={{ color: '#fff', fontSize: '48px' }} /> {contentError}
-                  </span>
+                <div className={cx('container-error')}>
+                  <TiCancel className={cx('icon-error')} />
+                  <span>{contentError}</span>
                 </div>
               )}
             </div>

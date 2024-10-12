@@ -1,0 +1,635 @@
+@media only screen and (min-width: 1200px) {
+  .container-input {
+    display: flex;
+    align-items: center;
+  }
+  .btn-add-video {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 20px 15px;
+    cursor: pointer;
+    min-height: 40px;
+    min-width: 86px;
+    margin-left: 12px;
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+    }
+  }
+
+  .wrapper {
+    display: flex;
+    color: #2a2a2a;
+  }
+  .content {
+    background-color: #fafafa;
+  }
+  .controlBar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: #f5f5f5;
+  }
+  .controlBar-container {
+    padding: 40px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c8c8c8;
+    border-left: none;
+    border-right: none;
+    margin-top: 1px;
+  }
+
+  .controlBar-content {
+    flex: 1;
+    color: #2a2a2a;
+    font-weight: 550;
+  }
+
+  .btn {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 15px;
+    min-height: 40px;
+    min-width: 86px;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+      color: #ffffff;
+    }
+  }
+
+  .btn-ok {
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+  }
+  .btn-green {
+    background-color: #34ca96;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #2eb183;
+      color: #ffffff;
+    }
+  }
+
+  .btn-cancel {
+    background-color: transparent;
+    color: #7a69b3;
+
+    &:hover {
+      background-color: #eee5f2;
+      border-color: #eee5f2;
+      color: #7a69b3;
+    }
+  }
+
+  .controlBar-loadingBar {
+    height: 8px;
+    background-color: rgb(95, 211, 95);
+    width: 75%;
+  }
+
+  .body {
+    padding: 30px 50px;
+    min-height: 900px;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  .entreSection {
+    width: 100%;
+    margin-bottom: 60px;
+  }
+
+  .entreField-header {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .entreField-subHeader {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  .entreField-required {
+    color: #ff324b;
+  }
+  .entreField {
+    margin: 40px 0;
+  }
+
+  .entreField-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: justify;
+  }
+
+  .entreField-subLabel {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    color: #6a6a6a;
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+  .team-owner {
+    margin: 20px 0;
+  }
+  .itext-field {
+    font-size: 14px;
+    line-height: 21px;
+    display: block;
+    width: 100%;
+    height: 50px;
+    padding: 5px 15px;
+    background-color: #ffffff;
+    border: 1px solid #c8c8c8;
+    outline: none;
+    &:focus {
+      border: 1px solid #333232;
+    }
+  }
+
+  .entreField-validationLabel {
+    font-size: 12px;
+    color: #ff001e;
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .entreField-error {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 21px;
+    color: #ff324b;
+    margin-top: 5px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1200px) {
+  .container-input {
+    display: flex;
+    align-items: center;
+  }
+  .btn-add-video {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 20px 15px;
+    cursor: pointer;
+    min-height: 40px;
+    min-width: 86px;
+    margin-left: 12px;
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+    }
+  }
+
+  .wrapper {
+    display: flex;
+    color: #2a2a2a;
+  }
+  .content {
+    background-color: #fafafa;
+  }
+  .controlBar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: #f5f5f5;
+  }
+  .controlBar-container {
+    padding: 40px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c8c8c8;
+    border-left: none;
+    border-right: none;
+    margin-top: 1px;
+  }
+
+  .controlBar-content {
+    flex: 1;
+    color: #2a2a2a;
+    font-weight: 550;
+  }
+
+  .btn {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 15px;
+    min-height: 40px;
+    min-width: 86px;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+      color: #ffffff;
+    }
+  }
+
+  .btn-ok {
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+  }
+  .btn-green {
+    background-color: #34ca96;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #2eb183;
+      color: #ffffff;
+    }
+  }
+
+  .btn-cancel {
+    background-color: transparent;
+    color: #7a69b3;
+
+    &:hover {
+      background-color: #eee5f2;
+      border-color: #eee5f2;
+      color: #7a69b3;
+    }
+  }
+
+  .controlBar-loadingBar {
+    height: 8px;
+    background-color: rgb(95, 211, 95);
+    width: 75%;
+  }
+
+  .body {
+    padding: 30px 50px;
+    min-height: 900px;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  .entreSection {
+    width: 100%;
+    margin-bottom: 60px;
+  }
+
+  .entreField-header {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .entreField-subHeader {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  .entreField-required {
+    color: #ff324b;
+  }
+  .entreField {
+    margin: 40px 0;
+  }
+
+  .entreField-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: justify;
+  }
+
+  .entreField-subLabel {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    color: #6a6a6a;
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+  .team-owner {
+    margin: 20px 0;
+  }
+  .itext-field {
+    font-size: 14px;
+    line-height: 21px;
+    display: block;
+    width: 100%;
+    height: 50px;
+    padding: 5px 15px;
+    background-color: #ffffff;
+    border: 1px solid #c8c8c8;
+    outline: none;
+    &:focus {
+      border: 1px solid #333232;
+    }
+  }
+
+  .entreField-validationLabel {
+    font-size: 12px;
+    color: #ff001e;
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .entreField-error {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 21px;
+    color: #ff324b;
+    margin-top: 5px;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .container-input {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .btn-add-video {
+    font-weight: 600;
+    text-align: center;
+    width: 150px;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 20px 15px;
+    cursor: pointer;
+    min-height: 40px;
+    min-width: 86px;
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+    }
+  }
+
+  .wrapper {
+    display: flex;
+    color: #2a2a2a;
+  }
+  .content {
+    background-color: #fafafa;
+  }
+  .controlBar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background-color: #f5f5f5;
+  }
+  .controlBar-container {
+    padding: 40px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #c8c8c8;
+    border-left: none;
+    border-right: none;
+    margin-top: 1px;
+  }
+
+  .controlBar-content {
+    flex: 1;
+    color: #2a2a2a;
+    font-weight: 550;
+  }
+
+  .btn {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 15px;
+    min-height: 40px;
+    min-width: 86px;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+      color: #ffffff;
+    }
+  }
+
+  .btn-ok {
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+  }
+  .btn-green {
+    background-color: #34ca96;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #2eb183;
+      color: #ffffff;
+    }
+  }
+
+  .btn-cancel {
+    background-color: transparent;
+    color: #7a69b3;
+
+    &:hover {
+      background-color: #eee5f2;
+      border-color: #eee5f2;
+      color: #7a69b3;
+    }
+  }
+
+  .controlBar-loadingBar {
+    height: 8px;
+    background-color: rgb(95, 211, 95);
+    width: 75%;
+  }
+
+  .body {
+    padding: 30px 50px;
+    min-height: 900px;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  .entreSection {
+    width: 100%;
+    margin-bottom: 60px;
+  }
+
+  .entreField-header {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .entreField-subHeader {
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+
+  .entreField-required {
+    color: #ff324b;
+  }
+  .entreField {
+    margin: 40px 0;
+  }
+
+  .entreField-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-align: justify;
+  }
+
+  .entreField-subLabel {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    color: #6a6a6a;
+    margin-bottom: 10px;
+    text-align: justify;
+  }
+  .team-owner {
+    margin: 20px 0;
+  }
+  .itext-field {
+    font-size: 14px;
+    line-height: 21px;
+    display: block;
+    width: 100%;
+    height: 50px;
+    padding: 5px 15px;
+    background-color: #ffffff;
+    border: 1px solid #c8c8c8;
+    outline: none;
+    &:focus {
+      border: 1px solid #333232;
+    }
+  }
+
+  .entreField-validationLabel {
+    font-size: 12px;
+    color: #ff001e;
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .entreField-error {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 21px;
+    color: #ff324b;
+    margin-top: 5px;
+  }
+}
+
+@keyframes modalIn {
+  0% {
+    transform: translateY(5%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes modalOut {
+  0% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(5%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
