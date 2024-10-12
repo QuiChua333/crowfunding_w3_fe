@@ -24,7 +24,7 @@ import ModalGivePerk from './components/ModalGivePerk';
 import formatMoney from '~/utils/formatMoney';
 import ModalGift from './components/ModalGift';
 import { arrow, noPerk } from '~/assets/images';
-import { Header } from '~/layout/components';
+import { HeaderCreateCampaign } from '~/layout/components';
 import { CustomAxios } from '~/config';
 const cx = classNames.bind(styles);
 
@@ -307,7 +307,7 @@ function ContributionCampaign() {
           id={id}
         />
         <div style={{ flex: '1' }}>
-          <Header isFixed={false} />
+          <HeaderCreateCampaign />
 
           <div className={cx('content')}>
             <div className={cx('controlBar')}>

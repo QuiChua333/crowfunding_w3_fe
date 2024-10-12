@@ -14,8 +14,8 @@ import { useParams } from 'react-router-dom';
 import baseURL from '~/utils/baseURL';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { Header } from '~/layout/components';
 import { CustomAxios } from '~/config';
+import { HeaderCreateCampaign } from '~/layout/components';
 const cx = classNames.bind(styles);
 
 function TeamCampaign() {
@@ -198,7 +198,7 @@ function TeamCampaign() {
           id={id}
         />
         <div style={{ flex: '1' }}>
-          <Header isFixed={false} />
+          <HeaderCreateCampaign />
 
           <div className={cx('content')} style={{ pointerEvents: !isEditAll && 'none' }}>
             <div className={cx('controlBar')}>

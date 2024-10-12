@@ -14,7 +14,7 @@ import { TiCancel } from 'react-icons/ti';
 import baseURL from '~/utils/baseURL';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
-import { Header, Footer } from '~/layout/components';
+import { Header, Footer, HeaderCreateCampaign } from '~/layout/components';
 import { CustomAxios, CustomUploadCKEAdapter } from '~/config';
 
 ClassicEditor.create(document.querySelector('#editor'), {
@@ -229,7 +229,7 @@ function ContentCampaign() {
         id={id}
       />
       <div style={{ flex: '1' }}>
-        <Header isFixed={false} />
+        <HeaderCreateCampaign />
 
         <div className={cx('content')} style={{ pointerEvents: !isEditAll && 'none' }}>
           <div className={cx('controlBar')}>

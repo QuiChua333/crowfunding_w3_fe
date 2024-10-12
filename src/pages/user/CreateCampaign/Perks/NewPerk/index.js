@@ -21,9 +21,9 @@ import styles from './NewPerk.module.scss';
 import ItemShipping from './ItemShipping';
 import { Link } from 'react-router-dom';
 import ItemInclude from './ItemInclude';
-import { Header } from '~/layout/components';
 import { convertDateFromString } from '~/utils';
 import { CustomAxios } from '~/config';
+import { HeaderCreateCampaign } from '~/layout/components';
 
 const cx = classNames.bind(styles);
 
@@ -404,7 +404,7 @@ function NewPerk() {
           id={id}
         />
         <div style={{ flex: '1' }}>
-          <Header isFixed={false} />
+          <HeaderCreateCampaign />
 
           <div className={cx('content')} style={{ pointerEvents: !isEditAll && 'none' }}>
             <div className={cx('controlBar')}>

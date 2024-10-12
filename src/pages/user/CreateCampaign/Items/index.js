@@ -12,7 +12,7 @@ import { TiCancel } from 'react-icons/ti';
 import baseURL from '~/utils/baseURL';
 import { useSelector } from 'react-redux';
 import { arrow, noItem } from '~/assets/images';
-import { Header } from '~/layout/components';
+import { HeaderCreateCampaign } from '~/layout/components';
 import { CustomAxios } from '~/config';
 
 const cx = classNames.bind(styles);
@@ -90,7 +90,7 @@ function ItemsCampaign() {
           id={id}
         />
         <div style={{ flex: '1' }}>
-          <Header isFixed={false} />
+          <HeaderCreateCampaign />
 
           <div className={cx('content')}>
             <div className={cx('controlBar')}>

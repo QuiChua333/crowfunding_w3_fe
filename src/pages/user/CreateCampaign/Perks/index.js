@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { CustomAxios } from '~/config';
 import { arrow, noPerk } from '~/assets/images';
-import { Header } from '~/layout/components';
+import { HeaderCreateCampaign } from '~/layout/components';
 
 const cx = classNames.bind(styles);
 
@@ -143,7 +143,7 @@ function PerksCampaign() {
           id={id}
         />
         <div style={{ flex: '1' }}>
-          <Header isFixed={false} />
+          <HeaderCreateCampaign />
 
           <div className={cx('content')}>
             <div className={cx('controlBar')}>

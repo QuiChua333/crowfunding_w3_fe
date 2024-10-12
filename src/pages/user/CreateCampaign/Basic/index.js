@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TiCancel } from 'react-icons/ti';
 
 import Footer from '~/layout/components/Footer';
-import { Header, HeaderCreateCampaign } from '~/layout/components';
+import { HeaderCreateCampaign } from '~/layout/components';
 import { CustomAxios } from '~/config';
 
 const cx = classNames.bind(styles);
