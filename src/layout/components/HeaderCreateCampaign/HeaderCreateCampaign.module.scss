@@ -3,23 +3,13 @@
   width: 100%;
   padding: 24px 0 12px 0;
   position: relative;
-  &.isHeaderHome {
-    padding: 24px 0 0 0;
-    position: fixed;
-  }
   font-family: var(--sub-font);
   display: flex;
   align-self: flex-start;
   z-index: 10;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   transition: padding-top 0.3s, background-color 0ms, border-radius 0.3s;
-  &.fullHeader {
-    background-color: white;
-    padding-top: 8.2px;
-    padding-bottom: 8px;
-    box-shadow: 0 0.375rem 0.875rem #0000001a;
-  }
   .menu-tablet {
     display: none;
     padding: 10px;
@@ -76,7 +66,7 @@
   background-color: white;
   display: flex;
   align-items: center;
-  width: 85%;
+  width: 100%;
   justify-content: space-between;
   padding: 0 16px;
   height: 6.2rem;
@@ -88,12 +78,6 @@
   border-bottom-right-radius: 0px;
   border-top-right-radius: 20px;
   border-top-left-radius: 20px;
-}
-.wrapper.activeExplore.fullHeader {
-  padding-bottom: 0px;
-}
-.wrapper.activeExplore.fullHeader .inner {
-  border-bottom: 1px solid #ccc;
 }
 
 .button-search {
@@ -242,9 +226,16 @@
 
 .responsive {
   .wrapper {
-    @media only screen and (max-width: 1100px) {
+    @media only screen and (max-width: 1175px) {
+      .nav-list {
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .user-name {
+        font-size: 14px;
+      }
       .logo a {
-        font-size: 24px;
+        font-size: 26px;
       }
 
       .nav-list div a {

@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TiCancel } from 'react-icons/ti';
 
 import Footer from '~/layout/components/Footer';
-import { Header } from '~/layout/components';
+import { Header, HeaderCreateCampaign } from '~/layout/components';
 import { CustomAxios } from '~/config';
 
 const cx = classNames.bind(styles);
@@ -277,7 +277,7 @@ function BasicCampaign() {
         id={id}
       />
       <div style={{ flex: '1' }}>
-        <Header isFixed={false} />
+        <HeaderCreateCampaign />
 
         <div className={cx('content')} style={{ pointerEvents: !isEditAll && 'none' }}>
           <div className={cx('controlBar')}>

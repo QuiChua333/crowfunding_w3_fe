@@ -3,18 +3,18 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaAngleDown } from 'react-icons/fa6';
-import styles from './Header.module.scss';
+import styles from './HeaderCreateCampaign.module.scss';
 import baseURL from '~/utils/baseURL';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUser } from '~/redux/slides/User';
 import { HeaderDropdown } from './components';
 import { CustomAxios } from '~/config';
 import { RiMenu3Line } from 'react-icons/ri';
-import { IoMdClose } from 'react-icons/io';
 import MenuDropdown from './components/MenuDropdown';
+import { IoMdClose } from 'react-icons/io';
 const cx = classNames.bind(styles);
 // Component dùng chung
-function Header({ type = 'page' }) {
+function HeaderCreateCampaign() {
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const [showDropdownUser, setShowDropdownUser] = useState(false);
@@ -80,10 +80,8 @@ function Header({ type = 'page' }) {
     <div className={cx('responsive')}>
       <div
         className={cx('wrapper', {
-          fullHeader,
           activeExplore,
           activeShowMenu: showMenu,
-          isHeaderHome: type === 'home',
         })}
       >
         <div className={cx('inner')}>
@@ -166,13 +164,7 @@ function Header({ type = 'page' }) {
             {showMenu ? <IoMdClose className={cx('icon-menu')} /> : <RiMenu3Line className={cx('icon-menu')} />}
           </div>
         </div>
-        {activeExplore && (
-          <HeaderDropdown
-            active={activeExplore}
-            activeHeader={fullHeader}
-            listFieldGrouByCategory={listFieldGrouByCategory}
-          />
-        )}
+        {activeExplore && <HeaderDropdown listFieldGrouByCategory={listFieldGrouByCategory} />}
         {showMenu && (
           <div className={cx('absolute left-0 w-full top-full z-[101]')}>
             <MenuDropdown fullHeader={fullHeader} isLogin={isLogin} user={user} />
@@ -183,4 +175,4 @@ function Header({ type = 'page' }) {
   );
 }
 
-export default Header;
+export default HeaderCreateCampaign;

@@ -24,7 +24,7 @@ function HeaderDropdown({ active, activeHeader, listFieldGrouByCategory, style }
     navigate('/explore');
   };
   return (
-    <div className={cx('wrapper', 'responsive', { active, activeHeader })} style={style}>
+    <div className={cx('wrapper', 'responsive')} style={style}>
       <div className={cx('inner')}>
         <div className={cx('banner-wrapper')}>
           <a onClick={() => handleClickCategory('Tất cả')} className={cx('label-banner')}>
