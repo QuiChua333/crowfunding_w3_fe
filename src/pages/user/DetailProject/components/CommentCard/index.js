@@ -139,13 +139,14 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
           <img
             src={comment.user.avatar?.url}
             style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
+            alt="avatar user"
           />
         </Link>
 
         <div className={cx('content-wrapper')} ref={inputElement}>
           <div className={cx('commen-action')}>
             <div className={cx('comment_content')}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span className={cx('fullName')} style={{ marginRight: '8px' }}>
                   {comment.user.fullName}
                 </span>
@@ -156,7 +157,7 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
                       backgroundColor: 'rgb(8, 131, 102)',
                       display: 'inline-block',
                       padding: '2px 5px',
-                      fontSize: '12px',
+                      fontSize: '10px',
                       letterSpacing: '1px',
                       borderRadius: '4px',
                     }}

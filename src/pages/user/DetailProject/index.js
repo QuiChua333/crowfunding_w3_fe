@@ -326,6 +326,7 @@ function DetailProject() {
                 style={{ width: '100%', height: '100%', borderRadius: '6px' }}
                 src={project.listImageProject[indexImage].url}
                 alt="sp"
+                title="frame"
               />
             )}
           </div>
@@ -346,7 +347,7 @@ function DetailProject() {
                   flexWrap: 'nowrap',
                   display: 'flex',
                   alignItems: 'center',
-                  width: project.listImageProject.length < 6 ? '100%' : '468px',
+                  width: '100%',
                   justifyContent: project.listImageProject.length > 6 ? 'flex-start' : 'center',
                   transform: indexImage - 5 > 0 ? 'translateX(-' + (indexImage - 5) * 80 + 'px)' : 'translateX(0px)',
                 }}
@@ -382,6 +383,7 @@ function DetailProject() {
             />
           </div>
         </div>
+        <hr className={cx('sparate-2')} />
         <div className={cx('container-right')}>
           <p
             className={cx('text-funding', {
@@ -413,7 +415,7 @@ function DetailProject() {
               <div className={cx('container-money')}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <b className={cx('text-current-money')}>{formatMoney(money)}</b>
-                  <span style={{ fontWeight: '500', color: '#3d3d3d', fontSize: '16px' }}>VNĐ</span>
+                  <span className={cx('label-money')}>VNĐ</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <span className={cx('container-people')}>{quantityPeople}</span>
@@ -441,7 +443,7 @@ function DetailProject() {
                   <span className={cx('text-of')}>của</span>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <b className={cx('text-money-total')}>{formatMoney(ItemProject.goal)}</b>
-                    <span style={{ fontWeight: '500', color: '#3d3d3d', fontSize: '16px' }}>VNĐ</span>
+                    <span className={cx('label-money')}>VNĐ</span>
                   </div>
                 </div>
 
@@ -479,7 +481,7 @@ function DetailProject() {
           )}
 
           <div className={cx('container-button')}>
-            <div>
+            <div className={cx('container-btn-2')}>
               <button
                 className={cx('hover-btn')}
                 type="button"
@@ -492,7 +494,6 @@ function DetailProject() {
                 XEM QUÀ TẶNG
               </button>
               <button className={cx('hover-btn-follow')} type="button" onClick={handleClickFollowCampaign}>
-                {/* <AiOutlineHeart className={cx('text-follow')} /> THEO DÕI */}
                 {favourite ? (
                   <FaHeart style={{ color: 'red' }} className={cx('text-follow')} />
                 ) : (
@@ -523,26 +524,9 @@ function DetailProject() {
         </div>
       </div>
 
-      <div
-        style={{
-          position: 'relative',
-          height: 'auto',
-          display: 'flex',
-          justifyContent: 'space-between',
-          margin: '20px 130px 200px 130px',
-        }}
-      >
-        <div style={{ width: '70%', maxWidth: '800px', height: 'auto' }}>
-          <div
-            style={{
-              height: 'auto',
-              marginBottom: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '48px',
-              padding: '20px 0',
-            }}
-          >
+      <div className={cx('container-under')}>
+        <div className={cx('container-under-left')}>
+          <div className={cx('container-items-tab')}>
             <span
               className={cx('item-tab-header', { 'item-tab-header-clicked': indexTabHeader === 1 })}
               onClick={() => setIndexTabHeader(1)}
@@ -560,17 +544,6 @@ function DetailProject() {
               onClick={() => setIndexTabHeader(3)}
             >
               <span>THẢO LUẬN</span>
-              <span
-                style={{
-                  fontSize: '9px',
-                  textAlign: 'center',
-                  backgroundColor: '#f5f5f5',
-                  padding: '2px 6px',
-                  borderRadius: '40%',
-                  marginLeft: '8px',
-                  fontWeight: '700',
-                }}
-              ></span>
             </div>
           </div>
 
@@ -588,9 +561,11 @@ function DetailProject() {
           </div>
         </div>
 
-        <div style={{ width: '30%', height: 'auto', display: 'flex', flexDirection: 'column', padding: '20px' }}>
+        <div className={cx('container-under-right')}>
           <div style={{ position: 'sticky', top: '20px' }}>
-            <p style={{ fontSize: '19px', fontWeight: '500', marginLeft: '10px' }}>Chọn một quà tặng</p>
+            <p style={{ fontSize: '18px', marginLeft: '10px', fontWeight: 'bold', marginBottom: '20px' }}>
+              Chọn một quà tặng
+            </p>
             <div style={{ maxHeight: '920px', overflowY: 'scroll' }}>
               {listPerkByCampaignId.map((item, index) => {
                 return (
@@ -612,7 +587,6 @@ function DetailProject() {
           </div>
         </div>
       </div>
-      <Footer />
       {isOpenModalOption && (
         <ModalOptionPerk
           itemPerk={itemPerkSelected}
