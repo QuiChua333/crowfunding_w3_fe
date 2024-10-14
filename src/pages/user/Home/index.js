@@ -82,7 +82,7 @@ function Home() {
   }, []);
   const navigate = useNavigate();
   return (
-    <div className={cx('wrapper')}>
+    <div className={cx('wrapper', 'responsive')}>
       <Header type="home" />
       <Hero />
       <div className={cx('body')}>
@@ -169,7 +169,7 @@ function Home() {
               </div>
             </div>
           </div>
-          <div className={cx('backTheProjectSection-imageWrapper')} style={{ marginTop: '60px' }}>
+          <div className={cx('backTheProjectSection-imageWrapper')}>
             <div className={cx('backTheProjectSection-iamge')}>
               <h2 className={cx('title')}>Cơ hội mới, thành công mới</h2>
 

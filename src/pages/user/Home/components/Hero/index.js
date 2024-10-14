@@ -29,23 +29,25 @@ function Section() {
   }, []);
 
   return (
-    <section className={cx('wrapper')}>
-      <div className={cx('content')} ref={box1Ref}>
-        <h5>#2 Trending</h5>
-        <h4>Website hỗ trợ gây quỹ cộng đồng</h4>
-        <h1>GIVE - FUN</h1>
-        <p>
-          Tham gia cùng chúng tôi để hiện thực hóa một thế giới tốt đẹp hơn, <br /> đồng thời bạn cũng có thể nhận lại
-          được những lợi ích từ các dự án của GiveFun!!
-        </p>
-      </div>
+    <section className={cx('wrapper', 'responsive')}>
+      <div className={cx('inner')}>
+        <div className={cx('content')} ref={box1Ref}>
+          <h5>#2 Trending</h5>
+          <h4>Website hỗ trợ gây quỹ cộng đồng</h4>
+          <h1>GIVE - FUN</h1>
+          <p>
+            Tham gia cùng chúng tôi để hiện thực hóa một thế giới tốt đẹp hơn, <br /> đồng thời bạn cũng có thể nhận lại
+            được những lợi ích từ các dự án của GiveFun!!
+          </p>
+        </div>
 
-      <div ref={box2Ref}>
-        <img
-          src="https://purepng.com/public/uploads/thumbnail//purepng.com-paper-planepaper-planeaeroplanepaper-gliderpaper-dartaircraftfolded-paperpaperboardclipart-1421526589499uaw0v.png"
-          className={cx('image-section')}
-          alt="Section Image"
-        />
+        <div ref={box2Ref} className={cx('image-wrapper')}>
+          <img
+            src="https://purepng.com/public/uploads/thumbnail//purepng.com-paper-planepaper-planeaeroplanepaper-gliderpaper-dartaircraftfolded-paperpaperboardclipart-1421526589499uaw0v.png"
+            className={cx('image-section')}
+            alt="Section Image"
+          />
+        </div>
       </div>
     </section>
   );

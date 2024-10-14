@@ -78,9 +78,11 @@
     }
   }
 }
+
 .backTheProjectSection-imageWrapper {
   padding-bottom: 0px;
   height: 350px;
+  margin-top: 60px;
 
   .backTheProjectSection-iamge {
     background-image: url(https://c4.iggcdn.com/indiegogo-media-prod-cld/image/upload/c_fit,w_auto,g_center,q_auto:best,dpr_1.3,f_auto/homepage/cf-bg-desktop-lg.jpg);
@@ -131,5 +133,49 @@
     position: absolute;
     top: -60px;
     right: 0px;
+  }
+}
+
+.wrapper.responsive {
+  @media only screen and (max-width: 1100px) {
+    .inner {
+      margin: 0 80px;
+    }
+
+    .carsousel-wrapper {
+      position: relative;
+      .carousel {
+        padding: 0 4px;
+      }
+      .button-group {
+        position: unset;
+        margin-top: 20px;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .inner {
+      margin: 0 40px;
+    }
+  }
+
+  @media only screen and (max-width: 540px) {
+    .inner {
+      margin: 0 40px;
+    }
+
+    .backTheProjectSection-imageWrapper {
+      height: unset;
+
+      .content {
+        width: 100%;
+      }
+    }
+
+    .backTheProjectSection-iamge {
+      padding-bottom: 16px;
+      padding-top: 16px;
+    }
   }
 }

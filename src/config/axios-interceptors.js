@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BE_URL = process.env.REACT_APP_BE_URL;
+import { baseUrl } from '~/utils';
 
 const headers = {
   Accept: 'application/json',
@@ -10,13 +10,13 @@ const headers = {
 const CustomAxios = axios.create({ headers });
 
 CustomAxios.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('accessToken') || false;
+  (request) => {
+    const token = localStorage.getItem('accessToken') || '';
 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      request.headers.Authorization = `Bearer ${token}`;
     }
-    return config;
+    return request;
   },
   (error) => {
     return Promise.reject(error);
@@ -28,28 +28,37 @@ CustomAxios.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const originalConfig = error.config;
-    if (error.response?.status === 401) {
+    const { response, config } = error;
+    const message = response?.message;
+    if (message === 'Token has expired') {
       try {
-        const resust = await axios.post(`${BE_URL}/api/auth/refreshToken`, {
-          refreshToken: localStorage.getItem('refreshToken'),
+        const refreshToken = localStorage.getItem('refreshToken') || '';
+
+        const resust = await axios.get(`${baseUrl}/api/auth/refreshToken`, {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          },
         });
-        const { accessToken, refreshToken } = resust.data.data;
+        const { accessToken, refreshToken: newRefreshToken } = resust.data;
 
         localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-        originalConfig.headers.Authorization = `Bearer ${accessToken}`;
-        return CustomAxios(originalConfig);
+        localStorage.setItem('refreshToken', newRefreshToken);
+        config.headers.Authorization = `Bearer ${accessToken}`;
+        return CustomAxios(config);
       } catch (err) {
-        if (err.response?.status === 401) {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          window.location.href = '/signin';
+        if (err.response?.status === 403) {
+          backToLogin();
         }
         return Promise.reject(error);
       }
-    } else return Promise.reject(error);
+    } else Promise.reject(error);
   },
 );
+
+function backToLogin() {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  window.location.href = '/login';
+}
 
 export default CustomAxios;

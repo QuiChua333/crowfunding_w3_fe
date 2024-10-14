@@ -45,9 +45,9 @@ function SectionTrust() {
   }, [active]);
 
   return (
-    <div className={cx('wrapper', { active: active })} ref={element}>
+    <div className={cx('wrapper', 'relative', { active: active })} ref={element}>
       <div className={cx('content')}>
-        <img style={{ width: '140px', height: '120px' }} src={logoTrangNho} alt="img"></img>
+        <img src={logoTrangNho} alt="img"></img>
         <h1 style={{ opacity: `${opacityH2}`, transition: 'all 0.2s ease', alignItems: 'center' }}>
           Tin cậy & An toàn
         </h1>

@@ -37,7 +37,7 @@ const MenuDropdown = ({ fullHeader, isLogin, user }) => {
       </div>
       <div>
         {isLogin && (
-          <div className="flex gap-2 px-[16px] mt-[8px]">
+          <div className="flex gap-2 px-[16px] mt-[8px] items-center">
             <span>Tài khoản: </span>
             <div
               className={cx('user-section')}
