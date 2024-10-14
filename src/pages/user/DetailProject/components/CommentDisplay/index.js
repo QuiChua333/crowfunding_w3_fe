@@ -9,7 +9,6 @@ const CommentDisplay = ({ comment, replyCm, campaign, setListComments, handleRem
     const [next, setNext] = useState(3)
 
     useEffect(() => {
-        // setShowRep(replyCm.slice(replyCm.length - next))
         setShowRep(replyCm.slice(0,next))
 
     }, [replyCm, next])

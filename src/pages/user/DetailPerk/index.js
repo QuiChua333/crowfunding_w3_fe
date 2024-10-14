@@ -19,7 +19,6 @@ function DetailPerk() {
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
   const itemPerkSelectedFirst = location.state;
   const [quantityContribute, setQuantityContribute] = useState(0);
-  // fetch cái list perk theo id của project
   const [listSelected, setListSelected] = useState([]);
   const [listPerkByCampaignId, setListPerkByCampaignId] = useState([]);
   const [perkSelected, setPerkSelected] = useState({});

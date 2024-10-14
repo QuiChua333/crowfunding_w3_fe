@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './ModalPerk.module.scss';
-import PerlItem from '~/components/PerkItem';
+import PerkItem from '~/components/PerkItem';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
@@ -50,7 +50,7 @@ function ModalPerk({ close, setIsOpenModalOption, setPerkInModal, listPerk, setI
           <div className={cx('container-list-perks')}>
             {listPerk.map((item, index) => {
               return (
-                <PerlItem
+                <PerkItem
                   setItemPerkSelected={setItemPerkSelected}
                   item={item}
                   key={index}

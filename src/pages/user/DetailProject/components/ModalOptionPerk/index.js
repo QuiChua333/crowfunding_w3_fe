@@ -32,7 +32,6 @@ function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk }) {
   useEffect(() => {
     console.log(optionsSelectedItems);
   }, [optionsSelectedItems]);
-  // {name: '', optionsSelected: [{name: '', value:''}]}
   const handleClickPayment = () => {
     const state = {
       ...itemPerk,
