@@ -8,125 +8,129 @@ import {
   PrivateUserCampaignRoutes,
   PrivateUserIndividualsRoutes,
 } from './layout/RoleRouteLayout';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
+  const client = new QueryClient();
   return (
-    <Router>
-      <div className="App">
-        <CustomLayout>
-          <Routes>
-            {publicRoutes.map((route, index) => {
-              let Layout = NormalLayout;
-              if (route.layout) {
-                Layout = route.layout;
-              } else if (route.layout === null) {
-                Layout = Fragment;
-              }
-              const Page = route.component;
-              return (
-                <Route
-                  key={index}
-                  path={route.path}
-                  element={
-                    <Layout>
-                      <Page />
-                    </Layout>
+    <QueryClientProvider client={client}>
+      <Router>
+        <div className="App">
+          <CustomLayout>
+            <Routes>
+              {publicRoutes.map((route, index) => {
+                let Layout = NormalLayout;
+                if (route.layout) {
+                  Layout = route.layout;
+                } else if (route.layout === null) {
+                  Layout = Fragment;
+                }
+                const Page = route.component;
+                return (
+                  <Route
+                    key={index}
+                    path={route.path}
+                    element={
+                      <Layout>
+                        <Page />
+                      </Layout>
+                    }
+                  />
+                );
+              })}
+              <Route element={<PrivateUserCampaignRoutes />}>
+                {privateUserRoutes.campaigns.map((route, index) => {
+                  let Layout = NormalLayout;
+                  if (route.layout) {
+                    Layout = route.layout;
+                  } else if (route.layout === null) {
+                    Layout = Fragment;
                   }
-                />
-              );
-            })}
-            <Route element={<PrivateUserCampaignRoutes />}>
-              {privateUserRoutes.campaigns.map((route, index) => {
-                let Layout = NormalLayout;
-                if (route.layout) {
-                  Layout = route.layout;
-                } else if (route.layout === null) {
-                  Layout = Fragment;
-                }
-                const Page = route.component;
-                return (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    element={
-                      <Layout>
-                        <Page />
-                      </Layout>
-                    }
-                  />
-                );
-              })}
-            </Route>
-            <Route element={<PrivateUserIndividualsRoutes />}>
-              {privateUserRoutes.individuals.map((route, index) => {
-                let Layout = NormalLayout;
-                if (route.layout) {
-                  Layout = route.layout;
-                } else if (route.layout === null) {
-                  Layout = Fragment;
-                }
-                const Page = route.component;
-                return (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    element={
-                      <Layout>
-                        <Page />
-                      </Layout>
-                    }
-                  />
-                );
-              })}
-            </Route>
-            <Route element={<LoginRoutes />}>
-              {loginRoutes.map((route, index) => {
-                let Layout = NormalLayout;
-                if (route.layout) {
-                  Layout = route.layout;
-                } else if (route.layout === null) {
-                  Layout = Fragment;
-                }
-                const Page = route.component;
-                return (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    element={
-                      <Layout>
-                        <Page />
-                      </Layout>
-                    }
-                  />
-                );
-              })}
-            </Route>
-            <Route element={<AdminRoutes />}>
-              {adminRoutes.map((route, index) => {
-                let Layout = NormalLayout;
-                if (route.layout) {
-                  Layout = route.layout;
-                } else if (route.layout === null) {
-                  Layout = Fragment;
-                }
-                const Page = route.component;
-                return (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    element={
-                      <Layout>
-                        <Page />
-                      </Layout>
-                    }
-                  />
-                );
-              })}
-            </Route>
-          </Routes>
-        </CustomLayout>
-      </div>
-    </Router>
+                  const Page = route.component;
+                  return (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      element={
+                        <Layout>
+                          <Page />
+                        </Layout>
+                      }
+                    />
+                  );
+                })}
+              </Route>
+              <Route element={<PrivateUserIndividualsRoutes />}>
+                {privateUserRoutes.individuals.map((route, index) => {
+                  let Layout = NormalLayout;
+                  if (route.layout) {
+                    Layout = route.layout;
+                  } else if (route.layout === null) {
+                    Layout = Fragment;
+                  }
+                  const Page = route.component;
+                  return (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      element={
+                        <Layout>
+                          <Page />
+                        </Layout>
+                      }
+                    />
+                  );
+                })}
+              </Route>
+              <Route element={<LoginRoutes />}>
+                {loginRoutes.map((route, index) => {
+                  let Layout = NormalLayout;
+                  if (route.layout) {
+                    Layout = route.layout;
+                  } else if (route.layout === null) {
+                    Layout = Fragment;
+                  }
+                  const Page = route.component;
+                  return (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      element={
+                        <Layout>
+                          <Page />
+                        </Layout>
+                      }
+                    />
+                  );
+                })}
+              </Route>
+              <Route element={<AdminRoutes />}>
+                {adminRoutes.map((route, index) => {
+                  let Layout = NormalLayout;
+                  if (route.layout) {
+                    Layout = route.layout;
+                  } else if (route.layout === null) {
+                    Layout = Fragment;
+                  }
+                  const Page = route.component;
+                  return (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      element={
+                        <Layout>
+                          <Page />
+                        </Layout>
+                      }
+                    />
+                  );
+                })}
+              </Route>
+            </Routes>
+          </CustomLayout>
+        </div>
+      </Router>
+    </QueryClientProvider>
   );
 }
 

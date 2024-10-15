@@ -8,6 +8,7 @@ import { setLoading } from '~/redux/slides/GlobalApp';
 import { logoTrangNho } from '~/assets/images';
 import { CustomAxios } from '~/config';
 import { Link } from 'react-router-dom';
+import { useRegisterMutation } from '~/hooks/api/mutations/auth.mutation';
 const cx = classNames.bind(styles);
 
 function SignUp() {
@@ -89,7 +90,7 @@ function SignUp() {
       }
     }
   };
-
+  const registerMutation = useRegisterMutation();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -99,25 +100,42 @@ function SignUp() {
     let flagConfirmPass = validateConfirmPass(confirmPass);
     if (flagName && flagEmail && flagPassword && flagConfirmPass) {
       // Xử lý submit ở đây..
+      const data = {
+        fullName: name,
+        email,
+        password: pass,
+      };
       dispatch(setLoading(true));
-      try {
-        const url = `${baseURL}/user/checkRegisterEmail`;
-        const data = {
-          fullName: name,
-          email,
-          password: pass,
-        };
-        const { data: res } = await CustomAxios.post(url, data);
-        dispatch(setLoading(false));
-        // toast.success('Tài khoản đã bị khóa')
-        setShowButtonRegister(false);
-        setMsg(res.message);
-      } catch (error) {
-        dispatch(setLoading(false));
-        if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-          setError(error.response.data.message);
-        }
-      }
+      registerMutation.mutate(data, {
+        onSuccess(data) {
+          console.log(data);
+          dispatch(setLoading(false));
+          // toast.success('Tài khoản đã bị khóa')
+          setShowButtonRegister(false);
+          setMsg(data.message);
+        },
+
+        onError(error) {
+          console.log(error);
+          dispatch(setLoading(false));
+          if (error.response && error.response.status >= 400 && error.response.status <= 500) {
+            setError(error.response.data.message);
+          }
+        },
+      });
+      // try {
+      //   const url = `${baseURL}/user/checkRegisterEmail`;
+      //   const data = {
+      //     fullName: name,
+      //     email,
+      //     password: pass,
+      //   };
+      //   const { data: res } = await CustomAxios.post(url, data);
+      //   dispatch(setLoading(false));
+      //   // toast.success('Tài khoản đã bị khóa')
+      //   setShowButtonRegister(false);
+      //   setMsg(res.message);
+      // } catch (error) {}
     }
   };
 

@@ -30,7 +30,7 @@ CustomAxios.interceptors.response.use(
   async (error) => {
     const { response, config } = error;
     const message = response?.message;
-    if (message === 'Token has expired') {
+    if (message && message === 'Token has expired') {
       try {
         const refreshToken = localStorage.getItem('refreshToken') || '';
 
@@ -51,7 +51,7 @@ CustomAxios.interceptors.response.use(
         }
         return Promise.reject(error);
       }
-    } else Promise.reject(error);
+    } else return Promise.reject(error);
   },
 );
 
