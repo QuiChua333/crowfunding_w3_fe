@@ -9,7 +9,7 @@ import { AiFillQuestionCircle } from 'react-icons/ai';
 import { useState } from 'react';
 import styles from './Basic.module.scss';
 import MenuDropDown from './components/MenuDropDown';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import baseURL from '~/utils/baseURL';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,11 +17,14 @@ import { TiCancel } from 'react-icons/ti';
 
 import Footer from '~/layout/components/Footer';
 import { HeaderCreateCampaign } from '~/layout/components';
-import { CustomAxios } from '~/config';
+import { useGetCampaignByIdQuery } from '~/hooks/api/queries/campaign.query';
+import useGetFieldGroupByCategoryQuery from '~/hooks/api/queries/field.query';
+import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/campaign.mutation';
 
 const cx = classNames.bind(styles);
 function BasicCampaign() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
   const [campaginState, setCampaignState] = useState({});
   const [campagin, setCampaign] = useState({});
@@ -63,34 +66,34 @@ function BasicCampaign() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [elementCategory]);
+  const { data: dataField } = useGetFieldGroupByCategoryQuery(id);
+  useEffect(() => {
+    if (dataField) {
+      setListFieldGrouByCategory(dataField.data);
+    }
+  }, [dataField]);
 
-  const getListCategory = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/field/getFieldGroupByCategory`);
-      setListFieldGrouByCategory(res.data.data);
-    } catch (error) {}
-  };
-
-  const getCampaign = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/campaign/getCampaignById/${id}`);
+  const { data: dataCampaign } = useGetCampaignByIdQuery(id);
+  useEffect(() => {
+    if (dataCampaign) {
       let infoBasic = {
-        id: res.data.data._id,
-        title: res.data.data.title || '',
-        tagline: res.data.data.tagline || '',
-        cardImage: res.data.data.cardImage || { url: '', public_id: '' },
-        location: res.data.data.location || { country: '', city: '' },
-        field: res.data.data.field || '',
-        category: res.data.data.category || '',
-        duration: res.data.data.duration || '',
-        status: res.data.data.status,
-        owner: res.data.data.owner || '',
-        team: res.data.data.team || [],
+        id: dataCampaign.data._id,
+        title: dataCampaign.data.title || '',
+        tagline: dataCampaign.data.tagline || '',
+        cardImage: dataCampaign.data.cardImage || { url: '', public_id: '' },
+        location: dataCampaign.data.location || { country: '', city: '' },
+        field: dataCampaign.data.field || '',
+        category: dataCampaign.data.category || '',
+        duration: dataCampaign.data.duration || '',
+        status: dataCampaign.data.status,
+        owner: dataCampaign.data.owner || '',
+        team: dataCampaign.data.team || [],
       };
       setCampaignState({ ...infoBasic });
       setCampaign({ ...infoBasic });
-    } catch (error) {}
-  };
+    }
+  }, [dataCampaign]);
+
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -109,10 +112,7 @@ function BasicCampaign() {
       return { ...prev, field: field, category };
     });
   };
-  useEffect(() => {
-    getCampaign();
-    getListCategory();
-  }, []);
+
   useEffect(() => {
     console.log(campaginState);
   }, [campaginState]);
@@ -206,7 +206,7 @@ function BasicCampaign() {
       }
     }
   };
-
+  const editCampaignByIdMutation = useEditCampaignByIdMutation();
   const handleClickSaveContinue = async () => {
     const body = { ...campaginState };
     const id = body.id;
@@ -224,14 +224,23 @@ function BasicCampaign() {
 
     if (flagTitle && flagTagline && flagImage && flagCountry && flagLocation && flagField && flagDuartion) {
       dispatch(setLoading(true));
-      try {
-        const res = await CustomAxios.patch(`${baseURL}/campaign/editCampaign/${id}`, body);
-        dispatch(setLoading(false));
-        window.location.href = `/campaigns/${id}/edit/story`;
-      } catch (error) {
-        dispatch(setLoading(false));
-        console.log(error.message);
-      }
+      editCampaignByIdMutation.mutate(
+        {
+          id,
+          body,
+        },
+        {
+          onSuccess(data) {
+            navigate(`/campaigns/${id}/edit/story`);
+          },
+          onError(error) {
+            console.log(error.message);
+          },
+          onSettled() {
+            dispatch(setLoading(false));
+          },
+        },
+      );
     }
   };
   const [showErrorDelete, setShowErrorDelete] = useState(false);
