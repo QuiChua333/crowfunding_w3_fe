@@ -12,6 +12,8 @@ import { CustomAxios } from '~/config';
 import { RiMenu3Line } from 'react-icons/ri';
 import MenuDropdown from './components/MenuDropdown';
 import { IoMdClose } from 'react-icons/io';
+import useGetCurrentUserQuery from '~/hooks/api/queries/user.query';
+import { useQueryClient } from '@tanstack/react-query';
 const cx = classNames.bind(styles);
 // Component dùng chung
 function HeaderCreateCampaign() {
@@ -53,21 +55,17 @@ function HeaderCreateCampaign() {
       setListFieldGrouByCategory(res.data.data);
     } catch (error) {}
   };
-
-  const getUser = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/user/getInfoCurrentUser`);
+  const queryClient = useQueryClient();
+  const userData = queryClient.getQueryData(['getCurrentUser']);
+  useEffect(() => {
+    if (userData) {
       setLogin(true);
+      dispatch(setCurrentUser(userData.data));
+    } else setLogin(false);
+  }, [userData]);
 
-      dispatch(setCurrentUser(res.data.data));
-    } catch (error) {}
-  };
   useEffect(() => {
     getListCategory();
-    const token = localStorage.getItem('accessToken') || false;
-    if (token) {
-      getUser();
-    } else setLogin(false);
   }, []);
   const handleClickLogout = () => {
     localStorage.removeItem('accessToken');

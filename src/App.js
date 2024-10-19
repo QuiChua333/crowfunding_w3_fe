@@ -9,6 +9,7 @@ import {
   PrivateUserIndividualsRoutes,
 } from './layout/RoleRouteLayout';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 function App() {
   const client = new QueryClient();
@@ -31,7 +32,7 @@ function App() {
                     key={index}
                     path={route.path}
                     element={
-                      <Layout>
+                      <Layout item={route.item}>
                         <Page />
                       </Layout>
                     }
@@ -52,7 +53,7 @@ function App() {
                       key={index}
                       path={route.path}
                       element={
-                        <Layout>
+                        <Layout item={route.item}>
                           <Page />
                         </Layout>
                       }
@@ -74,7 +75,7 @@ function App() {
                       key={index}
                       path={route.path}
                       element={
-                        <Layout>
+                        <Layout item={route.item}>
                           <Page />
                         </Layout>
                       }
@@ -96,7 +97,7 @@ function App() {
                       key={index}
                       path={route.path}
                       element={
-                        <Layout>
+                        <Layout item={route.item}>
                           <Page />
                         </Layout>
                       }
@@ -118,7 +119,7 @@ function App() {
                       key={index}
                       path={route.path}
                       element={
-                        <Layout>
+                        <Layout item={route.item}>
                           <Page />
                         </Layout>
                       }
@@ -130,6 +131,7 @@ function App() {
           </CustomLayout>
         </div>
       </Router>
+      <ReactQueryDevtools initialIsOpen={false} position="bottom" />
     </QueryClientProvider>
   );
 }

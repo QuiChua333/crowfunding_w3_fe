@@ -1,14 +1,16 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { FaAngleDown, FaAngleUp, FaBars, FaArrowCircleLeft } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './Sidebar.module.scss';
 
 const cx = classNames.bind(styles);
 
-function SidebarCampaign({ current, status, title, cardImage, id }) {
+function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, setContentTag }) {
   const [downEditor, setDownEditor] = useState(true);
+
+  const navigate = useNavigate();
 
   const handleClickSection = function (event) {
     event.preventDefault();
@@ -87,77 +89,133 @@ function SidebarCampaign({ current, status, title, cardImage, id }) {
               {downEditor && (
                 <div className={cx('navSection-children')}>
                   <div
-                    className={cx('navItem--child', 'navItem', {
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                       'navItem--current': current === 1,
                     })}
                   >
-                    <Link to={`/campaigns/${id}/edit/basic`} className={cx('navItem-link')}>
+                    <div
+                      onClick={() => {
+                        navigate(`/campaigns/${id}/edit/basic`);
+                        setCurrent(1);
+                        setContentTag('Cơ bản');
+                      }}
+                      className={cx('navItem-link')}
+                    >
                       <div>1. Cơ bản</div>
-                    </Link>
+                    </div>
                   </div>
                   <div
-                    className={cx('navItem--child', 'navItem', {
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                       'navItem--current': current === 2,
                     })}
                   >
-                    <Link to={`/campaigns/${id}/edit/story`} className={cx('navItem-link')}>
+                    <div
+                      onClick={() => {
+                        navigate(`/campaigns/${id}/edit/story`);
+                        setCurrent(2);
+                        setContentTag('Nội dung');
+                      }}
+                      className={cx('navItem-link')}
+                    >
                       <div>2. Nội dung</div>
-                    </Link>
+                    </div>
                   </div>
                   <div
-                    className={cx('navItem--child', 'navItem', {
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                       'navItem--current': current === 3,
                     })}
                   >
-                    <Link to={`/campaigns/${id}/edit/perks/table`} className={cx('navItem-link')}>
+                    <div
+                      onClick={() => {
+                        navigate(`/campaigns/${id}/edit/perks/table`);
+                        setCurrent(3);
+                        setContentTag('Đặc quyền');
+                      }}
+                      className={cx('navItem-link')}
+                    >
                       <div>3. Đặc quyền</div>
-                    </Link>
+                    </div>
                   </div>
                   <div
-                    className={cx('navItem--child', 'navItem', {
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                       'navItem--current': current === 4,
                     })}
                   >
-                    <Link to={`/campaigns/${id}/edit/items/table`} className={cx('navItem-link')}>
+                    <div
+                      onClick={() => {
+                        navigate(`/campaigns/${id}/edit/items/table`);
+                        setCurrent(4);
+                        setContentTag('Vật phẩm');
+                      }}
+                      className={cx('navItem-link')}
+                    >
                       <div>4. Vật phẩm</div>
-                    </Link>
+                    </div>
                   </div>
                   <div
-                    className={cx('navItem--child', 'navItem', {
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                       'navItem--current': current === 5,
                     })}
                   >
-                    <Link to={`/campaigns/${id}/edit/team`} className={cx('navItem-link')}>
+                    <div
+                      onClick={() => {
+                        navigate(`/campaigns/${id}/edit/team`);
+                        setCurrent(5);
+                        setContentTag('Team');
+                      }}
+                      className={cx('navItem-link')}
+                    >
                       <div>5. Team</div>
-                    </Link>
+                    </div>
                   </div>
                   <div
-                    className={cx('navItem--child', 'navItem', {
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                       'navItem--current': current === 6,
                     })}
                   >
-                    <Link to={`/campaigns/${id}/edit/funding`} className={cx('navItem-link')}>
+                    <div
+                      onClick={() => {
+                        navigate(`/campaigns/${id}/edit/funding`);
+                        setCurrent(6);
+                        setContentTag('Gây quỹ');
+                      }}
+                      className={cx('navItem-link')}
+                    >
                       <div>6. Gây quỹ</div>
-                    </Link>
+                    </div>
                   </div>
                   <div
-                    className={cx('navItem--child', 'navItem', {
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                       'navItem--current': current === 7,
                     })}
                   >
-                    <Link to={`/campaigns/${id}/edit/settings`} className={cx('navItem-link')}>
+                    <div
+                      onClick={() => {
+                        navigate(`/campaigns/${id}/edit/settings`);
+                        setCurrent(7);
+                        setContentTag('CÀI ĐẶT');
+                      }}
+                      className={cx('navItem-link')}
+                    >
                       <div>7. CÀI ĐẶT</div>
-                    </Link>
+                    </div>
                   </div>
 
                   <div
-                    className={cx('navItem--child', 'navItem', {
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                       'navItem--current': current === 8,
                     })}
                   >
-                    <Link to={`/campaigns/${id}/edit/contribution`} className={cx('navItem-link')}>
+                    <div
+                      onClick={() => {
+                        navigate(`/campaigns/${id}/edit/contribution`);
+                        setCurrent(8);
+                        setContentTag('ĐÓNG GÓP');
+                      }}
+                      className={cx('navItem-link')}
+                    >
                       <div>8. ĐÓNG GÓP</div>
-                    </Link>
+                    </div>
                   </div>
                 </div>
               )}

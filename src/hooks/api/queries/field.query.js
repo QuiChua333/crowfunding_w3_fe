@@ -5,6 +5,7 @@ export const useGetFieldGroupByCategoryQuery = () => {
   return useQuery({
     queryKey: [`getCampaignById`],
     queryFn: () => getCampaignById(),
+    refetchOnWindowFocus: false,
   });
 };
 
