@@ -8,8 +8,8 @@ import { BsFillSendFill } from 'react-icons/bs';
 import baseURL from '~/utils/baseURL';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { CustomAxios } from '~/config';
 import { convertDateFromString } from '~/utils';
+import { useReplyComplaintMutation } from '~/hooks/api/mutations/admin/admin.complaint.mutation';
 
 const cx = classNames.bind(styles);
 
@@ -51,6 +51,8 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
   const handleCloseModal = () => {
     setIsOpenModalSeeDetail(false);
   };
+
+  const replyComplaint = useReplyComplaintMutation();
   const handleSend = async () => {
     if (textContent.trim().length === 0 && images.length === 0) {
       setTextValidate('Vui lòng nhập đầy thông tin để phản hồi.');
@@ -58,32 +60,39 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
     } else {
       setTextValidate('');
       setShowTextValidate(false);
-      // Xử lý send
       dispatch(setLoading(true));
-      try {
-        const newListImage = images.map((itemp) => {
-          return itemp.imageBase64;
-        });
+      const newListImage = images.map((itemp) => {
+        return itemp.imageBase64;
+      });
 
-        const data = {
-          id: report._id,
-          content: textContent,
-          images: newListImage,
-          emailUser: report.userInfo.email,
-          title: report.title,
-        };
+      const data = {
+        id: report._id,
+        content: textContent,
+        images: newListImage,
+        emailUser: report.userInfo.email,
+        title: report.title,
+      };
 
-        const url = `${baseURL}/report/responseReport/${report._id}`;
-        const res = await CustomAxios.patch(url, data);
-        getAllReports();
-        if (res.data) {
+      const url = `${baseURL}/report/responseReport/${report._id}`;
+      const dataApi = {
+        url,
+        data,
+      };
+      replyComplaint.mutate(dataApi, {
+        onSuccess: (res) => {
+          getAllReports();
+          if (res.data) {
+            dispatch(setLoading(false));
+            setIsOpenModalSeeDetail(false);
+          }
+        },
+        onError: (error) => {
+          console.log('error', error);
+        },
+        onSettled: () => {
           dispatch(setLoading(false));
-          setIsOpenModalSeeDetail(false);
-        }
-      } catch (error) {
-        dispatch(setLoading(false));
-        console.log(error.message);
-      }
+        },
+      });
     }
   };
 

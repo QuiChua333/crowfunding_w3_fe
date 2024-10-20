@@ -1,13 +1,16 @@
 import classNames from 'classnames/bind';
 
 import styles from './Dropdown.module.scss';
-import baseURL from '~/utils/baseURL';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMessageBox } from '~/redux/slides/GlobalApp';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { CustomAxios } from '~/config';
+import { useNavigate } from 'react-router-dom';
+import {
+  useChangeStatusCampaignMutation,
+  useDeleteCampaignMutation,
+} from '~/hooks/api/mutations/admin/admin.campaigns.mutation';
 const cx = classNames.bind(styles);
 
 function DropDown({ menu, onClickItem, index, campaign, getAllCampaigns }) {
@@ -15,9 +18,6 @@ function DropDown({ menu, onClickItem, index, campaign, getAllCampaigns }) {
   const messageBox = useSelector((state) => state.globalApp.messageBox);
   const [status, setStatus] = useState('');
   const [contentToast, setContentToast] = useState('');
-  const handleClickItem = (item) => {
-    onClickItem(item, index);
-  };
 
   const handleAdminLaunch = () => {
     setStatus('Đang gây quỹ');
@@ -74,27 +74,46 @@ function DropDown({ menu, onClickItem, index, campaign, getAllCampaigns }) {
     );
   };
 
+  const handleChangeStatusCampaign = useChangeStatusCampaignMutation();
+
   const changeStatusCampaign = async (status) => {
+    const dataApi = {
+      status,
+      id: campaign.id,
+    };
     dispatch(setLoading(true));
-    try {
-      const res = await CustomAxios.patch(`${baseURL}/campaign/adminChangeStatusCampaign/${campaign.id}`, { status });
-      getAllCampaigns();
-      dispatch(setLoading(false));
-      toast.success(contentToast);
-    } catch (error) {
-      console.log(error.message);
-    }
+    handleChangeStatusCampaign.mutate(dataApi, {
+      onSuccess: () => {
+        getAllCampaigns();
+        toast.success(contentToast);
+      },
+      onError: (error) => {
+        toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        console.log(error);
+      },
+      onSettled: () => {
+        dispatch(setLoading(false));
+      },
+    });
   };
+
+  const handleDeleteCampaign = useDeleteCampaignMutation();
+
   const deleteCampaign = async () => {
     dispatch(setLoading(true));
-    try {
-      const res = await CustomAxios.delete(`${baseURL}/campaign/adminDeleteCampaign/${campaign.id}`);
-      dispatch(setLoading(false));
-      toast.success('Dự án đã được xóa khỏi hệ thống');
-      getAllCampaigns();
-    } catch (error) {
-      console.log(error.message);
-    }
+    handleDeleteCampaign.mutate(campaign.id, {
+      onSuccess: () => {
+        toast.success('Dự án đã được xóa khỏi hệ thống');
+        getAllCampaigns();
+      },
+      onError: (error) => {
+        toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        console.log(error);
+      },
+      onSettled: () => {
+        dispatch(setLoading(false));
+      },
+    });
   };
   useEffect(() => {
     if (messageBox.result) {
@@ -112,10 +131,11 @@ function DropDown({ menu, onClickItem, index, campaign, getAllCampaigns }) {
       }
     }
   }, [messageBox.result]);
+  const navigate = useNavigate();
 
   return (
     <div className={cx('wrapper')}>
-      <div className={cx('action')} onClick={() => (window.location.href = `/campaigns/${campaign.id}/edit/basic`)}>
+      <div className={cx('action')} onClick={() => navigate(`/campaigns/${campaign.id}/edit/basic`)}>
         Xem và chỉnh sửa dự án
       </div>
       {campaign.status === 'Đang gây quỹ' && (

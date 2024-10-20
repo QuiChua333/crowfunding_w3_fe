@@ -1,6 +1,5 @@
 import classNames from 'classnames/bind';
 import styles from '../ComplaintTable.module.scss';
-import { IoSquareOutline, IoCheckboxSharp } from 'react-icons/io5';
 import { PiDotsThreeBold } from 'react-icons/pi';
 import DropDown from '../Dropdown';
 import { useRef, useState, useEffect } from 'react';

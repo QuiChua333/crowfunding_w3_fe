@@ -8,7 +8,8 @@ import { setLoading } from '~/redux/slides/GlobalApp';
 import { logoTrangNho } from '~/assets/images';
 import { CustomAxios } from '~/config';
 import { Link } from 'react-router-dom';
-import { useRegisterMutation } from '~/hooks/api/mutations/auth.mutation';
+import { useRegisterMutation } from '~/hooks/api/mutations/auth/auth.mutation';
+import { toast } from 'react-toastify';
 const cx = classNames.bind(styles);
 
 function SignUp() {
@@ -110,9 +111,9 @@ function SignUp() {
         onSuccess(data) {
           console.log(data);
           dispatch(setLoading(false));
-          // toast.success('Tài khoản đã bị khóa')
           setShowButtonRegister(false);
           setMsg(data.message);
+          toast.success('Đăng ký tài khoản thành công.');
         },
 
         onError(error) {

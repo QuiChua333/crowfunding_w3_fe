@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCurrentUser } from '~/api/user.api';
+import { getCurrentUser } from '~/api/user/user.api';
 
 export const useGetCurrentUserQuery = () => {
   const token = localStorage.getItem('accessToken') || false;

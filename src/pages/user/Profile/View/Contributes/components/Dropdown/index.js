@@ -1,5 +1,6 @@
 import classNames from "classnames/bind";
 import styles from './Dropdown.module.scss'
+import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles)
 
@@ -12,7 +13,7 @@ function DropDown({contribute, handleView}) {
            </div>
            <div style={{height: '1px', background: '#ccc'}}></div>
            <div className={cx('action')}>
-                <a href={`/project/${contribute.campaignInfo._id}/detail`}>Đi đến chiến dịch</a>
+                <Link to={`/project/${contribute.campaignInfo._id}/detail`}>Đi đến chiến dịch</Link>
            </div>
         </div>
     );

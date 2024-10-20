@@ -6,13 +6,11 @@ import Filter from '../components/Filter';
 import Search from '../components/Search';
 import baseURL from '~/utils/baseURL';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
-import { CustomAxios } from '~/config';
+import useGetAllCampaignsQuery from '~/hooks/api/queries/admin/admin.campaigns.query';
 
 const cx = classNames.bind(styles);
 function CampaignManagement() {
-  const [isLoadingData, setLoadingData] = useState(false);
   const [isOpenDropdownAction, setOpenDropdownAction] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
   const [pathWithQuery, setPathWithQuery] = useState('');
   const [numberSelected, setNumberSelected] = useState(0);
   const [filter, setFilter] = useState({
@@ -37,7 +35,7 @@ function CampaignManagement() {
   };
 
   const handleClickNextPage = () => {
-    if (filter.page === totalPages) return;
+    if (filter.page === data?.data?.totalPages) return;
     setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
   };
   useEffect(() => {
@@ -51,23 +49,8 @@ function CampaignManagement() {
     const pathWithQuery = `${baseURL}/campaign/getAllCampaigns?${queryString}`;
     setPathWithQuery(pathWithQuery);
   }, [filter]);
-  useEffect(() => {
-    if (pathWithQuery) {
-      getAllCampaigns();
-    }
-  }, [pathWithQuery]);
-  const [campaigns, setCampaigns] = useState([]);
 
-  const getAllCampaigns = async () => {
-    // setLoadingData(true)
-    try {
-      const res = await CustomAxios.get(pathWithQuery);
-      // setLoadingData(false)
-      setCampaigns(res.data.data.campaigns);
-      // setCampaignsOrigin(res.data.data.campaigns)
-      setTotalPages(res.data.data.totalPages);
-    } catch (error) {}
-  };
+  const { data, refetch } = useGetAllCampaignsQuery(pathWithQuery);
 
   const handleChangStateListCampaign = (listCampaign) => {
     setNumberSelected((prev) => {
@@ -117,26 +100,47 @@ function CampaignManagement() {
         </div>
       </div>
       <div style={{ marginTop: '40px' }}>
-        {/* {
-                isLoadingData &&
-                <CampaignTableSkeleton rows={8}/>
-            } */}
         <div className={cx('table-wrapper')}>
-          <CampaignTable
-            campaigns={campaigns}
-            onCampaignTableChange={handleChangStateListCampaign}
-            getAllCampaigns={getAllCampaigns}
-          />
+          {data?.data?.campaigns?.length > 0 && (
+            <CampaignTable
+              campaigns={data?.data?.campaigns || []}
+              onCampaignTableChange={handleChangStateListCampaign}
+              getAllCampaigns={refetch}
+            />
+          )}
+          {data?.data?.campaigns?.length === 0 && (
+            <div className="text-center text-black font-medium text-[28px]">Không tìm thấy dữ liệu</div>
+          )}
         </div>
-        {totalPages > 0 && (
+        {data?.data?.totalPages > 0 && (
           <div className={cx('pagination-wrapper')}>
             <div className={cx('pagination')}>
-              <span className={cx('icon')} onClick={handleClickPreviousPage}>
-                <FaAngleLeft style={{ color: '#7a69b3' }} />
+              <span
+                className={cx(
+                  'icon',
+                  `${
+                    filter.page <= data?.data?.totalPages &&
+                    data?.data?.totalPages !== 1 &&
+                    filter.page > 1 &&
+                    'hover:bg-[#ebe8f1] hover:cursor-pointer'
+                  }`,
+                )}
+                onClick={handleClickPreviousPage}
+              >
+                <FaAngleLeft style={{ color: '#7a69b3', opacity: filter.page === 1 ? '0.3' : '1' }} />
               </span>
-              <span className={cx('curent')}>{`${filter.page} của ${totalPages}`}</span>
-              <span className={cx('icon')} onClick={handleClickNextPage}>
-                <FaAngleRight style={{ color: '#7a69b3' }} />
+
+              <span className={cx('curent')}>{`${filter.page} của ${data?.data?.totalPages}`}</span>
+              <span
+                className={cx(
+                  'icon',
+                  `${filter.page < data?.data?.totalPages && 'hover:bg-[#ebe8f1] hover:cursor-pointer'}`,
+                )}
+                onClick={handleClickNextPage}
+              >
+                <FaAngleRight
+                  style={{ color: '#7a69b3', opacity: filter.page === data?.data?.totalPages ? '0.3' : '1' }}
+                />
               </span>
             </div>
           </div>

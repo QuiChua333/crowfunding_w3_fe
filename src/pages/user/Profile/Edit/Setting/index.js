@@ -2,13 +2,15 @@ import classNames from 'classnames/bind';
 import styles from '../../Profile.module.scss';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import baseURL from '~/utils/baseURL';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setPreviousLink } from '~/redux/slides/GlobalApp';
 import { toast } from 'react-toastify';
-import { CustomAxios } from '~/config';
+import {
+  useGetInfoVerifyUserMutation,
+  useUpdatePasswordMutation,
+} from '~/hooks/api/mutations/user/user.profile.mutation';
 const cx = classNames.bind(styles);
 function EditSetting() {
   const dispatch = useDispatch();
@@ -41,37 +43,46 @@ function EditSetting() {
       [name]: value,
     }));
   };
-  useEffect(() => {
-    console.log(password);
-  }, [password]);
+
+  const getInfoVerifyUser = useGetInfoVerifyUserMutation();
   const handleClickVerify = async () => {
-    try {
-      dispatch(setPreviousLink('@settingInfo' + window.location.href));
-      const res = await CustomAxios.get(`${baseURL}/user/getLinkVerifyUser/${user._id}`);
-      navigate(res.data.data);
-    } catch (error) {}
+    dispatch(setPreviousLink('@settingInfo' + window.location.href));
+    getInfoVerifyUser.mutate(user._id, {
+      onSuccess: (res) => {
+        navigate(res);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
   };
+
+  const updatePasswordUser = useUpdatePasswordMutation();
   const handleClickSavePassword = async () => {
     dispatch(setLoading(true));
-    try {
-      const res = await CustomAxios.patch(`${baseURL}/user/updatePassword`, {
-        currentPassword: password.currentPassword,
-        newPassword: password.confirmNewPassword,
-      });
-      localStorage.setItem('accessToken', res.data.data.accessToken);
-      localStorage.setItem('refreshToken', res.data.data.refreshToken);
-      dispatch(setLoading(false));
-      toast.success('Cập nhật mật khẩu thành công!');
-      setPassword({
-        currentPassword: '',
-        newPassword: '',
-        confirmNewPassword: '',
-      });
-    } catch (error) {
-      dispatch(setLoading(false));
-      setPassword((prev) => ({ ...prev, currentPassword: '' }));
-      toast.error(error.response.data.message);
-    }
+    const body = {
+      currentPassword: password.currentPassword,
+      newPassword: password.newPassword,
+    };
+    updatePasswordUser.mutate(body, {
+      onSuccess: (res) => {
+        localStorage.setItem('accessToken', res.data.data.accessToken);
+        localStorage.setItem('refreshToken', res.data.data.refreshToken);
+        toast.success('Cập nhật mật khẩu thành công!');
+        setPassword({
+          currentPassword: '',
+          newPassword: '',
+          confirmNewPassword: '',
+        });
+      },
+      onError: (error) => {
+        setPassword((prev) => ({ ...prev, currentPassword: '' }));
+        toast.error(error.response.data.message);
+      },
+      onSettled: () => {
+        dispatch(setLoading(false));
+      },
+    });
   };
   return (
     <div className={cx('wrapper')}>

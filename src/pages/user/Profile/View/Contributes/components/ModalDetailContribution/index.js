@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './ModalDetailContribution.module.scss';
 import { IoCloseSharp } from 'react-icons/io5';
-import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
 import { IoPersonOutline } from 'react-icons/io5';
 import { BiMap, BiMapPin, BiSitemap, BiPhoneCall, BiMessageSquareDetail } from 'react-icons/bi';
 import ItemPayment from '~/pages/user/Payment/components/ItemPayment';
@@ -24,7 +23,7 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
         <div style={{ marginBottom: '32px' }}>
           <div className={cx('product-container')}>
             <div className={cx('order-container')}>
-              <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#4bac4d' }}>
+              <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#4bac4d', display: 'flex', gap: '14px' }}>
                 Trạng thái:
                 <span style={{ color: '#4bac4d' }}>{contribution.isFinish ? 'Đã nhận' : 'Chưa nhận'}</span>
               </div>
@@ -109,6 +108,7 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                     <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center' }}>
                       <img
                         style={{ width: '100px', height: '100px' }}
+                        alt="avatar shiper mặc định"
                         src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
                       />
 
@@ -116,7 +116,8 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <span
                             style={{
-                              display: 'inline-block',
+                              display: 'inline-flex',
+                              alignItems: 'center',
                               width: '150px',
                               fontWeight: '600',
                             }}
@@ -132,7 +133,8 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <span
                             style={{
-                              display: 'inline-block',
+                              display: 'inline-flex',
+                              alignItems: 'center',
                               width: '150px',
                               fontWeight: '600',
                             }}
@@ -147,7 +149,8 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <span
                             style={{
-                              display: 'inline-block',
+                              display: 'inline-flex',
+                              alignItems: 'center',
                               width: '150px',
                               fontWeight: '600',
                             }}
@@ -163,7 +166,8 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <span
                             style={{
-                              display: 'inline-block',
+                              display: 'inline-flex',
+                              alignItems: 'center',
                               width: '150px',
                               fontWeight: '600',
                             }}
@@ -179,7 +183,8 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <span
                             style={{
-                              display: 'inline-block',
+                              display: 'inline-flex',
+                              alignItems: 'center',
                               width: '150px',
                               fontWeight: '600',
                             }}
@@ -195,7 +200,8 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <span
                             style={{
-                              display: 'inline-block',
+                              display: 'inline-flex',
+                              alignItems: 'center',
                               width: '150px',
                               fontWeight: '600',
                             }}

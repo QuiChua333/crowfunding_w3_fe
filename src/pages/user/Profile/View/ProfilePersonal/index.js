@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from '../../Profile.module.scss';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
 import { BsFillQuestionCircleFill } from 'react-icons/bs';
 import { IoMdMail } from 'react-icons/io';
 import { useSelector } from 'react-redux';
-import baseURL from '~/utils/baseURL';
 import { FaUserCircle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
-import { CustomAxios } from '~/config';
 import { defaultAvt } from '~/assets/images';
+import {
+  useGetInfoUserQuery,
+  useGetQuantityCampaignOfUserQuery,
+  useGetQuantityContributeOfUserQuery,
+} from '~/hooks/api/queries/user/user.profile.query';
 const cx = classNames.bind(styles);
 
 function ProfilePersonal() {
@@ -35,61 +38,44 @@ function ProfilePersonal() {
   const handleShowModalOutContributes = () => {
     setShowModalContributes(false);
   };
-  const getInfoUser = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/user/getInfoUser/${id}`);
-      setUser(res.data.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  const { data: dataUser } = useGetInfoUserQuery(id);
   useEffect(() => {
-    getInfoUser();
-  }, []);
-
-  const getQuantityCampaignOfUser = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/campaign/getQuantityCampaignOfUserId/${id}`);
-      setQuantityCampaignOfUser(res.data.data);
-    } catch (error) {
-      console.log(error.message);
+    if (dataUser) {
+      setUser(dataUser?.data?.data);
     }
-  };
+  }, [dataUser]);
 
+  const { data: dataQuantityCampaignOfUser } = useGetQuantityCampaignOfUserQuery(id);
   useEffect(() => {
-    getQuantityCampaignOfUser();
-  }, []);
-
-  const getQuantityContributeOfUser = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/contribution/getQuantityContributeOfUserId/${id}`);
-      setQuantityContributeOfUser(res.data.data);
-    } catch (error) {
-      console.log(error.message);
+    if (dataQuantityCampaignOfUser) {
+      setQuantityCampaignOfUser(dataQuantityCampaignOfUser?.data?.data);
     }
-  };
+  }, [dataQuantityCampaignOfUser]);
 
+  const { data: dataQuantityContributeOfUser } = useGetQuantityContributeOfUserQuery(id);
   useEffect(() => {
-    getQuantityContributeOfUser();
-  }, []);
+    if (dataQuantityContributeOfUser) {
+      setQuantityContributeOfUser(dataQuantityContributeOfUser?.data?.data);
+    }
+  }, [dataQuantityContributeOfUser]);
 
   return (
     <div className={cx('wrapper')}>
       {currentUser._id === id && (
         <div className={cx('navbar')}>
-          <a href={`/individuals/${id}/profile`} className={cx('nav-item', 'active')}>
+          <Link to={`/individuals/${id}/profile`} className={cx('nav-item', 'active')}>
             <span>
               <MdOutlineRemoveRedEye style={{ fontSize: '24px', marginRight: '8px' }} />
               Xem hồ sơ
             </span>
-          </a>
-          <a href={`/individuals/${id}/edit/profile`} className={cx('nav-item')}>
+          </Link>
+          <Link to={`/individuals/${id}/edit/profile`} className={cx('nav-item')}>
             <span>
               {' '}
               <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
               Chỉnh sửa hồ sơ & Cài đặt
             </span>
-          </a>
+          </Link>
         </div>
       )}
 
@@ -98,21 +84,25 @@ function ProfilePersonal() {
 
         <div className={cx('content')}>
           <div className={cx('tabpanel')}>
-            <a href={`/individuals/${id}/profile`} className={cx('tab', 'active')}>
+            <Link to={`/individuals/${id}/profile`} className={cx('tab', 'active')}>
               Hồ sơ
-            </a>
-            <a href={`/individuals/${id}/campaigns`} className={cx('tab')}>
+            </Link>
+            <Link to={`/individuals/${id}/campaigns`} className={cx('tab')}>
               Chiến dịch
-            </a>
+            </Link>
             {currentUser._id && currentUser._id === id && (
-              <a href={`/individuals/${id}/contributions`} className={cx('tab')}>
+              <Link to={`/individuals/${id}/contributions`} className={cx('tab')}>
                 Đóng góp của tôi
-              </a>
+              </Link>
             )}
           </div>
 
           <div className={cx('container-body-profile')}>
-            <img className={cx('avatar')} src={user.profileImage?.url ? user.profileImage.url : defaultAvt} alt="img" />
+            <img
+              className={cx('avatar')}
+              src={user?.profileImage?.url ? user?.profileImage?.url : defaultAvt}
+              alt="img"
+            />
             <div className={cx('container-middle')}>
               <span className={cx('title-profile')}>Giới thiệu</span>
               <p className={cx('des-profile')}>
