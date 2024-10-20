@@ -16,9 +16,9 @@ import { toast } from 'react-toastify';
 import { arrow, noPerk } from '~/assets/images';
 import { HeaderCreateCampaign } from '~/layout/components';
 import { useQueryClient } from '@tanstack/react-query';
-import { useGetCampaignByIdQuery } from '~/hooks/api/queries/campaign.query';
-import { useDeletePerkMutation } from '~/hooks/api/mutations/perk.mutation';
-import { useGetPerksByCampaignIdQuery } from '~/hooks/api/queries/perk.query';
+import { useGetCampaignByIdQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useDeletePerkMutation } from '~/hooks/api/mutations/user/perk.mutation';
+import { useGetPerksByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
 import { setContentError, setEditAll, setEditComponent, setShowErrorDelete } from '~/redux/slides/UserCampaign';
 
 const cx = classNames.bind(styles);

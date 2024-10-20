@@ -12,7 +12,6 @@ import { CustomAxios } from '~/config';
 import { RiMenu3Line } from 'react-icons/ri';
 import MenuDropdown from './components/MenuDropdown';
 import { IoMdClose } from 'react-icons/io';
-import useGetCurrentUserQuery from '~/hooks/api/queries/user.query';
 import { useQueryClient } from '@tanstack/react-query';
 const cx = classNames.bind(styles);
 // Component dùng chung

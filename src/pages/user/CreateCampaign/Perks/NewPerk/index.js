@@ -21,10 +21,10 @@ import ItemShipping from './ItemShipping';
 import ItemInclude from './ItemInclude';
 import { convertDateFromString } from '~/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { useGetPerk, useGetPerksByCampaignIdQuery } from '~/hooks/api/queries/perk.query';
-import { useGetItemsByCampaignIdQuery } from '~/hooks/api/queries/item.query';
-import { useAddPerkMutation, useEditPerkMutation } from '~/hooks/api/mutations/perk.mutation';
-import { useAddItemMutation } from '~/hooks/api/mutations/item.mutation';
+import { useGetPerk, useGetPerksByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
+import { useGetItemsByCampaignIdQuery } from '~/hooks/api/queries/user/item.query';
+import { useAddPerkMutation, useEditPerkMutation } from '~/hooks/api/mutations/user/perk.mutation';
+import { useAddItemMutation } from '~/hooks/api/mutations/user/item.mutation';
 
 const cx = classNames.bind(styles);
 

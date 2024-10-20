@@ -7,7 +7,7 @@ import ItemTable from './components/ItemTable';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { arrow, noItem } from '~/assets/images';
-import { useGetItemsContainPerksByCampaignIdQuery } from '~/hooks/api/queries/item.query';
+import { useGetItemsContainPerksByCampaignIdQuery } from '~/hooks/api/queries/user/item.query';
 
 const cx = classNames.bind(styles);
 

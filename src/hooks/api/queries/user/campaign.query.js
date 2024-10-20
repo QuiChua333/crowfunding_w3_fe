@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCampaignById, getTeamMemberByCampaignId } from '~/api/campaign.api';
+import { getCampaignById, getTeamMemberByCampaignId } from '~/api/user/campaign.api';
 
 export const useGetCampaignByIdQuery = (id) => {
   return useQuery({

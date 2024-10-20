@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getPerk, getPerksByCampaignId } from '~/api/perk.api';
+import { getPerk, getPerksByCampaignId } from '~/api/user/perk.api';
 
 export const useGetPerksByCampaignIdQuery = (id) => {
   return useQuery({

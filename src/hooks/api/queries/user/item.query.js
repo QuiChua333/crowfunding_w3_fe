@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getItemContainPerks, getItemsByCampaignId, getItemsContainPerksByCampaignId } from '~/api/item.api';
+import { getItemContainPerks, getItemsByCampaignId, getItemsContainPerksByCampaignId } from '~/api/user/item.api';
 
 export const useGetItemsByCampaignIdQuery = (id, enable = true) => {
   return useQuery({

@@ -11,8 +11,8 @@ import MenuDropDown from './components/MenuDropDown';
 import { useNavigate, useParams } from 'react-router-dom';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
-import useGetFieldGroupByCategoryQuery from '~/hooks/api/queries/field.query';
-import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/campaign.mutation';
+import useGetFieldGroupByCategoryQuery from '~/hooks/api/queries/user/field.query';
+import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 import { useQueryClient } from '@tanstack/react-query';
 import { setEditComponent } from '~/redux/slides/UserCampaign';
 

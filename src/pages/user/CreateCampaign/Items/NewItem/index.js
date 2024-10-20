@@ -9,8 +9,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMessageBox } from '~/redux/slides/GlobalApp';
-import { useAddItemMutation, useDeleteItemMutation, useEditItemMutation } from '~/hooks/api/mutations/item.mutation';
-import { useGetItemContainPerks } from '~/hooks/api/queries/item.query';
+import {
+  useAddItemMutation,
+  useDeleteItemMutation,
+  useEditItemMutation,
+} from '~/hooks/api/mutations/user/item.mutation';
+import { useGetItemContainPerks } from '~/hooks/api/queries/user/item.query';
 import { setContentError } from '~/redux/slides/UserCampaign';
 
 const cx = classNames.bind(styles);

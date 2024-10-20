@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { register } from '~/api/auth.api';
-import { deleteMember, editCampaignById, sendInvitation } from '~/api/campaign.api';
+import { deleteMember, editCampaignById, sendInvitation } from '~/api/user/campaign.api';
 
 export const useEditCampaignByIdMutation = () => {
   return useMutation({

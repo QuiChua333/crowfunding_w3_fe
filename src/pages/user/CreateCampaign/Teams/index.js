@@ -16,10 +16,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { CustomAxios } from '~/config';
 import { setContentError, setShowErrorDelete } from '~/redux/slides/UserCampaign';
-import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/campaign.query';
-import { useGetUserByEmailMutation } from '~/hooks/api/mutations/user.mutation';
-import { useSendInvitationMutation } from '~/hooks/api/mutations/campaign.mutation';
-import { useDeleteItemMutation } from '~/hooks/api/mutations/item.mutation';
+import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/campaign.query';
+import { useGetUserByEmailMutation } from '~/hooks/api/mutations/user/user.mutation';
+import { useSendInvitationMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+import { useDeleteItemMutation } from '~/hooks/api/mutations/user/item.mutation';
 const cx = classNames.bind(styles);
 
 function TeamCampaign() {

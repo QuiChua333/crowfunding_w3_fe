@@ -12,8 +12,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch } from 'react-redux';
 import { CustomUploadCKEAdapter } from '~/config';
-import { useGetCampaignByIdQuery } from '~/hooks/api/queries/campaign.query';
-import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/campaign.mutation';
+import { useGetCampaignByIdQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 import { useQueryClient } from '@tanstack/react-query';
 
 ClassicEditor.create(document.querySelector('#editor'), {

@@ -6,11 +6,11 @@ import classNames from 'classnames/bind';
 import styles from './CampaignLayout.module.scss';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useGetCampaignByIdQuery } from '~/hooks/api/queries/campaign.query';
+import { useGetCampaignByIdQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { setContentError, setEditAll, setShowErrorDelete } from '~/redux/slides/UserCampaign';
-import { useGetCurrentUserQuery } from '~/hooks/api/queries/user.query';
+import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
 
 const cx = classNames.bind(styles);
 

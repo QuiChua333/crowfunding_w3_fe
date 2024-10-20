@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { register } from '~/api/auth.api';
-import { addPerk, deletePerk, editPerk } from '~/api/perk.api';
+import { addPerk, deletePerk, editPerk } from '~/api/user/perk.api';
 
 export const useDeletePerkMutation = () => {
   return useMutation({
