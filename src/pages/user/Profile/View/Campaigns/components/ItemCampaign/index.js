@@ -3,15 +3,14 @@ import styles from './ItemCampaign.module.scss';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import baseURL from '~/utils/baseURL';
-import { CustomAxios } from '~/config';
+import { useDeleteCampaignMutation } from '~/hooks/api/mutations/admin/admin.campaigns.mutation';
 const cx = classNames.bind(styles);
 
 function ItemCampaign({ item, getCampaignsFollowed }) {
-  const { id } = useParams();
+  const navigate = useNavigate();
   const [showDropDown, setShowDropDown] = useState(false);
   const dropdownElement = useRef();
   const dispatch = useDispatch();
@@ -29,34 +28,39 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
   }, [dropdownElement]);
   const handleClickTitleCampaign = () => {
     if (item.status !== 'Bản nháp' && item.status !== 'Đang tạm ngưng' && item.status !== 'Chờ xác nhận') {
-      window.location.href = `/project/${item._id}/detail`;
+      navigate(`/project/${item._id}/detail`);
     }
   };
   const handleClickImg = () => {
     if (item.status !== 'Bản nháp' && item.status !== 'Đang tạm ngưng' && item.status !== 'Chờ xác nhận') {
-      window.location.href = `/project/${item._id}/detail`;
+      navigate(`/project/${item._id}/detail`);
     }
   };
+
+  const deleteCampaign = useDeleteCampaignMutation();
   const handleDeleteCampaign = async () => {
     if (item.status === 'Đang gây quỹ') {
       toast.error('Chiến dịch đang gây quỹ! Không thể xóa');
     } else {
       dispatch(setLoading(true));
-      try {
-        const res = await CustomAxios.delete(`${baseURL}/campaign/delete/userDeleteCampaign/${item._id}`);
-        dispatch(setLoading(false));
-        toast.success(res.data.message);
-        getCampaignsFollowed();
-      } catch (error) {
-        dispatch(setLoading(false));
-        toast.error('Có lỗi trong quá trình xóa chiến dịch');
-      }
+      deleteCampaign.mutate(item._id, {
+        onSuccess: (res) => {
+          toast.success(res?.data?.message);
+          getCampaignsFollowed();
+        },
+        onError: () => {
+          toast.error('Có lỗi trong quá trình xóa chiến dịch');
+        },
+        onSettled: () => {
+          dispatch(setLoading(false));
+        },
+      });
     }
   };
   return (
     <div className={cx('wrapper')}>
       <div className={cx('campaign')}>
-        <img src={item.cardImage?.url} style={{ cursor: 'pointer' }} onClick={handleClickImg} />
+        <img src={item.cardImage?.url} style={{ cursor: 'pointer' }} onClick={handleClickImg} alt="Ảnh card" />
         <div className={cx('campaign-info')}>
           <div className={cx('campaign-title-wrapper')}>
             <h2 onClick={handleClickTitleCampaign} className={cx('campaign-title')}>
@@ -74,7 +78,7 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
             </span>
           </div>
           <span className={cx('campaign-author')}>
-            by <a href={`/individuals/${item.owner?._id}/profile`}>{item.owner?.fullName}</a>
+            by <Link to={`/individuals/${item.owner?._id}/profile`}>{item.owner?.fullName}</Link>
           </span>
 
           <p className={cx('campaign-tagline')}>{item.fullName}</p>
@@ -97,14 +101,24 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
                   (item.owner?._id === currentUser._id ||
                     item.team?.some(
                       (x) => x.user === currentUser._id && x.canEdit === true && x.isAccepted === true,
-                    )) && <a href={`/campaigns/${item._id}/edit/basic`}>Chỉnh sửa chiến dịch</a>}
+                    )) && (
+                    <Link className={cx('item-dropdown')} to={`/campaigns/${item._id}/edit/basic`}>
+                      Chỉnh sửa chiến dịch
+                    </Link>
+                  )}
                 {currentUser._id &&
                   item.team?.some(
                     (x) => x.user === currentUser._id && x.canEdit === false && x.isAccepted === true,
-                  ) && <a href={`/campaigns/${item._id}/edit/basic`}>Xem chiến dịch</a>}
+                  ) && (
+                    <Link className={cx('item-dropdown')} to={`/campaigns/${item._id}/edit/basic`}>
+                      Xem chiến dịch
+                    </Link>
+                  )}
                 <div style={{ height: '1px', background: '#ccc' }}></div>
                 {currentUser._id && item.owner?._id === currentUser._id && (
-                  <a onClick={handleDeleteCampaign}>Xóa chiến dịch</a>
+                  <span className={cx('item-dropdown')} onClick={handleDeleteCampaign}>
+                    Xóa chiến dịch
+                  </span>
                 )}
 
                 <div style={{ height: '1px', background: '#ccc' }}></div>

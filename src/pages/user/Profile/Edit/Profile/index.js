@@ -4,13 +4,12 @@ import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import baseURL from '~/utils/baseURL';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { toast } from 'react-toastify';
 import { setCurrentUser } from '~/redux/slides/User';
 import { defaultAvt } from '~/assets/images';
-import { CustomAxios } from '~/config';
+import { useUpdateProfileUserMutation } from '~/hooks/api/mutations/user/user.profile.mutation';
 const cx = classNames.bind(styles);
 function EditProfile() {
   const { id } = useParams();
@@ -68,9 +67,7 @@ function EditProfile() {
       }));
     }
   };
-  // useEffect(() => {
-  //     console.log(userState)
-  // },[userState])
+
   const handleChangeProfileImage = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
@@ -97,17 +94,27 @@ function EditProfile() {
       };
     }
   };
+
+  const updateProfileUserMutation = useUpdateProfileUserMutation();
   const handleSave = async () => {
     dispatch(setLoading(true));
-    try {
-      const res = await CustomAxios.patch(`${baseURL}/user/editUser/${id}`, userState);
-      dispatch(setLoading(false));
-      dispatch(setCurrentUser(res.data.data));
-      toast.success('Cập nhật thông tin thành công');
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log(error.message);
-    }
+    const dataApi = {
+      id,
+      body: userState,
+    };
+    updateProfileUserMutation.mutate(dataApi, {
+      onSuccess(response) {
+        dispatch(setCurrentUser(response));
+        toast.success('Cập nhật thông tin thành công');
+      },
+      onError(err) {
+        toast.error('Cập nhật thông tin thất bại', err);
+        console.log(err);
+      },
+      onSettled(response, err) {
+        dispatch(setLoading(false));
+      },
+    });
   };
   return (
     <div className={cx('wrapper')}>
@@ -229,7 +236,7 @@ function EditProfile() {
               <div className={cx('field')} style={{ maxWidth: '800px' }}>
                 <label className={cx('field-label')}>Ảnh hồ sơ</label>
                 <div className={cx('img-wrapper')}>
-                  <img src={userState.profileImage?.url || defaultAvt}></img>
+                  <img src={userState.profileImage?.url || defaultAvt} alt="avatar người dùng"></img>
 
                   <input
                     ref={elementInputProfileImage}
@@ -249,7 +256,7 @@ function EditProfile() {
               <div className={cx('field')} style={{ maxWidth: '800px', marginTop: '40px' }}>
                 <label className={cx('field-label')}>Ảnh đại diện</label>
                 <div className={cx('img-wrapper')} style={{ width: '150px', height: '150px' }}>
-                  <img src={userState.avatar?.url || defaultAvt}></img>
+                  <img src={userState.avatar?.url || defaultAvt} alt="avatar mặc định"></img>
 
                   <input
                     ref={elementInputProfileAvt}

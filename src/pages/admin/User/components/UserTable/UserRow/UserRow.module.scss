@@ -1,80 +1,79 @@
-
 .status-active {
-    font-size: 13px;
-    padding: 8px 5px;
-    width: 134px;
-    color: #fff;
-    font-weight: bold;
-    background-color: #08c684;
-    align-self: center;
-    justify-content: center;
-    margin: 0 auto;
-    display: flex;
+  padding: 5px 10px;
+  color: #fff;
+  font-weight: bold;
+  background-color: #08c684;
+  width: 120px;
+  align-self: center;
+  justify-content: center;
+  margin: 0 auto;
+  display: flex;
+  font-size: 12px;
 }
 .status-unactive {
-    font-size: 13px;
-    padding: 8px 5px;
-    width: 134px;
-    color: #fff;
-    font-weight: bold;
-    background-color: #f01911;
-    margin: 0 auto;
-    align-self: center;
-    justify-content: center;
-    display: flex;
+  padding: 5px 10px;
+  color: #fff;
+  font-weight: bold;
+  background-color: #f01911;
+  margin: 0 auto;
+  width: 120px;
+  align-self: center;
+  justify-content: center;
+  display: flex;
+  font-size: 12px;
 }
-.verify{
-    font-size: 13px;
-    padding: 8px 5px;
-    width: 134px;
-    color: #fff;
-    font-weight: bold;
-    background-color: #08c684;
-    align-self: center;
-    justify-content: center;
-    display: flex;
-    margin: 0 auto;
+.verify {
+  padding: 5px 10px;
+  color: #fff;
+  font-weight: bold;
+  background-color: #08c684;
+  width: 120px;
+  align-self: center;
+  justify-content: center;
+  margin: 0 auto;
+  display: flex;
+  font-size: 12px;
 }
 .unverify {
-    font-size: 13px;
-    padding: 8px 5px;
-    width: 134px;
-    color: #fff;
-    font-weight: bold;
-    background-color: #f02923;
-    align-self: center;
-    margin: 0 auto;
-    justify-content: center;
-    display: flex;
+  padding: 5px 10px;
+  color: #fff;
+  font-weight: bold;
+  background-color: #f01911;
+  margin: 0 auto;
+  width: 120px;
+  align-self: center;
+  justify-content: center;
+  display: flex;
+  font-size: 12px;
 }
 .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 .action-doc {
-    display: inline-flex;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    &:hover {
-        border-color: #989898;
-    }
-    position: relative; 
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  &:hover {
+    border-color: #989898;
+  }
+  position: relative;
 }
 
 .dropdown-wrapper {
-    position: absolute;
-    display: none;
-    top: calc(100% + 6px);
-    z-index: 100;
-    right: -8px;
-    animation: fadeIn .3s linear;
-}  
+  position: absolute;
+  display: none;
+  top: calc(100% + 6px);
+  z-index: 100;
+  right: -8px;
+  animation: fadeIn 0.3s linear;
+}
 .action {
-    padding: 0 20px;
+  padding: 0 20px;
 }

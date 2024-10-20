@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './ModalVerifyAccount.module.scss';
 import TextAreaAutoSize from 'react-textarea-autosize';
-import baseURL from '~/utils/baseURL';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { convertDateFromString } from '~/utils';
-import { CustomAxios } from '~/config';
+import { useVerifyInfoUserMutation } from '~/hooks/api/mutations/admin/admin.user.mutation';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -17,19 +17,24 @@ function ModalVerifyAccount({ setIsOpenModalVerify, user, getAllUsers }) {
     setIsOpenModalVerify(false);
   };
 
+  const verifyInfoUser = useVerifyInfoUserMutation();
   const handleConfirmInfo = async () => {
     dispatch(setLoading(true));
-    try {
-      const id = user._id;
-      await CustomAxios.put(`${baseURL}/user/VerifiedInfoOfUser/${id}`);
-      getAllUsers();
-      dispatch(setLoading(false));
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log(error.message);
-    }
-
-    setIsOpenModalVerify(false);
+    const id = user._id;
+    verifyInfoUser.mutate(id, {
+      onSuccess: () => {
+        getAllUsers();
+        toast.success('Xác minh thông tin người dùng thành công');
+      },
+      onError: (error) => {
+        toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        console.log(error);
+      },
+      onSettled: () => {
+        dispatch(setLoading(false));
+        setIsOpenModalVerify(false);
+      },
+    });
   };
 
   return (

@@ -4,14 +4,14 @@ import { IoArrowBackSharp } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
-import baseURL from '~/utils/baseURL';
 import { TiTick } from 'react-icons/ti';
 import { toast } from 'react-toastify';
 import { logoTrangNho } from '~/assets/images';
 import { PageNotFound } from '~/pages/common';
+import { useRequestVerifyUserUserMutation } from '~/hooks/api/mutations/user/user.requestVerifyUser.mutation';
+import useCheckLinkUserQuery from '~/hooks/api/queries/user/user.requestVerifyUser.query';
 
 const cx = classNames.bind(styles);
 
@@ -22,14 +22,6 @@ function VerifyUser() {
   const { tokenLinkVerifyUser } = useParams();
   const [user, setUser] = useState({});
   const [validLink, setValidLink] = useState(null);
-  const getUser = async () => {
-    try {
-      const res = await axios.get(`${baseURL}/user/getInfoUser/${user._id}`);
-      setUser(res.data.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
   const handleClickBack = () => {
     if (previousLink.startsWith('@campaignFund')) {
       const link = previousLink.substring(13);
@@ -153,42 +145,46 @@ function VerifyUser() {
     }
   };
 
+  const requestVerifyInfoUser = useRequestVerifyUserUserMutation();
   const handleClickVerify = async () => {
     dispatch(setLoading(true));
-    try {
-      const infoVerify = { ...user.infoVerify };
-      console.log(infoVerify);
-      let flagFullname = validateFullname(infoVerify.fullName);
-      let flagSDT = validateSDT(infoVerify.phoneNumber);
-      let flagBirthday = validateBirthday(infoVerify.birthday);
-      let flagLocation = validateLocation(infoVerify.detailAddress);
-      let flagCCCD = validateCCCD(infoVerify.identifyCode);
-      let flagImageUrl = validateImageUrl(infoVerify.identifyCardImage?.url || '');
-      dispatch(setLoading(false));
-      if (flagFullname && flagSDT && flagBirthday && flagLocation && flagCCCD && flagImageUrl) {
-        const res = await axios.patch(`${baseURL}/user/editUser/${user._id}`, { infoVerify });
-        dispatch(setLoading(false));
-        toast.success('Gửi thông tin xác minh thành công');
-        setUser(res.data.data);
-      }
-    } catch (error) {
-      console.log(error.message);
-      dispatch(setLoading(false));
-      toast.error('Có lỗi trong quá trình gửi thông tin');
+    const infoVerify = { ...user.infoVerify };
+    const dataApi = {
+      infoVerify,
+      id: user._id,
+    };
+    let flagFullname = validateFullname(infoVerify.fullName);
+    let flagSDT = validateSDT(infoVerify.phoneNumber);
+    let flagBirthday = validateBirthday(infoVerify.birthday);
+    let flagLocation = validateLocation(infoVerify.detailAddress);
+    let flagCCCD = validateCCCD(infoVerify.identifyCode);
+    let flagImageUrl = validateImageUrl(infoVerify.identifyCardImage?.url || '');
+    if (flagFullname && flagSDT && flagBirthday && flagLocation && flagCCCD && flagImageUrl) {
+      requestVerifyInfoUser.mutate(dataApi, {
+        onSuccess: (res) => {
+          toast.success('Gửi thông tin xác minh thành công');
+          setUser(res.data.data);
+        },
+        onError: (error) => {
+          toast.error('Có lỗi trong quá trình gửi thông tin');
+          console.log(error);
+        },
+        onSettled: () => {
+          dispatch(setLoading(false));
+        },
+      });
     }
   };
-  const checkLink = async () => {
-    try {
-      const res = await axios.get(`${baseURL}/user/checkLinkVerifyUser/${tokenLinkVerifyUser}`);
-      setUser(res.data.data);
+
+  const { data } = useCheckLinkUserQuery(tokenLinkVerifyUser);
+  useEffect(() => {
+    if (data) {
+      setUser(data?.data?.data);
       setValidLink(true);
-    } catch (error) {
+    } else {
       setValidLink(false);
     }
-  };
-  useEffect(() => {
-    checkLink();
-  }, []);
+  }, [data]);
 
   return (
     <>
@@ -300,7 +296,7 @@ function VerifyUser() {
                     <input type="file" ref={inputElement} accept="image/png, image/jpeg" onChange={handleChangImage} />
                     {user.infoVerify?.identifyCardImage?.url && (
                       <>
-                        <img src={user.infoVerify?.identifyCardImage?.url} />
+                        <img src={user.infoVerify?.identifyCardImage?.url} alt="CCCD của người dùng" />
                         <span onClick={() => inputElement.current.click()} className={cx('icon-edit')}>
                           <MdEdit style={{ color: '#7a69b3', fontSize: '18px' }} />
                         </span>

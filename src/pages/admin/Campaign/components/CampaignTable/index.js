@@ -38,15 +38,6 @@ function CampaignTable({ campaigns, onCampaignTableChange, getAllCampaigns }) {
     });
   }, [campaigns]);
 
-  const handleClickCheckAll = () => {
-    setCheckAll((prev) => !prev);
-    setlistCampaigns((prev) => {
-      const nextState = [...prev].map((item, index) => {
-        return { ...item, isChecked: !isCheckAll };
-      });
-      return nextState;
-    });
-  };
   const handleSetChecked = (indexChange, checked) => {
     setlistCampaigns((prev) => {
       const nextState = [...prev].map((item, index) => {

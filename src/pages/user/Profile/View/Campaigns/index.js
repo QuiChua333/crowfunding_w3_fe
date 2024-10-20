@@ -3,11 +3,14 @@ import styles from '../../Profile.module.scss';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import baseURL from '~/utils/baseURL';
+import { Link, useParams } from 'react-router-dom';
 import ItemCampaign from './components/ItemCampaign';
 import { useSelector } from 'react-redux';
-import { CustomAxios } from '~/config';
+import {
+  useGetCampaignsFollowedQuery,
+  useGetCampaignsQuery,
+  useGetInfoUserQuery,
+} from '~/hooks/api/queries/user/user.profile.query';
 const cx = classNames.bind(styles);
 function ViewCampaigns() {
   const [isHasCampaign, setHasCampaign] = useState(false);
@@ -18,46 +21,45 @@ function ViewCampaigns() {
   const [campaignsOfUser, setCampaignOfUser] = useState([]);
   const [campaignsFollowed, setCampaignsFollowed] = useState([]);
   const [user, setUser] = useState({});
-  const getCampaigns = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/campaign/getCampaignsOfUserId/${id}`);
-      setCampaignOfUser(res.data.data);
-    } catch (error) {}
-  };
-  const getInfoUser = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/user/getInfoUser/${id}`);
-      setUser(res.data.data);
-    } catch (error) {}
-  };
-  const getCampaignsFollowed = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/user/getCampaignFollowed/${id}`);
-      setCampaignsFollowed(res.data.data);
-    } catch (error) {}
-  };
+
+  const { data: dataCampaigns } = useGetCampaignsQuery(id);
   useEffect(() => {
-    getCampaigns();
-    getInfoUser();
-    getCampaignsFollowed();
-  }, []);
+    if (dataCampaigns) {
+      setCampaignOfUser(dataCampaigns?.data?.data);
+    }
+  }, [dataCampaigns]);
+
+  const { data: dataUser } = useGetInfoUserQuery(id);
+  useEffect(() => {
+    if (dataUser) {
+      setUser(dataUser?.data?.data);
+    }
+  }, [dataUser]);
+
+  const { data: dataCampaignsFollowed, refetch } = useGetCampaignsFollowedQuery(id);
+  useEffect(() => {
+    if (dataCampaignsFollowed) {
+      setCampaignsFollowed(dataCampaignsFollowed?.data?.data);
+    }
+  }, [dataCampaignsFollowed]);
+
   return (
     <div className={cx('wrapper')}>
       {currentUser._id === id && (
         <div className={cx('navbar')}>
-          <a href={`/individuals/${id}/profile`} className={cx('nav-item', 'active')}>
+          <Link to={`/individuals/${id}/profile`} className={cx('nav-item', 'active')}>
             <span>
               <MdOutlineRemoveRedEye style={{ fontSize: '24px', marginRight: '8px' }} />
               Xem hồ sơ
             </span>
-          </a>
-          <a href={`/individuals/${id}/edit/profile`} className={cx('nav-item')}>
+          </Link>
+          <Link to={`/individuals/${id}/edit/profile`} className={cx('nav-item')}>
             <span>
               {' '}
               <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
               Chỉnh sửa hồ sơ & Cài đặt
             </span>
-          </a>
+          </Link>
         </div>
       )}
 
@@ -66,16 +68,16 @@ function ViewCampaigns() {
 
         <div className={cx('content')}>
           <div className={cx('tabpanel')}>
-            <a href={`/individuals/${id}/profile`} className={cx('tab')}>
+            <Link to={`/individuals/${id}/profile`} className={cx('tab')}>
               Hồ sơ
-            </a>
-            <a href={`/individuals/${id}/campaigns`} className={cx('tab', 'active')}>
+            </Link>
+            <Link to={`/individuals/${id}/campaigns`} className={cx('tab', 'active')}>
               Chiến dịch
-            </a>
+            </Link>
             {currentUser._id && currentUser._id === id && (
-              <a href={`/individuals/${id}/contributions`} className={cx('tab')}>
+              <Link to={`/individuals/${id}/contributions`} className={cx('tab')}>
                 Đóng góp của tôi
-              </a>
+              </Link>
             )}
           </div>
 
@@ -103,7 +105,7 @@ function ViewCampaigns() {
                   }))
               ) {
                 if (!isHasCampaign) setHasCampaign(true);
-                return <ItemCampaign key={index} item={item} getCampaignsFollowed={getCampaignsFollowed} />;
+                return <ItemCampaign key={index} item={item} getCampaignsFollowed={refetch} />;
               } else return <></>;
             })}
             {!isHasCampaign && (

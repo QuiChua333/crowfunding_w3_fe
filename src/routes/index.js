@@ -6,7 +6,7 @@ import Login from '~/pages/auth/Login';
 import ForgetPassword from '~/pages/auth/ForgetPassword';
 
 import Payment from '~/pages/user/Payment';
-import { CampaignManagement, UserManagement, VerifyCampaignManagement, ComplaintManagement } from '~/pages/admin';
+import { CampaignManagement, UserManagement, ComplaintManagement } from '~/pages/admin';
 import {
   BasicCampaign,
   ContentCampaign,
@@ -58,7 +58,6 @@ const publicRoutes = [
 const adminRoutes = [
   { path: '/admin/campaigns', component: CampaignManagement, layout: AdminLayout },
   { path: '/admin/users', component: UserManagement, layout: AdminLayout },
-  { path: '/admin/verify-campaign', component: VerifyCampaignManagement, layout: AdminLayout },
   { path: '/admin/complaint', component: ComplaintManagement, layout: AdminLayout },
   { path: '/admin', component: CampaignManagement, layout: AdminLayout },
 ];
