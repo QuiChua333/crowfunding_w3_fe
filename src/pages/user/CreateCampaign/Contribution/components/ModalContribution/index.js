@@ -10,10 +10,9 @@ import { useEffect, useRef, useState } from 'react';
 import ItemPayment from '~/pages/user/Payment/components/ItemPayment';
 import DropDown from './DropDown';
 import formatMoney from '~/utils/formatMoney';
-import baseURL from '~/utils/baseURL';
 import { toast } from 'react-toastify';
 import { convertDateFromString } from '~/utils';
-import { CustomAxios } from '~/config';
+import { useEditContributionStatusMutation } from '~/hooks/api/mutations/user/contribution.mutation';
 const cx = classNames.bind(styles);
 function ModalContribution({ setShowModal, contribution, handleChangeStatus, isEditComponent }) {
   const dispatch = useDispatch();
@@ -42,23 +41,31 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
     setStatus(item);
     // dispatch(handleChangeOrderStatus({index, status: item}))
   };
+
+  const editContributionStatusMutation = useEditContributionStatusMutation();
   const handleClickSave = async () => {
     if (status !== (contribution.isFinish ? 'Đã gửi' : 'Chưa gửi')) {
       dispatch(setLoading(true));
-      try {
-        const res = await CustomAxios.patch(`${baseURL}/contribution/editStatus/${contribution._id}`, {
-          isFinish: true,
-        });
-        if (res) {
-          console.log(res.data);
-          handleChangeStatus(contribution._id);
-          dispatch(setLoading(false));
-          setShowModal(false);
-          toast.success('Thay đổi trạng thái gửi đặc quyền thành công!');
-        }
-      } catch (error) {
-        dispatch(setLoading(false));
-      }
+      editContributionStatusMutation.mutate(
+        {
+          id: contribution._id,
+          data: {
+            isFinish: true,
+          },
+        },
+        {
+          onSuccess(data) {
+            console.log(data.data);
+            handleChangeStatus(contribution._id);
+            dispatch(setLoading(false));
+            setShowModal(false);
+            toast.success('Thay đổi trạng thái gửi đặc quyền thành công!');
+          },
+          onError() {
+            dispatch(setLoading(false));
+          },
+        },
+      );
     } else setShowModal(false);
   };
   return (

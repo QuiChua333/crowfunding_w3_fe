@@ -6,12 +6,13 @@ import { useEffect, useRef, useState } from 'react';
 import { IoSquareOutline, IoCheckboxSharp } from 'react-icons/io5';
 import DropDown from '../CreateCampaign/Perks/NewPerk/ItemShipping/DropDown';
 import Footer from '~/layout/components/Footer';
-import baseURL from '~/utils/baseURL';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import formatMoney from '~/utils/formatMoney';
 import axios from 'axios';
 import { PaymentModal, ItemPayment } from './components';
-import { CustomAxios } from '~/config';
+import { useGetCampaignByIdQuery, useGetQuantityCampaignByUserQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
+import { usePaymentMomoMutation } from '~/hooks/api/mutations/user/contribution.mutation';
 
 const cx = classNames.bind(styles);
 
@@ -46,15 +47,14 @@ function Payment() {
       return newItem;
     }),
   });
-  const getQuantityCampaignOfUser = async () => {
-    try {
-      const config = {};
-      const { data } = await CustomAxios.get(`${baseURL}/campaign/getQuantityCampaignByUser/${id}`, config);
-      setQuantityCampaignOfUser(data.data);
-    } catch (error) {
-      console.log(error);
+  const { data: responseQuantity } = useGetQuantityCampaignByUserQuery(id);
+  useEffect(() => {
+    if (responseQuantity) {
+      console.log({ responseQuantity });
+      setQuantityCampaignOfUser(responseQuantity.data);
     }
-  };
+  }, [responseQuantity]);
+
   const [moneyState, setMoneyState] = useState('');
   useEffect(() => {
     setMoneyState(money);
@@ -71,20 +71,19 @@ function Payment() {
     };
   }, [element]);
 
-  const getUser = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/user/getInfoCurrentUser`);
-      setCurrentUser(res.data.data);
-    } catch (error) {}
-  };
-  const getInfoCampaign = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/campaign/getCampaignById/${id}`);
-      setCampaign(res.data.data);
-    } catch (error) {
-      console.log(error.response.data.message);
+  const { data: responseUser } = useGetCurrentUserQuery();
+  useEffect(() => {
+    if (responseUser) {
+      setCurrentUser(responseUser.data);
     }
-  };
+  }, [responseUser]);
+  const { data: dataCampaign } = useGetCampaignByIdQuery(id);
+  useEffect(() => {
+    if (dataCampaign) {
+      setCampaign(dataCampaign.data);
+    }
+  }, [dataCampaign]);
+
   const getListLocationShip = async () => {
     try {
       const res = await axios.get('https://provinces.open-api.vn/api/p');
@@ -92,13 +91,7 @@ function Payment() {
     } catch (error) {}
   };
   useEffect(() => {
-    getInfoCampaign();
     getListLocationShip();
-    const token = localStorage.getItem('accessToken') || false;
-    if (token) {
-      getUser();
-    }
-    getQuantityCampaignOfUser();
   }, []);
   useEffect(() => {
     if (!payment) return;
@@ -156,12 +149,14 @@ function Payment() {
       momoMethod();
     }
   };
+  const paymentMomoMutation = usePaymentMomoMutation();
   const momoMethod = async () => {
-    try {
-      contribution.user = currentUser._id;
-      const res = await CustomAxios.post(`${baseURL}/contribution/paymentMomo/handle`, contribution);
-      window.location.href = res.data.data;
-    } catch (error) {}
+    contribution.user = currentUser._id;
+    paymentMomoMutation.mutate(contribution, {
+      onSuccess(data) {
+        navigate(data.data);
+      },
+    });
   };
 
   const [textValidateFullname, setTextValidateFullname] = useState('');

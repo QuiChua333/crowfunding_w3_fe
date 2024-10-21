@@ -1,12 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCampaignById } from '~/api/user/campaign.api';
+import { getFieldGroupByCategory } from '~/api/user/field.api';
 
 export const useGetFieldGroupByCategoryQuery = () => {
   return useQuery({
-    queryKey: [`getCampaignById`],
-    queryFn: () => getCampaignById(),
+    queryKey: [`useGetFieldGroupByCategoryQuery`],
+    queryFn: () => getFieldGroupByCategory(),
     refetchOnWindowFocus: false,
   });
 };
-
-export default useGetFieldGroupByCategoryQuery;

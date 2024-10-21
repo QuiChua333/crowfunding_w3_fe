@@ -25,3 +25,8 @@ export const editPerk = async (body) => {
   const response = await CustomAxios.patch(`${baseUrl}/perk/editPerk/${body.id}`, body.perk);
   return response.data;
 };
+
+export const getPerksHasListItemsByCampaignId = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/perk/getPerksHasListItemsByCampaignId/${id}`);
+  return response.data;
+};

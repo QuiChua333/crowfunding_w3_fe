@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CustomAxios } from '~/config';
+import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
 const cx = classNames.bind(styles);
 
 function Explore() {
@@ -38,13 +39,14 @@ function Explore() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const getListCategory = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/field/getFieldGroupByCategory`);
+
+  const { data: response } = useGetFieldGroupByCategoryQuery();
+  useEffect(() => {
+    if (response) {
       setListFieldGrouByCategory(
         [{ category: 'Tất cả', active: false }]
           .concat(
-            res.data.data.map((item) => {
+            response.data.map((item) => {
               return {
                 ...item,
                 active: false,
@@ -87,8 +89,8 @@ function Explore() {
             }
           }),
       );
-    } catch (error) {}
-  };
+    }
+  }, [response]);
 
   const boxFilterElement = useRef();
   useEffect(() => {
@@ -103,9 +105,7 @@ function Explore() {
     };
   }, [boxFilterElement]);
   const [activeBoxFilter, setActiveBoxFilter] = useState(false);
-  useEffect(() => {
-    getListCategory();
-  }, []);
+
   const getAllCampaign = async () => {
     try {
       const res = await CustomAxios.get(pathWithQuery);

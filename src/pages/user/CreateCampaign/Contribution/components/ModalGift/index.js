@@ -9,10 +9,9 @@ import { BiMap, BiMapPin, BiSitemap, BiPhoneCall, BiMessageSquareDetail } from '
 import { useEffect, useRef, useState } from 'react';
 import ItemPayment from '~/pages/user/Payment/components/ItemPayment';
 import DropDown from '../ModalContribution/DropDown';
-import baseURL from '~/utils/baseURL';
 import { toast } from 'react-toastify';
 import { convertDateFromString } from '~/utils';
-import { CustomAxios } from '~/config';
+import { useEditGiftStatusMutation } from '~/hooks/api/mutations/user/gift.mutation';
 const cx = classNames.bind(styles);
 function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent }) {
   const dispatch = useDispatch();
@@ -40,21 +39,29 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
   const handleClickItemStatus = (item) => {
     setStatus(item);
   };
+
+  const editGiftStatusMutation = useEditGiftStatusMutation();
   const handleClickSave = async () => {
     if (status !== (gift.isFinish ? 'Đã gửi' : 'Chưa gửi')) {
       dispatch(setLoading(true));
-      try {
-        const res = await CustomAxios.patch(`${baseURL}/gift/editStatus/${gift._id}`, { isFinish: true });
-        if (res) {
-          console.log(res.data);
-          handleChangeStatus(gift._id);
-          dispatch(setLoading(false));
-          setShowModalGift(false);
-          toast.success('Thay đổi trạng thái gửi đặc quyền thành công!');
-        }
-      } catch (error) {
-        dispatch(setLoading(false));
-      }
+      editGiftStatusMutation.mutate(
+        {
+          id: gift._id,
+          data: { isFinish: true },
+        },
+        {
+          onSuccess(data) {
+            handleChangeStatus(gift._id);
+            dispatch(setLoading(false));
+            setShowModalGift(false);
+            toast.success('Thay đổi trạng thái gửi đặc quyền thành công!');
+          },
+          onError(error) {
+            console.log(error);
+            dispatch(setLoading(false));
+          },
+        },
+      );
     } else setShowModalGift(false);
   };
   return (

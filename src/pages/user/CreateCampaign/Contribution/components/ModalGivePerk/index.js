@@ -5,14 +5,14 @@ import { setLoading, setMessageBox } from '~/redux/slides/GlobalApp';
 import { IoCloseSharp } from 'react-icons/io5';
 import { AiFillCaretDown } from 'react-icons/ai';
 import { useEffect, useRef, useState } from 'react';
-import baseURL from '~/utils/baseURL';
 import ModalPerkOption from './ModalPerkOption';
 import { toast } from 'react-toastify';
 import ItemPerk from './ItemPerk';
 import ItemSelected from './ItemSelected';
 import { useParams } from 'react-router-dom';
-import { CustomAxios } from '~/config';
 import { convertDateFromString } from '~/utils';
+import { useAddGiftMutation } from '~/hooks/api/mutations/user/gift.mutation';
+import { useGetPerksHasListItemsByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
 const cx = classNames.bind(styles);
 function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userContributionGivePerk }) {
   const { id } = useParams();
@@ -36,18 +36,16 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
     phoneNumber: '',
     estDelivery: nowDate,
   });
-  const getListPerkByCampaign = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/perk/getPerksHasListItemsByCampaignId/${id}`);
-      setListPerks(res.data.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-  const [perkInModal, setPerkInModal] = useState({});
+
+  const { data: perksData } = useGetPerksHasListItemsByCampaignIdQuery(id);
   useEffect(() => {
-    getListPerkByCampaign();
-  }, []);
+    if (perksData) {
+      setListPerks(perksData.data);
+    }
+  }, [perksData]);
+
+  const [perkInModal, setPerkInModal] = useState({});
+
   const [showModalOption, setShowModalOption] = useState(false);
   const handleShowModalOption = (item) => {
     setPerkInModal({ ...item });
@@ -136,19 +134,23 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
       }),
     );
   };
+
+  const addGiftMutation = useAddGiftMutation();
   const saveGift = async (gift) => {
     dispatch(setLoading(true));
-    try {
-      const res = await CustomAxios.post(`${baseURL}/gift/addGift`, gift);
-      console.log(res.data.data);
-      dispatch(setLoading(false));
-      await getAllGifts();
-      setShowModalGivePerk(false);
-      toast.success('Lưu quà tặng thành công!');
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log(error.message);
-    }
+    addGiftMutation.mutate(gift, {
+      async onSuccess(data) {
+        dispatch(setLoading(false));
+        await getAllGifts();
+        setShowModalGivePerk(false);
+        toast.success('Lưu quà tặng thành công!');
+        console.log(data.data);
+      },
+      onError(error) {
+        dispatch(setLoading(false));
+        console.log(error.message);
+      },
+    });
   };
   const handleClickAccept = () => {
     const dateString = address.estDelivery;

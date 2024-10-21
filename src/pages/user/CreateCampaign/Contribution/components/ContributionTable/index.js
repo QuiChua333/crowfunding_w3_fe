@@ -8,7 +8,7 @@ import { convertDateFromString } from '~/utils';
 
 const cx = classNames.bind(styles);
 
-function ContributionTable({ contributions, onContributionTableChange, getAllContributions, openDetailContribution }) {
+function ContributionTable({ contributions, onContributionTableChange, openDetailContribution }) {
   const [listContributions, setlistContributions] = useState([]);
   const [isCheckAll, setCheckAll] = useState(false);
   useEffect(() => {
@@ -80,7 +80,6 @@ function ContributionTable({ contributions, onContributionTableChange, getAllCon
                 contribution={item}
                 index={index}
                 setChecked={handleSetChecked}
-                getAllContributions={getAllContributions}
                 openDetailContribution={openDetailContribution}
               />
             );
