@@ -25,3 +25,8 @@ export const deleteMember = async (body) => {
   const response = await CustomAxios.delete(`${baseUrl}/campaign/${body.campaignId}/deleteMember/${body.memberId}`);
   return response.data;
 };
+
+export const launchCampaign = async (id) => {
+  const response = await CustomAxios.patch(`${baseUrl}/campaign/launchCampaign/${id}`);
+  return response.data;
+};

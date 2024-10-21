@@ -70,9 +70,9 @@ const privateUserRoutes = {
     { path: '/campaigns/:id/edit/items/table', component: ItemsCampaign, layout: CampaignLayout },
     { path: '/campaigns/:id/edit/items/:idItem', component: NewItemCampaign, layout: CampaignLayout, item: true },
     { path: '/campaigns/:id/edit/team', component: TeamCampaign, layout: CampaignLayout },
-    { path: '/campaigns/:id/edit/funding', component: FundingCampaign, layout: null },
-    { path: '/campaigns/:id/edit/settings', component: SettingCampaign, layout: null },
-    { path: '/campaigns/:id/edit/contribution', component: ContributionCampaign, layout: null },
+    { path: '/campaigns/:id/edit/funding', component: FundingCampaign, layout: CampaignLayout },
+    { path: '/campaigns/:id/edit/settings', component: SettingCampaign, layout: CampaignLayout },
+    { path: '/campaigns/:id/edit/contribution', component: ContributionCampaign, layout: CampaignLayout },
   ],
   individuals: [
     { path: '/individuals/:id/edit/profile', component: EditProfile, layout: NormalLayout },
