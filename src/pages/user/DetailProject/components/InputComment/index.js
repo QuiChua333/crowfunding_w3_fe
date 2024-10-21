@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import baseURL from '~/utils/baseURL';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { CustomAxios } from '~/config';
+import { useCreateCommentMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 const cx = classNames.bind(styles);
 const InputComment = ({ children, setListComments, onReply, setOnReply }) => {
   const { id } = useParams();
@@ -14,6 +15,7 @@ const InputComment = ({ children, setListComments, onReply, setOnReply }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
 
+  const submitComment = useCreateCommentMutation();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim()) {
@@ -33,16 +35,18 @@ const InputComment = ({ children, setListComments, onReply, setOnReply }) => {
     };
     const data = { ...newComment, campaignId: id, postUserId: currentUser._id };
     dispatch(setLoading(true));
-    try {
-      const res = await CustomAxios.post(`${baseURL}/comment/createComment`, data);
-      // console.log(res.data.data.newComment)
-      console.log(res.data.data.newComment);
-      setListComments((prev) => [...prev, res.data.data.newComment]);
-      dispatch(setLoading(false));
-      if (setOnReply) return setOnReply(false);
-    } catch (error) {
-      dispatch(setLoading(false));
-    }
+    submitComment.mutate(data, {
+      onSuccess(data) {
+        setListComments((prev) => [...prev, data?.data?.newComment]);
+        if (setOnReply) return setOnReply(false);
+      },
+      onError(error) {
+        console.log(error);
+      },
+      onSettled() {
+        dispatch(setLoading(false));
+      },
+    });
   };
 
   return (

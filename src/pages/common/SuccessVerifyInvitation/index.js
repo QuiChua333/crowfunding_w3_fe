@@ -1,30 +1,29 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './SuccessVerify.module.scss';
-import axios from 'axios';
 import baseURL from '~/utils/baseURL';
 import PageNotFound from '../PageNotFound';
 import { success } from '~/assets/images';
+import { useVerifyEmailUrl } from '~/hooks/api/queries/auth/auth.query';
 const cx = classNames.bind(styles);
 
 function SuccessVerifyInvitation() {
   const [validUrl, setValidUrl] = useState(null);
   const param = useParams();
+  const url = `${baseURL}/campaign/team/${param.tokenLinkInvitation}`;
+
+  const { data, refetch } = useVerifyEmailUrl(url);
+  useEffect(() => {
+    if (data) {
+      setValidUrl(true);
+    } else {
+      setValidUrl(false);
+    }
+  }, [data]);
 
   useEffect(() => {
-    const verifyEmailUrl = async () => {
-      try {
-        const url = `${baseURL}/campaign/team/${param.tokenLinkInvitation}`;
-        const res = await axios.get(url);
-        console.log(res.data.data);
-        setValidUrl(true);
-      } catch (error) {
-        console.log(error);
-        setValidUrl(false);
-      }
-    };
-    verifyEmailUrl();
+    refetch();
   }, [param]);
 
   return (

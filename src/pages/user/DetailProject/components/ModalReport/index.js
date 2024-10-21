@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setMessageBox } from '~/redux/slides/GlobalApp';
 import { CustomAxios } from '~/config';
+import { useSendReportCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 
 const cx = classNames.bind(styles);
 
@@ -55,6 +56,8 @@ function ModalReport({ setIsOpenModalReport }) {
   const handleClose = () => {
     setIsOpenModalReport(false);
   };
+
+  const sendReport = useSendReportCampaignMutation();
   const handleSendReport = async () => {
     if (topic.trim().length === 0 || (textContent.trim().length === 0 && images.length === 0)) {
       setTextValidate('Vui lòng nhập đầy đủ thông tin để báo cáo vi phạm !');
@@ -62,38 +65,43 @@ function ModalReport({ setIsOpenModalReport }) {
     } else {
       setTextValidate('');
       setShowTextValidate(false);
-      // Xử lý ở đây
       dispatch(setLoading(true));
-      try {
-        const newListImage = images.map((itemp) => {
-          return itemp.imageBase64;
-        });
-        const data = {
-          title: topic.toUpperCase(),
-          content: textContent,
-          images: [...newListImage],
-        };
-        const url = `${baseURL}/report/reportCampaign/${idCampaign.id}`;
-        const res = await CustomAxios.post(url, data);
-        console.log(res);
-        if (res.data.data) {
+      const newListImage = images.map((itemp) => {
+        return itemp.imageBase64;
+      });
+      const data = {
+        title: topic.toUpperCase(),
+        content: textContent,
+        images: [...newListImage],
+      };
+      const body = {
+        url: `${baseURL}/report/reportCampaign/${idCampaign.id}`,
+        data,
+      };
+      sendReport.mutate(body, {
+        onSuccess: (res) => {
+          if (res?.data) {
+            dispatch(setLoading(false));
+            setIsOpenModalReport(false);
+            dispatch(
+              setMessageBox({
+                title: 'Thông báo',
+                content:
+                  'Báo cáo của bạn đã được gửi đến chung tôi, chúng tôi sẽ phản hồi báo cáo của bạn sớm nhất thông qua email!',
+                contentOK: 'OK',
+                isShow: true,
+                type: `report${idCampaign.id}`,
+              }),
+            );
+          }
+        },
+        onError: (error) => {
+          console.log(error.message);
+        },
+        onSettled: () => {
           dispatch(setLoading(false));
-          setIsOpenModalReport(false);
-          dispatch(
-            setMessageBox({
-              title: 'Thông báo',
-              content:
-                'Báo cáo của bạn đã được gửi đến chung tôi, chúng tôi sẽ phản hồi báo cáo của bạn sớm nhất thông qua email!',
-              contentOK: 'OK',
-              isShow: true,
-              type: `report${idCampaign.id}`,
-            }),
-          );
-        }
-      } catch (error) {
-        dispatch(setLoading(false));
-        console.log(error.message);
-      }
+        },
+      });
     }
   };
 

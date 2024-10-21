@@ -6,18 +6,15 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import baseURL from '~/utils/baseURL';
 import styles from './Explore.module.scss';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CustomAxios } from '~/config';
 const cx = classNames.bind(styles);
 
 function Explore() {
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCampaigns, setTotalCampaigns] = useState(0);
   const filterExplore = useSelector((state) => state.globalApp.filterExplore);
   const [listFieldGrouByCategory, setListFieldGrouByCategory] = useState([]);
-  const [pathWithQuery, setPathWithQuery] = useState('');
   const [campaigns, setCampaigns] = useState([]);
   const [filter, setFilter] = useState(() => {
     const state = {
@@ -32,9 +29,7 @@ function Explore() {
     }
     return state;
   });
-  // useEffect(() => {
-  //     console.log(filter)
-  // }, [filter])
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -106,16 +101,7 @@ function Explore() {
   useEffect(() => {
     getListCategory();
   }, []);
-  const getAllCampaign = async () => {
-    try {
-      const res = await CustomAxios.get(pathWithQuery);
-      // setLoadingData(false)
-      console.log(res.data.data);
 
-      setCampaigns(res.data.data);
-      // setCampaignsOrigin(res.data.data.campaigns)
-    } catch (error) {}
-  };
   useEffect(() => {
     setListFieldGrouByCategory((prev) => {
       const nextState = [...prev].map((item) => {
@@ -167,7 +153,6 @@ function Explore() {
       }
       const queryString = new URLSearchParams(queryParams).toString();
       const pathWithQuery = `${baseURL}/campaign/getTotalCampaignsExplore?${queryString}`;
-      // setPathWithQuery(pathWithQuery)
       const res = await CustomAxios.get(pathWithQuery);
       setTotalCampaigns((prev) => ({ ...prev, total: res.data.data }));
     } catch (error) {}
@@ -194,15 +179,12 @@ function Explore() {
       }
       const queryString = new URLSearchParams(queryParams).toString();
       const pathWithQuery = `${baseURL}/campaign/getMoreCampaigns?${queryString}`;
-      // setPathWithQuery(pathWithQuery)
       const res = await CustomAxios.get(pathWithQuery);
       if (type === 'reset') {
         setCampaigns([...res.data.data]);
       } else {
         setCampaigns((prev) => [...prev, ...res.data.data]);
       }
-
-      // setCampaigns(res.data.data)
     } catch (error) {}
   };
   const handleClickShowMore = (index, category) => {
@@ -247,10 +229,6 @@ function Explore() {
   };
   return (
     <div className={cx('wrapper')}>
-      {/* <div className={cx('subHeader')}>
-
-            </div> */}
-      {/* Banner  */}
       <div className={cx('banner')}>
         <h2 className={cx('title')}>Chiến Dịch Give Fun</h2>
 

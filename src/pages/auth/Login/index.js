@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { logoTrangNho } from '~/assets/images';
+import { useSubmitLoginMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 
 const cx = classNames.bind(styles);
 
@@ -58,41 +59,40 @@ function Login() {
     }
   };
 
+  const submitLogin = useSubmitLoginMutation();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     let flagEmail = validateEmail(email);
     let flagPassword = validatePass(pass);
     if (flagEmail && flagPassword) {
-      // Xử lý submit ở đây
       dispatch(setLoading(true));
-      try {
-        const data = {
-          email,
-          password: pass,
-        };
-        const { data: res } = await axios.post(`${process.env.REACT_APP_URL_BACKEND}/user/login`, data);
-        localStorage.setItem('accessToken', res.data.accessToken);
-        localStorage.setItem('refreshToken', res.data.refreshToken);
-        dispatch(setLoading(false));
-
-        if (res.data.isAdmin) {
-          window.location.href = '/admin';
-        } else {
-          if (prevLink.includes('@report')) {
-            console.log(prevLink.substring(7));
-            window.location.href = prevLink.substring(7);
+      const data = {
+        email,
+        password: pass,
+      };
+      submitLogin.mutate(data, {
+        onSuccess: (res) => {
+          localStorage.setItem('accessToken', res?.data?.accessToken);
+          localStorage.setItem('refreshToken', res?.data?.refreshToken);
+          if (res?.data?.isAdmin) {
+            window.location.href = '/admin';
           } else {
-            window.location.href = '/';
+            if (prevLink.includes('@report')) {
+              console.log(prevLink.substring(7));
+              window.location.href = prevLink.substring(7);
+            } else {
+              window.location.href = '/';
+            }
           }
-        }
-      } catch (error) {
-        dispatch(setLoading(false));
-
-        if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-          setError(error.response.data.message);
-        }
-      }
+        },
+        onError: (error) => {
+          setError(error.message);
+        },
+        onSettled: () => {
+          dispatch(setLoading(false));
+        },
+      });
     }
   };
 

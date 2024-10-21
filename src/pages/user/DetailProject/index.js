@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './DetailProject.module.scss';
-import baseUrl from '../../../utils/baseURL';
 import formatMoney from '~/utils/formatMoney.js';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from 'react-icons/ai';
 import ModalPerk from './components/ModalPerk';
-import Footer from '~/layout/components/Footer';
 import PerkItem from '~/components/PerkItem';
 import ModalOptionPerk from './components/ModalOptionPerk';
 import { useParams } from 'react-router-dom';
@@ -21,8 +19,16 @@ import StorySection from './components/StoryTab';
 import CommentSection from './components/CommentTab';
 import { useSelector } from 'react-redux';
 import { convertDateFromString } from '~/utils';
-import { CustomAxios } from '~/config';
 import { defaultAvt } from '~/assets/images';
+import { useGetListPerksByCampaignId } from '~/hooks/api/queries/user/perk.query';
+import {
+  useGetCampaignByIdQuery,
+  useGetMoneyQuery,
+  useGetQuantityCampaignOfUserQuery,
+  useGetQuantityPeopleQuery,
+  useGetTeam,
+} from '~/hooks/api/queries/user/campaign.query';
+import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -192,60 +198,39 @@ function DetailProject() {
       },
     ],
   };
-  const getListPerksByCampaignId = async () => {
-    try {
-      const config = {};
-      const { data } = await CustomAxios.get(`${baseUrl}/perk/getPerksHasListItemsByCampaignId/${id}`, config);
-      setListPerkByCampaignId([...data.data]);
-    } catch (error) {
-      console.log(error);
+
+  const { data: dataListPerksByCampaignId, isSuccess: isSuccessGetListPerksByCampaignId } =
+    useGetListPerksByCampaignId(id);
+  const { data: dataProjectById, isSuccess: isSuccessGetProjectById } = useGetCampaignByIdQuery(id);
+  const { data: dataGetQuantityCampaignOfUser, isSuccess: isSuccessGetQuantityCampaignOfUser } =
+    useGetQuantityCampaignOfUserQuery(id);
+
+  const { data: dataQuantityPeople, isSuccess: isSuccessGetQuantityPeople } = useGetQuantityPeopleQuery(id);
+  const { data: dataMoney, isSuccess: isSuccessGetMoney } = useGetMoneyQuery(id);
+  const { data: dataTeams, isSuccess: isSuccessGetTeam } = useGetTeam(id);
+  useEffect(() => {
+    if (isSuccessGetListPerksByCampaignId) {
+      setListPerkByCampaignId([...dataListPerksByCampaignId?.data]);
     }
-  };
-  const getProjectById = async () => {
-    try {
-      const config = {};
-      const { data } = await CustomAxios.get(`${baseUrl}/campaign/getCampaignById/${id}`, config);
-      setItemProject({ ...data.data });
-      setListComments(data.data.comments);
-    } catch (error) {
-      console.log(error);
+    if (isSuccessGetProjectById) {
+      setItemProject({ ...dataProjectById?.data });
+      setListComments(dataProjectById?.data?.comments);
     }
-  };
-  const getQuantityCampaignOfUser = async () => {
-    try {
-      const config = {};
-      const { data } = await CustomAxios.get(`${baseUrl}/campaign/getQuantityCampaignByUser/${id}`, config);
-      setQuantityCampaignOfUser(data.data);
-    } catch (error) {
-      console.log(error);
+    if (isSuccessGetQuantityCampaignOfUser) {
+      setQuantityCampaignOfUser(dataGetQuantityCampaignOfUser?.data);
     }
-  };
-  const getQuantityPeople = async () => {
-    try {
-      const config = {};
-      const { data } = await CustomAxios.get(`${baseUrl}/contribution/getQuantityPeopleByCampaign/${id}`, config);
-      setQuantityPeople(data.data);
-    } catch (error) {
-      console.log(error);
+    if (isSuccessGetQuantityPeople) {
+      setQuantityPeople(dataQuantityPeople?.data);
     }
-  };
-  const getMoney = async () => {
-    try {
-      const config = {};
-      const { data } = await CustomAxios.get(`${baseUrl}/contribution/getMoneyByCampaign/${id}`, config);
-      setMoney(data.data);
-    } catch (error) {
-      console.log(error);
+    if (isSuccessGetMoney) {
+      setMoney(dataMoney?.data);
     }
-  };
-  const getTeam = async () => {
-    try {
-      const { data } = await CustomAxios.get(`${baseUrl}/campaign/getTeamMember/${id}`);
-      setMembers([...data.data]);
-    } catch (error) {
-      console.log(error);
+    getDeadline();
+    if (isSuccessGetTeam) {
+      setMembers([...dataTeams?.data]);
     }
-  };
+  }, []);
+
   const [favourite, setFavourite] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
   useEffect(() => {
@@ -253,25 +238,20 @@ function DetailProject() {
       setFavourite(true);
     } else setFavourite(false);
   }, [ItemProject]);
-  const handleClickFollowCampaign = async () => {
-    try {
-      const res = await CustomAxios.patch(`${baseUrl}/user/handleFollowedCampaigns`, { campaignId: ItemProject._id });
-      setFavourite(res.data.data);
-    } catch (error) {}
-  };
-  useEffect(() => {
-    console.log('thành viên', members);
-  }, [members]);
 
-  useEffect(() => {
-    getProjectById();
-    getQuantityCampaignOfUser();
-    getListPerksByCampaignId();
-    getDeadline();
-    getQuantityPeople();
-    getMoney();
-    getTeam();
-  }, []);
+  const followCampaign = useFollowCampaignMutation();
+
+  const handleClickFollowCampaign = async () => {
+    followCampaign.mutate(ItemProject._id, {
+      onSuccess: (res) => {
+        setFavourite(res?.data);
+      },
+      onError: (error) => {
+        console.log('Error follow campaign', error);
+      },
+    });
+  };
+
   useEffect(() => {
     let startDateTime = new Date(ItemProject.startDate);
     let endDateTime = new Date();
@@ -282,7 +262,7 @@ function DetailProject() {
   const handleURLImage = (linkURL) => {
     var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     var match = linkURL.match(regExp);
-    return match && match[7].length == 11 ? 'https://img.youtube.com/vi/' + match[7] + '/default.jpg' : false;
+    return match && match[7].length === 11 ? 'https://img.youtube.com/vi/' + match[7] + '/default.jpg' : false;
   };
 
   const formatMMDDYYYY = (tem) => {

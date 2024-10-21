@@ -5,6 +5,7 @@ import { IoIosArrowBack } from 'react-icons/io';
 import styles from './ThankPayment.module.scss';
 import { logoXanhLon } from '~/assets/images';
 import { CustomAxios } from '~/config';
+import { usePaymentSuccessMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 const cx = classNames.bind(styles);
 function ThankPayment() {
   const url = new URL(window.location.href);
@@ -14,16 +15,18 @@ function ThankPayment() {
 
   const [campaignId, setCampaignId] = useState('');
   const [time, setTime] = useState(1);
-  const handleSuccess = async (body) => {
-    try {
-      const url = `${baseURL}/contribution/paymentMomo/success`;
-      const res = await CustomAxios.post(url, body);
-      console.log(res.data.data);
-      setCampaignId(res.data.data);
-      setTime((prev) => prev + 1);
-    } catch (error) {
-      console.log(error);
-    }
+  const paymentSuccess = usePaymentSuccessMutation();
+  const handleSuccess = async () => {
+    const url = `${baseURL}/contribution/paymentMomo/success`;
+    paymentSuccess.mutate(url, {
+      onSuccess: (res) => {
+        setCampaignId(res?.data);
+        setTime((prev) => prev + 1);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
   };
 
   useEffect(() => {

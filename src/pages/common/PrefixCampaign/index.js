@@ -1,34 +1,41 @@
 import classNames from 'classnames/bind';
 import styles from './PrefixCampaign.module.scss';
-
-import baseURL from '~/utils/baseURL';
 import { FaArrowRightLong } from 'react-icons/fa6';
-import { CustomAxios } from '~/config';
 import { indemand, prepost } from '~/assets/images';
+import { useCheckAdminMutation, useStartCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 
 const cx = classNames.bind(styles);
 
 function PrefixCampaign() {
+  const checkAdmin = useCheckAdminMutation();
+  const startCampaign = useStartCampaignMutation();
+
   const handleClickStartCampaign = async () => {
     const token = localStorage.getItem('accessToken') || false;
     if (!token) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       window.location.href = '/login';
+      return;
     }
 
-    const res = await CustomAxios.get(`${baseURL}/user/checkAdmin`);
-    if (res.data.data) {
-      return;
-    } else {
-      try {
-        const res = await CustomAxios.post(`${baseURL}/campaign/createNewCampaign`);
-        window.location.href = `/campaigns/${res.data.data._id}/edit/basic`;
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
+    checkAdmin.mutate({
+      onSuccess: (res) => {
+        if (res?.data) {
+          return;
+        } else {
+          startCampaign.mutate({
+            onSuccess: (res) => {
+              window.location.href = `/campaigns/${res?.data._id}/edit/basic`;
+            },
+            onError: (error) => console.log(error.message),
+          });
+        }
+      },
+      onError: (error) => console.log(error.message),
+    });
   };
+
   return (
     <div className={cx('wrapper')}>
       <div className={cx('header')}>

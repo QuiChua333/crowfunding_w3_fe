@@ -6,10 +6,9 @@ import ItemDetailPerkSelect from '~/components/ItemDetailPerkSelect';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ModalDetailPerk from './components/ModalDetailPerk';
 import formatMoney from '~/utils/formatMoney';
-import baseUrl from '../../../utils/baseURL';
 import { useDispatch } from 'react-redux';
 import { setPayment } from '~/redux/slides/Payment';
-import { CustomAxios } from '~/config';
+import { useGetListPerksByCampaignId } from '~/hooks/api/queries/user/perk.query';
 const cx = classNames.bind(styles);
 
 function DetailPerk() {
@@ -25,11 +24,10 @@ function DetailPerk() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const getListPerksByCampaignId = async () => {
-    try {
-      const config = {};
-      const { data } = await CustomAxios.get(`${baseUrl}/perk/getPerksHasListItemsByCampaignId/${id}`, config);
-      setListPerkByCampaignId([...data.data]);
+  const { data } = useGetListPerksByCampaignId(id);
+  useEffect(() => {
+    if (data) {
+      setListPerkByCampaignId([...data?.data]);
       let arr = [...data.data].map((item) => {
         if (item._id === itemPerkSelectedFirst._id) {
           return {
@@ -71,13 +69,9 @@ function DetailPerk() {
         }
       });
       setListPerkByCampaignId(arr);
-    } catch (error) {
-      console.log(error);
     }
-  };
-  useEffect(() => {
-    getListPerksByCampaignId();
   }, []);
+
   const handleSelectedItem = (index, newItem) => {
     setListPerkByCampaignId((prev) => {
       const next = [...prev].map((item, index2) => {

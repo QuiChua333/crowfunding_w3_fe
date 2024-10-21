@@ -8,8 +8,7 @@ import CommentMenu from '../CommentMenu';
 import InputComment from '../InputComment';
 import styles from './CommenCard.module.scss';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import baseURL from '~/utils/baseURL';
-import { CustomAxios } from '~/config';
+import { useLikeCommentMutation, useUnLikeCommentMutation, useUpdateCommentMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 const cx = classNames.bind(styles);
 const CommentCard = ({ children, comment, campaign, commentId, setListComments, handleRemoveComment, members }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -32,66 +31,87 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
     }
   }, [comment, currentUser._id]);
 
+  const updateComment = useUpdateCommentMutation();
+
   const handleUpdate = async () => {
     if (comment.content !== content) {
       dispatch(setLoading(true));
-      try {
-        const res = await CustomAxios.patch(`${baseURL}/comment/updateComment/${comment._id}`, { content });
-        setListComments((prev) =>
-          [...prev].map((item) => {
-            if (item._id === comment._id) {
-              return {
-                ...item,
-                content,
-              };
-            } else return item;
-          }),
-        );
-        setOnEdit(false);
-        dispatch(setLoading(false));
-      } catch (error) {
-        dispatch(setLoading(false));
+      const dataApi = {
+        id: comment._id,
+        content,
       }
+      updateComment.mutate(dataApi, {
+        onSuccess: () => {
+          console.log('Cập nhật bình luận thành công');
+          setListComments((prev) =>
+            [...prev].map((item) => {
+              if (item._id === comment._id) {
+                return {
+                  ...item,
+                  content,
+                };
+              } else return item;
+            }),
+          );
+          setOnEdit(false);
+        },
+        onError: (error) => {
+          console.log('Cập nhật bình luận thất bại', error);
+        },
+        onSettled: () => {
+          dispatch(setLoading(false));
+        },
+      })
     } else {
       setOnEdit(false);
     }
   };
 
+  const likeComment = useLikeCommentMutation();
   const handleLike = async () => {
     if (!currentUser._id) return;
     if (loadLike) return;
     setLoadLike(true);
-
-    try {
-      const res = await CustomAxios.patch(`${baseURL}/comment/likeComment/${comment._id}`, {});
-
-      setListComments((prev) =>
-        [...prev].map((item) => {
-          if (item._id === comment._id) {
-            return { ...item, likes: [...item.likes, currentUser] };
-          } else return item;
-        }),
-      );
-      setLoadLike(false);
-    } catch (error) {}
+    likeComment.mutate(comment._id, {
+      onSuccess: () => {
+        setListComments((prev) =>
+          [...prev].map((item) => {
+            if (item._id === comment._id) {
+              return { ...item, likes: [...item.likes, currentUser] };
+            } else return item;
+          }),
+        );
+      },
+      onError: (error) => {
+        console.log('Thích bình luận thất bại', error);
+      },
+      onSettled: () => {
+        setLoadLike(false);
+      },
+    })
   };
 
+  const unLikeComment = useUnLikeCommentMutation();
   const handleUnLike = async () => {
     if (loadLike) return;
     setLoadLike(true);
-
-    try {
-      const res = await CustomAxios.patch(`${baseURL}/comment/unLikeComment/${comment._id}`, {});
-
-      setListComments((prev) =>
-        [...prev].map((item) => {
-          if (item._id === comment._id) {
-            return { ...item, likes: [...item.likes].filter((i) => i._id !== currentUser._id) };
-          } else return item;
-        }),
-      );
-      setLoadLike(false);
-    } catch (error) {}
+    unLikeComment.mutate(comment._id, {
+      onSuccess: () => {
+        setListComments((prev) =>
+          [...prev].map((item) => {
+            if (item._id === comment._id) {
+              return { ...item, likes: [...item.likes].filter((i) => i._id !== currentUser._id) };
+            } else return item;
+          }),
+        );
+      },
+      onError: (error) => {
+        console.log('Bỏ thích bình luận thất bại', error);
+      },
+      onSettled: () => {
+        setLoadLike(false);
+      },
+    })
   };
 
   const handleReply = () => {

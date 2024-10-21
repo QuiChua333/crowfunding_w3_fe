@@ -1,31 +1,26 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './EmailVerify.module.scss';
 import baseURL from '~/utils/baseURL';
 import { success } from '~/assets/images';
 import { PageNotFound } from '~/pages/common';
-import { CustomAxios } from '~/config';
+import { useVerifyEmailUrl } from '~/hooks/api/queries/auth/auth.query';
 
 const cx = classNames.bind(styles);
 
 function EmailVerify() {
   const [validUrl, setValidUrl] = useState(null);
   const param = useParams();
-  const verifyEmailUrl = async () => {
-    try {
-      const url = `${baseURL}/user/registerUser/${param.tokenLinkVerifyEmail}`;
-      const { data } = await CustomAxios.get(url);
-      console.log(data);
+  const url = `${baseURL}/user/registerUser/${param.tokenLinkVerifyEmail}`;
+  const { isSuccess, isError } = useVerifyEmailUrl(url);
+  useEffect(() => {
+    if (isSuccess) {
       setValidUrl(true);
-    } catch (error) {
-      console.log(error);
+    }
+    if (isError) {
       setValidUrl(false);
     }
-  };
-
-  useEffect(() => {
-    verifyEmailUrl();
   }, []);
 
   return (
