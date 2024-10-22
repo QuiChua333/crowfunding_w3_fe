@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 
 import styles from '../ContributionTable.module.scss';
+
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
