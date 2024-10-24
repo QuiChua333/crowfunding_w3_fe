@@ -7,8 +7,6 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 const cx = classNames.bind(styles);
 const CommentMenu = ({ campaign, comment, setOnEdit, handleRemoveComment, members }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
-  // const { auth, socket } = useSelector(state => state)
-  const dispatch = useDispatch();
   const handleRemove = () => {
     if (campaign.owner._id === currentUser._id || comment.user._id === currentUser._id) {
       handleRemoveComment(comment);

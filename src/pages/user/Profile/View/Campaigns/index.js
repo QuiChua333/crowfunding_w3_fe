@@ -37,6 +37,7 @@ function ViewCampaigns() {
   }, [dataUser]);
 
   const { data: dataCampaignsFollowed, refetch } = useGetCampaignsFollowedQuery(id);
+  console.log('con tro này', dataCampaignsFollowed);
   useEffect(() => {
     if (dataCampaignsFollowed) {
       setCampaignsFollowed(dataCampaignsFollowed?.data?.data);

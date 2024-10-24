@@ -10,13 +10,12 @@ import 'react-multi-carousel/lib/styles.css';
 import styles from './Home.module.scss';
 import SectionTrust from './components/SectionTrust';
 import { useEffect, useState } from 'react';
-import baseURL from '~/utils/baseURL';
 import { setFilterExplore } from '~/redux/slides/GlobalApp';
 import { useDispatch } from 'react-redux';
 import { Hero } from '~/pages/user/Home/components';
 import { Footer, Header } from '~/layout/components';
 import { audio, film, health, home, phone, travel } from '~/assets/images';
-import { CustomAxios } from '~/config';
+import { useGetPopulateCampaigns } from '~/hooks/api/queries/user/campaign.query';
 
 const cx = classNames.bind(styles);
 
@@ -64,22 +63,15 @@ function Home() {
       </div>
     );
   };
-  const [campaigns, setCampaigns] = useState([]);
-  const getPopulateCampaigns = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/campaign/getPopulateCampaigns`);
-      setCampaigns(res.data.data);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
+  const { data } = useGetPopulateCampaigns();
+  const [campaigns, setCampaigns] = useState([]);
   useEffect(() => {
-    getPopulateCampaigns();
-  }, []);
-  useEffect(() => {
-    console.log(campaigns);
-  }, []);
+    if (data) {
+      setCampaigns(data);
+    }
+  }, [data]);
+
   const navigate = useNavigate();
   return (
     <div className={cx('wrapper', 'responsive')}>
@@ -130,7 +122,7 @@ function Home() {
 
               <div onClick={() => handleClickField('Điện thoại & phụ kiện')} className={cx('column')}>
                 <div className={cx('categoryIcon')}>
-                  <img src={phone} />
+                  <img src={phone} alt="phone" />
                 </div>
 
                 <div className={cx('categoryText')}>ĐIỆN THOẠI & PHỤ KIỆN</div>

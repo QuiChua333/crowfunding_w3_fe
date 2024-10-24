@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SignUp.module.scss';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
-import baseURL from '~/utils/baseURL';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { logoTrangNho } from '~/assets/images';
-import { CustomAxios } from '~/config';
 import { Link } from 'react-router-dom';
 import { useRegisterMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 import { toast } from 'react-toastify';
@@ -124,19 +122,6 @@ function SignUp() {
           }
         },
       });
-      // try {
-      //   const url = `${baseURL}/user/checkRegisterEmail`;
-      //   const data = {
-      //     fullName: name,
-      //     email,
-      //     password: pass,
-      //   };
-      //   const { data: res } = await CustomAxios.post(url, data);
-      //   dispatch(setLoading(false));
-      //   // toast.success('Tài khoản đã bị khóa')
-      //   setShowButtonRegister(false);
-      //   setMsg(res.message);
-      // } catch (error) {}
     }
   };
 

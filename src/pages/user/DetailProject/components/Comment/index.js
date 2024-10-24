@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import CommentDisplay from '../CommentDisplay';
-import baseURL from '~/utils/baseURL';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { CustomAxios } from '~/config';
+import { useRemoveCommentMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 const Comments = ({ campaign, comments, setListComments, members }) => {
   const [commentsOrigin, setCommentsOrigin] = useState([]);
   const [showComments, setShowComments] = useState([]);
@@ -21,18 +20,23 @@ const Comments = ({ campaign, comments, setListComments, members }) => {
     const newRep = comments.filter((cm) => cm.reply);
     setReplyComments(newRep);
   }, [comments]);
+
+  const removeComment = useRemoveCommentMutation();
   const handleRemoveComment = async (comment) => {
     dispatch(setLoading(true));
-    try {
-      const deleteArr = [...comments.filter((cm) => cm.reply === comment._id), comment];
-      for (let i = 0; i < deleteArr.length; i++) {
-        const res = await CustomAxios.delete(`${baseURL}/comment/deleteComment/${deleteArr[i]._id}`);
-      }
-      setListComments((prev) => [...prev].filter((cm) => !deleteArr.find((da) => cm._id === da._id)));
-      dispatch(setLoading(false));
-    } catch (error) {
-      dispatch(setLoading(false));
+    const deleteArr = [...comments.filter((cm) => cm.reply === comment._id), comment];
+    for (let i = 0; i < deleteArr.length; i++) {
+      removeComment.mutate(deleteArr[i]._id, {
+        onSuccess: () => {
+          console.log('Xóa comment thành công');
+        },
+        onError: (error) => {
+          console.log('Lỗi khi xóa comment', error);
+        },
+      });
     }
+    setListComments((prev) => [...prev].filter((cm) => !deleteArr.find((da) => cm._id === da._id)));
+    dispatch(setLoading(false));
   };
   return (
     <div className="comments">

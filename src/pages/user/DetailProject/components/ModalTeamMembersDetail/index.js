@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './ModalTeamMembersDetail.module.scss';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -27,12 +28,12 @@ function ModalTeamMembersDetail({ setIsOpenModalMember, members }) {
                   <div className={cx('info-members')}>
                     <img src={item.user.avatar.url} alt="avt" />
                     <div className={cx('info')}>
-                      <a href={`/individuals/${item.user._id}/profile`} className={cx('name')}>
+                      <Link to={`/individuals/${item.user._id}/profile`} className={cx('name')}>
                         {item.user.fullName}
-                      </a>
-                      <a href={`mailto:${item.user?.email}`} className={cx('email')}>
+                      </Link>
+                      <Link to={`mailto:${item.user?.email}`} className={cx('email')}>
                         {item.user.email}
-                      </a>
+                      </Link>
                     </div>
                   </div>
                   <div className={cx('role')}>

@@ -56,7 +56,6 @@ function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk }) {
   const handleChangeSelectOption = (e, nameItem) => {
     let nameOption = e.target.name;
     let value = e.target.value;
-    // prev là mảng result
 
     setOptionsSelectedItems((prev) => {
       return [...prev].map((item) => {

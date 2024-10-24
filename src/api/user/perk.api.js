@@ -30,3 +30,8 @@ export const getPerksHasListItemsByCampaignId = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/perk/getPerksHasListItemsByCampaignId/${id}`);
   return response.data;
 };
+
+export const getListPerksByCampaignId = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/perk/getPerksHasListItemsByCampaignId/${id}`);
+  return response.data;
+};
