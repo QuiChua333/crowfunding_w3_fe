@@ -2,7 +2,7 @@ import { CustomAxios } from '~/config';
 import { baseUrl } from '~/utils';
 
 export const getCurrentUser = async () => {
-  const response = await CustomAxios.get(`${baseUrl}/user/getInfoCurrentUser`);
+  const response = await CustomAxios.get(`${baseUrl}/user/me`);
   return response.data;
 };
 

@@ -3,27 +3,28 @@ import { CustomAxios } from '~/config';
 import { baseUrl } from '~/utils';
 
 export const register = async (body) => {
-  const response = await CustomAxios.post(`${baseUrl}/user/checkRegisterEmail`, body);
+  const response = await CustomAxios.post(`${baseUrl}/auth/register`, body);
   return response.data;
 };
 
-export const verifyEmailUrl = async (url) => {
-  await CustomAxios.get(url);
+export const submitEmailForgotPassword = async ({ email }) => {
+  await CustomAxios.post(`${baseUrl}/auth/forgot-password`, { email });
 };
 
-export const submitEmailForgotPassword = async (body) => {
-  await CustomAxios.get(body.url, { email: body.email });
+export const resetPassword = async ({ token, password }) => {
+  await CustomAxios.post(`${baseUrl}/auth/reset-password`, { token, password });
+};
+
+export const resendEmailConfirm = async () => {
+  await CustomAxios.get(`${baseUrl}/auth/resend-email-confirm`);
 };
 
 export const submitLogin = async (data) => {
-  const response = await axios.post(`${baseUrl}/user/login`, data);
+  const response = await axios.post(`${baseUrl}/auth/login`, data);
   return response.data;
 };
 
-export const verifyUrl = async (url) => {
-  await CustomAxios.get(url);
-};
-
-export const submitResetPassword = async (body) => {
-  await CustomAxios.patch(body.url, { newPassword: body.pass, id: body.id });
+export const logOut = async () => {
+  const response = await axios.get(`${baseUrl}/auth/logout`);
+  return response.data;
 };

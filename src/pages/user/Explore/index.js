@@ -40,13 +40,13 @@ function Explore() {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: response } = useGetFieldGroupByCategoryQuery();
+  const { data } = useGetFieldGroupByCategoryQuery();
   useEffect(() => {
-    if (response) {
+    if (data) {
       setListFieldGrouByCategory(
         [{ category: 'Tất cả', active: false }]
           .concat(
-            response.data.map((item) => {
+            data.map((item) => {
               return {
                 ...item,
                 active: false,
@@ -90,7 +90,7 @@ function Explore() {
           }),
       );
     }
-  }, [response]);
+  }, [data]);
 
   const boxFilterElement = useRef();
   useEffect(() => {

@@ -1,5 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
-import { register, submitEmailForgotPassword, submitLogin, submitResetPassword } from '~/api/auth/auth.api';
+import {
+  logOut,
+  register,
+  resendEmailConfirm,
+  resetPassword,
+  submitEmailForgotPassword,
+  submitLogin,
+} from '~/api/auth/auth.api';
 
 export const useRegisterMutation = () => {
   return useMutation({
@@ -25,6 +32,20 @@ export const useSubmitLoginMutation = () => {
 export const useSubmitResetPasswordMutation = () => {
   return useMutation({
     mutationKey: ['useSubmitResetPasswordMutation'],
-    mutationFn: submitResetPassword,
+    mutationFn: resetPassword,
+  });
+};
+
+export const useResendEmailConfirmMutation = () => {
+  return useMutation({
+    mutationKey: ['useResendEmailConfirmMutation'],
+    mutationFn: resendEmailConfirm,
+  });
+};
+
+export const useLogOutMutation = () => {
+  return useMutation({
+    mutationKey: ['useLogOutMutation'],
+    mutationFn: logOut,
   });
 };

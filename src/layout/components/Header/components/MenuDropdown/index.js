@@ -3,14 +3,33 @@ import { FaAngleDown } from 'react-icons/fa6';
 
 import classNames from 'classnames/bind';
 import styles from './MenuDropdown.module.scss';
+import { useNavigate } from 'react-router-dom';
+import { useLogOutMutation } from '~/hooks/api/mutations/auth/auth.mutation';
+import { useQueryClient } from '@tanstack/react-query';
+import { useDispatch } from 'react-redux';
+import { setCurrentUser } from '~/redux/slides/User';
 const cx = classNames.bind(styles);
 
 const MenuDropdown = ({ fullHeader, isLogin, user }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const logOutMutation = useLogOutMutation();
+  const queryClient = useQueryClient();
   const handleClickLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    window.location.href = '/';
+    logOutMutation.mutate(null, {
+      onSuccess() {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        dispatch(setCurrentUser({}));
+        queryClient.removeQueries('getCurrentUser');
+        navigate('/');
+      },
+      onError(err) {
+        console.log(err.response.data.message);
+      },
+    });
   };
+
   const boxFilterElement = useRef();
   const [showDropdownUser, setShowDropdownUser] = useState(false);
   useEffect(() => {
@@ -52,19 +71,13 @@ const MenuDropdown = ({ fullHeader, isLogin, user }) => {
                 <div className={cx('dropdownBoxFilter')}>
                   {!user.isAdmin && (
                     <>
-                      <span onClick={() => (window.location.href = `/individuals/${user._id}/campaigns`)}>
-                        Chiến dịch của tôi
-                      </span>
-                      <span onClick={() => (window.location.href = `/individuals/${user._id}/contributions`)}>
-                        Đóng góp của tôi
-                      </span>
-                      <span onClick={() => (window.location.href = `/individuals/${user._id}/profile`)}>Hồ sơ</span>
-                      <span onClick={() => (window.location.href = `/individuals/${user._id}/edit/settings`)}>
-                        Cài đặt
-                      </span>
+                      <span onClick={() => navigate(`/individuals/${user._id}/campaigns`)}>Chiến dịch của tôi</span>
+                      <span onClick={() => navigate(`/individuals/${user._id}/contributions`)}>Đóng góp của tôi</span>
+                      <span onClick={() => navigate(`/individuals/${user._id}/profile`)}>Hồ sơ</span>
+                      <span onClick={() => navigate(`/individuals/${user._id}/edit/settings`)}>Cài đặt</span>
                     </>
                   )}
-                  {user.isAdmin && <span onClick={() => (window.location.href = `/admin`)}>Đến trang quản lý</span>}
+                  {user.isAdmin && <span onClick={() => navigate(`/admin`)}>Đến trang quản lý</span>}
                   <span onClick={handleClickLogout} style={{ paddingBottom: '16px' }}>
                     Đăng xuất
                   </span>

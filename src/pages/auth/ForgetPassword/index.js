@@ -40,23 +40,23 @@ function ForgetPassword() {
     let flagEmail = validateEmail(email);
     if (flagEmail) {
       dispatch(setLoading(true));
-      const body = {
-        url: `${baseURL}/user/forgot-password`,
-        email,
-      };
-      submitEmail.mutate(body, {
-        onSuccess() {
-          setShowButtonAccept(false);
-          setMsg(`Một liên kết cập nhật mật khẩu đã được gửi đến ${email}. Liên kết tồn tại trong 5 phút.`);
+
+      submitEmail.mutate(
+        { email },
+        {
+          onSuccess() {
+            setShowButtonAccept(false);
+            setMsg(`Một liên kết cập nhật mật khẩu đã được gửi đến ${email}. Liên kết tồn tại trong 5 phút.`);
+          },
+          onError(error) {
+            setError(error.message);
+            setMsg('');
+          },
+          onSettled: () => {
+            dispatch(setLoading(false));
+          },
         },
-        onError(error) {
-          setError(error.message);
-          setMsg('');
-        },
-        onSettled: () => {
-          dispatch(setLoading(false));
-        },
-      });
+      );
     }
   };
 

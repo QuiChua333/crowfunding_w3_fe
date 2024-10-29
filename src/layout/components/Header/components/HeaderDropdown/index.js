@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setFilterExplore } from '~/redux/slides/GlobalApp';
 const cx = classNames.bind(styles);
 function HeaderDropdown({ active, activeHeader, listFieldGrouByCategory, style }) {
+  console.log(listFieldGrouByCategory);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleClickField = (field) => {

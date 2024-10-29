@@ -1,23 +1,24 @@
 import classNames from 'classnames/bind';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaAngleDown } from 'react-icons/fa6';
 import styles from './HeaderCreateCampaign.module.scss';
-import baseURL from '~/utils/baseURL';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUser } from '~/redux/slides/User';
 import { HeaderDropdown } from './components';
-import { CustomAxios } from '~/config';
 import { RiMenu3Line } from 'react-icons/ri';
 import MenuDropdown from './components/MenuDropdown';
 import { IoMdClose } from 'react-icons/io';
 import { useQueryClient } from '@tanstack/react-query';
+import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
+import { useLogOutMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 const cx = classNames.bind(styles);
 // Component dùng chung
 function HeaderCreateCampaign() {
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showDropdownUser, setShowDropdownUser] = useState(false);
   const [fullHeader, setFullHeader] = useState(false);
   const [activeExplore, setActiveExplore] = useState(false);
@@ -48,30 +49,33 @@ function HeaderCreateCampaign() {
     };
   }, [boxFilterElement]);
   const [listFieldGrouByCategory, setListFieldGrouByCategory] = useState([]);
-  const getListCategory = async () => {
-    try {
-      const res = await CustomAxios.get(`${baseURL}/field/getFieldGroupByCategory`);
-      setListFieldGrouByCategory(res.data.data);
-    } catch (error) {}
-  };
+  const { data: dataField } = useGetFieldGroupByCategoryQuery();
+  useEffect(() => {
+    if (dataField) setListFieldGrouByCategory(dataField);
+  }, [dataField]);
   const queryClient = useQueryClient();
   const userData = queryClient.getQueryData(['getCurrentUser']);
   useEffect(() => {
     if (userData) {
-      setLogin(true);
-      dispatch(setCurrentUser(userData.data));
-    } else setLogin(false);
+      dispatch(setCurrentUser(userData));
+    }
   }, [userData]);
-
-  useEffect(() => {
-    getListCategory();
-  }, []);
+  const logOutMutation = useLogOutMutation();
   const handleClickLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    window.location.href = '/';
+    logOutMutation.mutate(null, {
+      onSuccess() {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        dispatch(setCurrentUser({}));
+        queryClient.removeQueries('getCurrentUser');
+        navigate('/');
+      },
+      onError(err) {
+        console.log(err.response.data.message);
+      },
+    });
   };
-  const [isLogin, setLogin] = useState(null);
+
   const [showMenu, setShowMenu] = useState(false);
   return (
     <div className={cx('responsive')}>
@@ -84,9 +88,9 @@ function HeaderCreateCampaign() {
         <div className={cx('inner')}>
           <div className={cx('group')}>
             <div className={cx('button-search')}>
-              <a href="/explore">
+              <Link href="/explore">
                 <AiOutlineSearch className={cx('icon-search')} />
-              </a>
+              </Link>
             </div>
 
             <div className={cx('nav-list')}>
@@ -96,7 +100,7 @@ function HeaderCreateCampaign() {
                 </a>
               </div>
               <div>
-                <a href="/about-us">Về chúng tôi</a>
+                <Link href="/about-us">Về chúng tôi</Link>
               </div>
             </div>
           </div>
@@ -111,17 +115,17 @@ function HeaderCreateCampaign() {
               <div className={cx('create-campaign')}>
                 <Link to={!user.isAdmin ? '/start-a-campaign' : '/'}>Tạo chiến dịch</Link>
               </div>
-              {isLogin === false && (
+              {!userData && (
                 <>
                   <div className={cx('sign-in')}>
-                    <a href="/login">Đăng nhập</a>
+                    <Link href="/login">Đăng nhập</Link>
                   </div>
                   <div>
-                    <a href="/sign-up">Đăng ký</a>
+                    <Link href="/sign-up">Đăng ký</Link>
                   </div>
                 </>
               )}
-              {isLogin && (
+              {userData && (
                 <div
                   className={cx('user-section')}
                   onClick={() => setShowDropdownUser((prev) => !prev)}
@@ -135,19 +139,15 @@ function HeaderCreateCampaign() {
                     <div className={cx('dropdownBoxFilter')}>
                       {!user.isAdmin && (
                         <>
-                          <span onClick={() => (window.location.href = `/individuals/${user._id}/campaigns`)}>
-                            Chiến dịch của tôi
-                          </span>
-                          <span onClick={() => (window.location.href = `/individuals/${user._id}/contributions`)}>
+                          <span onClick={() => navigate(`/individuals/${user._id}/campaigns`)}>Chiến dịch của tôi</span>
+                          <span onClick={() => navigate(`/individuals/${user._id}/contributions`)}>
                             Đóng góp của tôi
                           </span>
-                          <span onClick={() => (window.location.href = `/individuals/${user._id}/profile`)}>Hồ sơ</span>
-                          <span onClick={() => (window.location.href = `/individuals/${user._id}/edit/settings`)}>
-                            Cài đặt
-                          </span>
+                          <span onClick={() => navigate(`/individuals/${user._id}/profile`)}>Hồ sơ</span>
+                          <span onClick={() => navigate(`/individuals/${user._id}/edit/settings`)}>Cài đặt</span>
                         </>
                       )}
-                      {user.isAdmin && <span onClick={() => (window.location.href = `/admin`)}>Đến trang quản lý</span>}
+                      {user.isAdmin && <span onClick={() => navigate(`/admin`)}>Đến trang quản lý</span>}
                       <span onClick={handleClickLogout} style={{ paddingBottom: '16px' }}>
                         Đăng xuất
                       </span>
@@ -164,7 +164,7 @@ function HeaderCreateCampaign() {
         {activeExplore && <HeaderDropdown listFieldGrouByCategory={listFieldGrouByCategory} />}
         {showMenu && (
           <div className={cx('absolute left-0 w-full top-full z-[101]')}>
-            <MenuDropdown fullHeader={fullHeader} isLogin={isLogin} user={user} />
+            <MenuDropdown fullHeader={fullHeader} isLogin={!!user} user={user} />
           </div>
         )}
       </div>

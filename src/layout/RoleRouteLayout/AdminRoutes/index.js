@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { CustomAxios } from '~/config';
 import { baseUrl } from '~/utils';
@@ -22,7 +22,7 @@ function AdminRoutes() {
       }
     } catch (error) {}
   };
-  useEffect(() => {
+  useLayoutEffect(() => {
     checkAdmin();
   }, []);
   return <>{isAdmin && <Outlet />}</>;

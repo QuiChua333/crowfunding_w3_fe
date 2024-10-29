@@ -34,7 +34,7 @@ CustomAxios.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refreshToken') || '';
 
-        const resust = await axios.get(`${baseUrl}/api/auth/refreshToken`, {
+        const resust = await axios.get(`${baseUrl}/auth/refresh-token`, {
           headers: {
             Authorization: `Bearer ${refreshToken}`,
           },

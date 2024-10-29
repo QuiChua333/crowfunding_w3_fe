@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Login.module.scss';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { logoTrangNho } from '~/assets/images';
@@ -12,6 +12,7 @@ const cx = classNames.bind(styles);
 
 function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const prevLink = useSelector((state) => state.globalApp.previousLink);
   const [email, setEmail] = useState('');
   const [textValidateEmail, setTextValidateEmail] = useState('');
@@ -48,8 +49,8 @@ function Login() {
       setTextValidatePass('Vui lòng nhập mật khẩu');
       return false;
     } else {
-      if (value.trim().length < 8) {
-        setTextValidatePass('Mật khẩu ít nhất phải có 8 ký tự');
+      if (value.trim().length < 6) {
+        setTextValidatePass('Mật khẩu ít nhất phải có 6 ký tự');
         return false;
       } else {
         setTextValidatePass('');
@@ -71,22 +72,23 @@ function Login() {
         password: pass,
       };
       submitLogin.mutate(data, {
-        onSuccess: (res) => {
-          localStorage.setItem('accessToken', res?.data?.accessToken);
-          localStorage.setItem('refreshToken', res?.data?.refreshToken);
-          if (res?.data?.isAdmin) {
-            window.location.href = '/admin';
+        onSuccess: (response) => {
+          localStorage.setItem('accessToken', response.accessToken);
+          localStorage.setItem('refreshToken', response.refreshToken);
+          if (response.isAdmin) {
+            navigate('/admin');
           } else {
             if (prevLink.includes('@report')) {
               console.log(prevLink.substring(7));
-              window.location.href = prevLink.substring(7);
+              navigate(prevLink.substring(7));
             } else {
               window.location.href = '/';
+              navigate('/');
             }
           }
         },
         onError: (error) => {
-          setError(error.message);
+          setError(error.response.data.message);
         },
         onSettled: () => {
           dispatch(setLoading(false));

@@ -27,8 +27,8 @@ import {
 import DetailProject from '~/pages/user/DetailProject';
 import DetailPerk from '~/pages/user/DetailPerk';
 import VerifyUser from '~/pages/user/VerifyUser';
-import { PrefixCampaign, SuccessVerifyInvitation } from '~/pages/common';
-import TemplateEmailVerify from '~/pages/auth/EmailVerify';
+import { PageNotFound, PrefixCampaign, SuccessVerifyInvitation } from '~/pages/common';
+import TemplateEmailVerify from '~/pages/common/EmailVerifySuccess';
 import ResetPassword from '~/pages/auth/ResetPassword';
 import ThankPayment from '~/pages/common/ThankPayment';
 import AboutUs from '~/pages/user/AboutUs';
@@ -42,8 +42,7 @@ const publicRoutes = [
   { path: '/', component: Home, layout: null },
   { path: '/explore', component: Explore, layout: NormalLayout },
   { path: '/forgot', component: ForgetPassword, layout: null },
-  { path: '/users/verify/:tokenLinkVerifyEmail', component: TemplateEmailVerify, layout: null },
-  { path: '/user/:id/update-new-password/:tokenResetPassword', component: ResetPassword, layout: null },
+  { path: '/auth/reset-password', component: ResetPassword, layout: null },
   { path: '/project/:id/detail', component: DetailProject, layout: NormalLayout },
   { path: '/project/:id/perk/detail', component: DetailPerk, layout: null },
   { path: '/project/:id/payments/new/checkout', component: Payment, layout: null },
@@ -54,6 +53,10 @@ const publicRoutes = [
   { path: '/campaigns/team/invitation/:tokenLinkInvitation', component: SuccessVerifyInvitation, layout: null },
   { path: '/payment/thank', component: ThankPayment, layout: null },
   { path: '/about-us', component: AboutUs, layout: NormalLayout },
+
+  // common
+  { path: '/auth/verify-email-success', component: TemplateEmailVerify, layout: null },
+  { path: '/not-found', component: PageNotFound, layout: null },
 ];
 const adminRoutes = [
   { path: '/admin/campaigns', component: CampaignManagement, layout: AdminLayout },

@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { logoTrangNho } from '~/assets/images';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 import { toast } from 'react-toastify';
 const cx = classNames.bind(styles);
@@ -13,6 +13,7 @@ const cx = classNames.bind(styles);
 function SignUp() {
   const [name, setName] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [textValidateName, setTextValidateName] = useState('');
   const [email, setEmail] = useState('');
   const [textValidateEmail, setTextValidateEmail] = useState('');
@@ -32,7 +33,12 @@ function SignUp() {
   const [showButtonRegister, setShowButtonRegister] = useState(true);
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
-
+  const resetField = () => {
+    setEmail('');
+    setName('');
+    setPass('');
+    setConfirmPass('');
+  };
   const validateName = (value) => {
     if (value.trim().length === 0 || value.trim() === '') {
       setTextValidateName('Vui lòng nhập họ tên');
@@ -66,8 +72,8 @@ function SignUp() {
       setTextValidatePass('Vui lòng nhập mật khẩu');
       return false;
     } else {
-      if (value.trim().length < 8) {
-        setTextValidatePass('Mật khẩu ít nhất phải có 8 ký tự');
+      if (value.trim().length < 6) {
+        setTextValidatePass('Mật khẩu ít nhất phải có 6 ký tự');
         return false;
       } else {
         setTextValidatePass('');
@@ -106,20 +112,18 @@ function SignUp() {
       };
       dispatch(setLoading(true));
       registerMutation.mutate(data, {
-        onSuccess(data) {
-          console.log(data);
+        onSuccess(response) {
           dispatch(setLoading(false));
           setShowButtonRegister(false);
-          setMsg(data.message);
+          resetField();
+          setMsg('Một liên kết đã được gửi đến email của bạn. Vui lòng truy cập liên kết để xác nhận tài khoản');
           toast.success('Đăng ký tài khoản thành công.');
         },
 
         onError(error) {
           console.log(error);
           dispatch(setLoading(false));
-          if (error.response && error.response.status >= 400 && error.response.status <= 500) {
-            setError(error.response.data.message);
-          }
+          setError(error.response.data.message);
         },
       });
     }
