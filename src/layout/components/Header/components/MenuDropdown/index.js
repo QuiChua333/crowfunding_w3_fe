@@ -22,7 +22,7 @@ const MenuDropdown = ({ fullHeader, isLogin, user }) => {
         localStorage.removeItem('refreshToken');
         dispatch(setCurrentUser({}));
         queryClient.removeQueries('getCurrentUser');
-        navigate('/');
+        window.location.href = '/';
       },
       onError(err) {
         console.log(err.response.data.message);

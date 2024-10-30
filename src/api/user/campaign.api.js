@@ -1,8 +1,20 @@
 import { CustomAxios } from '~/config';
 import { baseUrl } from '~/utils';
 
+// qq
+export const createCampaign = async () => {
+  const response = await CustomAxios.post(`${baseUrl}/campaign/new`);
+  return response.data;
+};
+
+// qq
 export const getCampaignById = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/getCampaignById/${id}`);
+  const response = await CustomAxios.get(`${baseUrl}/campaign/${id}`);
+  return response.data;
+};
+
+export const checkCampaignOfUser = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/campaign/${id}/checkOwner`);
   return response.data;
 };
 
@@ -89,16 +101,6 @@ export const createComment = async (data) => {
 
 export const sendReport = async (body) => {
   const response = await CustomAxios.post(body.url, body.data);
-  return response.data;
-};
-
-export const checkAdmin = async () => {
-  const response = await CustomAxios.get(`${baseUrl}/user/checkAdmin`);
-  return response.data;
-};
-
-export const startCampaign = async () => {
-  const response = await CustomAxios.post(`${baseUrl}/campaign/createNewCampaign`);
   return response.data;
 };
 

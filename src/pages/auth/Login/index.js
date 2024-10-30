@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Login.module.scss';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
+import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { logoTrangNho } from '~/assets/images';
-import { useSubmitLoginMutation } from '~/hooks/api/mutations/auth/auth.mutation';
+import {
+  useLoginGoogleMutation,
+  useLogOutMutation,
+  useSubmitLoginMutation,
+} from '~/hooks/api/mutations/auth/auth.mutation';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -97,6 +103,10 @@ function Login() {
     }
   };
 
+  const handleLoginGoogle = () => {
+    window.location.href = `${process.env.REACT_APP_URL_BACKEND_LOGIN_GOOGLE}`;
+  };
+
   return (
     <div className={cx('responsive')}>
       <div className={cx('login_container')}>
@@ -139,6 +149,13 @@ function Login() {
               <button type="submit" className={cx('green_btn')}>
                 Đăng nhập
               </button>
+              <div
+                className="w-[180px] flex justify-center items-center py-2 rounded-[20px] cursor-pointer
+              hover:opacity-75  border-[#ccc] border-[1px] mb-5"
+                onClick={handleLoginGoogle}
+              >
+                <FcGoogle className="text-[30px]" />
+              </div>
               <Link to="/forgot">
                 <span className={cx('text-forgot')}>Quên mật khẩu ?</span>
               </Link>

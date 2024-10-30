@@ -38,14 +38,14 @@ function BasicCampaign() {
       reader.onloadend = () => {
         let res = reader.result;
         setCampaignState((prev) => {
-          return { ...prev, cardImage: { ...prev.cardImage, url: res } };
+          return { ...prev, cardImage: res };
         });
       };
     }
   };
   const handleRemoveCardImage = () => {
     setCampaignState((prev) => {
-      return { ...prev, cardImage: { ...prev.cardImage, url: '' } };
+      return { ...prev, cardImage: '' };
     });
   };
 
@@ -72,17 +72,17 @@ function BasicCampaign() {
   useEffect(() => {
     if (dataCampaign) {
       let infoBasic = {
-        id: dataCampaign.data._id,
-        title: dataCampaign.data.title || '',
-        tagline: dataCampaign.data.tagline || '',
-        cardImage: dataCampaign.data.cardImage || { url: '', public_id: '' },
-        location: dataCampaign.data.location || { country: '', city: '' },
-        field: dataCampaign.data.field || '',
-        category: dataCampaign.data.category || '',
-        duration: dataCampaign.data.duration || '',
-        status: dataCampaign.data.status,
-        owner: dataCampaign.data.owner || '',
-        team: dataCampaign.data.team || [],
+        id: dataCampaign.id,
+        title: dataCampaign.title || '',
+        tagline: dataCampaign.tagline || '',
+        cardImage: dataCampaign.cardImage || '',
+        location: dataCampaign.location || '',
+        field: dataCampaign.field || '',
+        category: dataCampaign.category || '',
+        duration: dataCampaign.duration || '',
+        status: dataCampaign.status,
+        owner: dataCampaign.owner || '',
+        team: dataCampaign.team || [],
       };
       setCampaignState({ ...infoBasic });
       setCampaign({ ...infoBasic });
@@ -94,7 +94,7 @@ function BasicCampaign() {
     const value = e.target.value;
     if (name === 'country' || name === 'city') {
       setCampaignState((prev) => {
-        return { ...prev, location: { ...prev.location, [name]: value } };
+        return { ...prev, location: value };
       });
     } else {
       setCampaignState((prev) => {
@@ -306,7 +306,7 @@ function BasicCampaign() {
               }}
               className={cx('entreField-input-image')}
             >
-              {!campaginState.cardImage?.url && (
+              {!campaginState.cardImage && (
                 <div className={cx('tertiaryAction')}>
                   <span className={cx('tertiaryAction-icon')}>
                     <HiCamera style={{ color: '#7A69B3', fontSize: '18px' }} />
@@ -316,13 +316,13 @@ function BasicCampaign() {
                 </div>
               )}
 
-              {campaginState.cardImage?.url && (
+              {campaginState.cardImage && (
                 <div>
                   <img
                     style={{ position: 'relative', objectFit: 'cover' }}
                     width="400"
                     height="400"
-                    src={campaginState.cardImage?.url}
+                    src={campaginState.cardImage}
                   />
                   <div className={cx('editFile')}>
                     <span className={cx('editFile-icon')}>

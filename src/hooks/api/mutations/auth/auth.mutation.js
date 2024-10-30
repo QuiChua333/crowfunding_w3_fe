@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import {
+  loginGoogle,
   logOut,
   register,
   resendEmailConfirm,
@@ -47,5 +48,12 @@ export const useLogOutMutation = () => {
   return useMutation({
     mutationKey: ['useLogOutMutation'],
     mutationFn: logOut,
+  });
+};
+
+export const useLoginGoogleMutation = () => {
+  return useMutation({
+    mutationKey: ['useLoginGoogle'],
+    mutationFn: loginGoogle,
   });
 };

@@ -25,6 +25,11 @@ export const submitLogin = async (data) => {
 };
 
 export const logOut = async () => {
-  const response = await axios.get(`${baseUrl}/auth/logout`);
+  const response = await CustomAxios.get(`${baseUrl}/auth/logout`);
+  return response.data;
+};
+
+export const loginGoogle = async () => {
+  const response = await axios.get(`${baseUrl}/auth/google/login`);
   return response.data;
 };

@@ -2,14 +2,14 @@ import classNames from 'classnames/bind';
 import styles from './PrefixCampaign.module.scss';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { indemand, prepost } from '~/assets/images';
-import { useCheckAdminMutation, useStartCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+import { useStartCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function PrefixCampaign() {
-  const checkAdmin = useCheckAdminMutation();
-  const startCampaign = useStartCampaignMutation();
-
+  const createCampaign = useStartCampaignMutation();
+  const navigate = useNavigate();
   const handleClickStartCampaign = async () => {
     const token = localStorage.getItem('accessToken') || false;
     if (!token) {
@@ -19,21 +19,15 @@ function PrefixCampaign() {
       return;
     }
 
-    checkAdmin.mutate({
-      onSuccess: (res) => {
-        if (res?.data) {
-          return;
-        } else {
-          startCampaign.mutate({
-            onSuccess: (res) => {
-              window.location.href = `/campaigns/${res?.data._id}/edit/basic`;
-            },
-            onError: (error) => console.log(error.message),
-          });
-        }
+    createCampaign.mutate(
+      {},
+      {
+        onSuccess: (campaign) => {
+          navigate(`/campaigns/${campaign.id}/edit/basic`);
+        },
+        onError: (error) => console.log(error.response.data.message),
       },
-      onError: (error) => console.log(error.message),
-    });
+    );
   };
 
   return (

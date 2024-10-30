@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import {
-  checkAdmin,
   createComment,
   deleteMember,
   editCampaignById,
@@ -11,10 +10,25 @@ import {
   removeComment,
   sendInvitation,
   sendReport,
-  startCampaign,
+  createCampaign,
   unLikeComment,
   updateComment,
+  checkCampaignOfUser,
 } from '~/api/user/campaign.api';
+
+export const useStartCampaignMutation = () => {
+  return useMutation({
+    mutationKey: ['useStartCampaignMutation'],
+    mutationFn: createCampaign,
+  });
+};
+
+export const useCheckCampaignOfUserMutation = () => {
+  return useMutation({
+    mutationKey: ['useCheckCampaignOfUserMutation'],
+    mutationFn: checkCampaignOfUser,
+  });
+};
 
 export const useEditCampaignByIdMutation = () => {
   return useMutation({
@@ -83,20 +97,6 @@ export const useSendReportCampaignMutation = () => {
   return useMutation({
     mutationKey: ['useSendReportCampaignMutation'],
     mutationFn: sendReport,
-  });
-};
-
-export const useCheckAdminMutation = () => {
-  return useMutation({
-    mutationKey: ['useCheckAdminMutation'],
-    mutationFn: checkAdmin,
-  });
-};
-
-export const useStartCampaignMutation = () => {
-  return useMutation({
-    mutationKey: ['useStartCampaignMutation'],
-    mutationFn: startCampaign,
   });
 };
 

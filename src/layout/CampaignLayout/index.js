@@ -26,10 +26,10 @@ function CampaignLayout({ children, item }) {
 
   useEffect(() => {
     if (dataCampaign) {
-      setCampaign(dataCampaign.data);
+      setCampaign(dataCampaign);
     }
     if (dataUser) {
-      setCurrentUser(dataUser.data);
+      setCurrentUser(dataUser);
     }
   }, [dataCampaign, dataUser]);
 
