@@ -1,14 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import {
   createComment,
-  deleteMember,
   editCampaignById,
   launchCampaign,
   followCampaign,
   likeComment,
   paymentSuccess,
   removeComment,
-  sendInvitation,
   sendReport,
   createCampaign,
   unLikeComment,
@@ -34,20 +32,6 @@ export const useEditCampaignByIdMutation = () => {
   return useMutation({
     mutationKey: ['useEditCampaignByIdMutation'],
     mutationFn: editCampaignById,
-  });
-};
-
-export const useSendInvitationMutation = () => {
-  return useMutation({
-    mutationKey: ['useSendInvitationMutation'],
-    mutationFn: sendInvitation,
-  });
-};
-
-export const useDeleteMemberMutation = () => {
-  return useMutation({
-    mutationKey: ['useDeleteMemberMutation'],
-    mutationFn: deleteMember,
   });
 };
 

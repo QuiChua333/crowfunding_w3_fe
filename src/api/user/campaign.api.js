@@ -1,45 +1,33 @@
 import { CustomAxios } from '~/config';
 import { baseUrl } from '~/utils';
 
-// qq
+// handleAPI
 export const createCampaign = async () => {
   const response = await CustomAxios.post(`${baseUrl}/campaign/new`);
   return response.data;
 };
 
-// qq
+// handleAPI
 export const getCampaignById = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/campaign/${id}`);
   return response.data;
 };
 
+// handleAPI
 export const checkCampaignOfUser = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/campaign/${id}/checkOwner`);
   return response.data;
 };
 
+// handleAPI
 export const editCampaignById = async (data) => {
-  const response = await CustomAxios.patch(`${baseUrl}/campaign/editCampaign/${data.id}`, data.body);
+  const response = await CustomAxios.patch(`${baseUrl}/campaign/${data.id}`, data.body);
   return response.data;
 };
 
-export const getTeamMemberByCampaignId = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/getTeamMember/${id}`);
-  return response.data;
-};
-
-export const sendInvitation = async (body) => {
-  const response = await CustomAxios.post(`${baseUrl}/campaign/sendInvitation`, body);
-  return response.data;
-};
-
-export const deleteMember = async (body) => {
-  const response = await CustomAxios.delete(`${baseUrl}/campaign/${body.campaignId}/deleteMember/${body.memberId}`);
-  return response.data;
-};
-
+// handleAPI
 export const launchCampaign = async (id) => {
-  const response = await CustomAxios.patch(`${baseUrl}/campaign/launchCampaign/${id}`);
+  const response = await CustomAxios.post(`${baseUrl}/campaign/${id}/launch`);
   return response.data;
 };
 
@@ -53,11 +41,6 @@ export const getPopulateCampaigns = async () => {
   return response.data.data;
 };
 
-export const getQuantityCampaignOfUser = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/getQuantityCampaignByUser/${id}`);
-  return response.data;
-};
-
 export const getQuantityPeople = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/contribution/getQuantityPeopleByCampaign/${id}`);
   return response.data;
@@ -65,11 +48,6 @@ export const getQuantityPeople = async (id) => {
 
 export const getMoney = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/contribution/getMoneyByCampaign/${id}`);
-  return response.data;
-};
-
-export const getTeam = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/getTeamMember/${id}`);
   return response.data;
 };
 

@@ -16,10 +16,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { CustomAxios } from '~/config';
 import { setContentError, setShowErrorDelete } from '~/redux/slides/UserCampaign';
-import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/campaign.query';
 import { useGetUserByEmailMutation } from '~/hooks/api/mutations/user/user.mutation';
-import { useSendInvitationMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+
 import { useDeleteItemMutation } from '~/hooks/api/mutations/user/item.mutation';
+import { useSendInvitationMutation } from '~/hooks/api/mutations/user/team.mutation';
+import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
 const cx = classNames.bind(styles);
 
 function TeamCampaign() {
@@ -77,7 +78,7 @@ function TeamCampaign() {
           {
             campaignId: id,
             email,
-            canEdit: isCheckRoleEditing,
+            isEdit: isCheckRoleEditing,
           },
           {
             onSuccess() {

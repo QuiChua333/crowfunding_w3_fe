@@ -1,27 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  getCampaignById,
-  getMoney,
-  getPopulateCampaigns,
-  getQuantityCampaignOfUser,
-  getQuantityPeople,
-  getTeam,
-  getQuantityCampaignByUser,
-  getTeamMemberByCampaignId,
-} from '~/api/user/campaign.api';
+import { getCampaignById, getMoney, getPopulateCampaigns, getQuantityCampaignByUser } from '~/api/user/campaign.api';
 
 export const useGetCampaignByIdQuery = (id) => {
   return useQuery({
     queryKey: [`getCampaignById`],
     queryFn: () => getCampaignById(id),
-    refetchOnWindowFocus: false,
-  });
-};
-
-export const useGetTeamMemberByCampaignId = (id) => {
-  return useQuery({
-    queryKey: [`useGetTeamMemberByCampaignId`],
-    queryFn: () => getTeamMemberByCampaignId(id),
     refetchOnWindowFocus: false,
   });
 };
@@ -33,10 +16,10 @@ export const useGetPopulateCampaigns = () => {
   });
 };
 
-export const useGetQuantityCampaignOfUserQuery = (id) => {
+export const useGetQuantityCampaignByUserQuery = (campaignId) => {
   return useQuery({
-    queryKey: [`getQuantityCampaignOfUser`],
-    queryFn: () => getQuantityCampaignOfUser(id),
+    queryKey: [`useGetQuantityCampaignByUserQuery`],
+    queryFn: () => getQuantityCampaignByUser(campaignId),
     refetchOnWindowFocus: false,
   });
 };
@@ -44,7 +27,7 @@ export const useGetQuantityCampaignOfUserQuery = (id) => {
 export const useGetQuantityPeopleQuery = (id) => {
   return useQuery({
     queryKey: [`getQuantityPeople`],
-    queryFn: () => getQuantityPeople(id),
+    queryFn: () => getQuantityCampaignByUser(id),
     refetchOnWindowFocus: false,
   });
 };
@@ -53,22 +36,6 @@ export const useGetMoneyQuery = (id) => {
   return useQuery({
     queryKey: [`getMoney`],
     queryFn: () => getMoney(id),
-    refetchOnWindowFocus: false,
-  });
-};
-
-export const useGetTeam = (id) => {
-  return useQuery({
-    queryKey: [`getTeam`],
-    queryFn: () => getTeam(id),
-    refetchOnWindowFocus: false,
-  });
-};
-
-export const useGetQuantityCampaignByUserQuery = (campaignId) => {
-  return useQuery({
-    queryKey: [`useGetQuantityCampaignByUserQuery`],
-    queryFn: () => getQuantityCampaignByUser(campaignId),
     refetchOnWindowFocus: false,
   });
 };

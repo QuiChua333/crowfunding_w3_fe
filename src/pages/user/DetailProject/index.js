@@ -24,11 +24,11 @@ import { useGetListPerksByCampaignId } from '~/hooks/api/queries/user/perk.query
 import {
   useGetCampaignByIdQuery,
   useGetMoneyQuery,
-  useGetQuantityCampaignOfUserQuery,
+  useGetQuantityCampaignByUserQuery,
   useGetQuantityPeopleQuery,
-  useGetTeam,
 } from '~/hooks/api/queries/user/campaign.query';
 import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -203,11 +203,11 @@ function DetailProject() {
     useGetListPerksByCampaignId(id);
   const { data: dataProjectById, isSuccess: isSuccessGetProjectById } = useGetCampaignByIdQuery(id);
   const { data: dataGetQuantityCampaignOfUser, isSuccess: isSuccessGetQuantityCampaignOfUser } =
-    useGetQuantityCampaignOfUserQuery(id);
+    useGetQuantityCampaignByUserQuery(id);
 
   const { data: dataQuantityPeople, isSuccess: isSuccessGetQuantityPeople } = useGetQuantityPeopleQuery(id);
   const { data: dataMoney, isSuccess: isSuccessGetMoney } = useGetMoneyQuery(id);
-  const { data: dataTeams, isSuccess: isSuccessGetTeam } = useGetTeam(id);
+  const { data: dataTeams, isSuccess: isSuccessGetTeam } = useGetTeamMemberByCampaignId(id);
   useEffect(() => {
     if (isSuccessGetListPerksByCampaignId) {
       setListPerkByCampaignId([...dataListPerksByCampaignId?.data]);
