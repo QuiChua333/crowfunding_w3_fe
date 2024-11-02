@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CommentDisplay from '../CommentDisplay';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { useRemoveCommentMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+
 const Comments = ({ campaign, comments, setListComments, members }) => {
   const [commentsOrigin, setCommentsOrigin] = useState([]);
   const [showComments, setShowComments] = useState([]);
@@ -21,7 +21,7 @@ const Comments = ({ campaign, comments, setListComments, members }) => {
     setReplyComments(newRep);
   }, [comments]);
 
-  const removeComment = useRemoveCommentMutation();
+  const removeComment = useDeleteCommentMutation();
   const handleRemoveComment = async (comment) => {
     dispatch(setLoading(true));
     const deleteArr = [...comments.filter((cm) => cm.reply === comment._id), comment];

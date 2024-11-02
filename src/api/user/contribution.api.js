@@ -30,3 +30,18 @@ export const paymentMomo = async (body) => {
   const response = await CustomAxios.post(`${baseUrl}/contribution/paymentMomo/handle`, body);
   return response.data;
 };
+
+export const getQuantityContributeOfUser = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/contribution/getQuantityContributeOfUserId/${id}`);
+  return response;
+};
+
+export const getQuantityPeople = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/contribution/getQuantityPeopleByCampaign/${id}`);
+  return response.data;
+};
+
+export const getMoney = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/contribution/getMoneyByCampaign/${id}`);
+  return response.data;
+};

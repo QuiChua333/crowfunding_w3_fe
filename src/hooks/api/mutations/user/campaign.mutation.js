@@ -3,7 +3,6 @@ import {
   createComment,
   editCampaignById,
   launchCampaign,
-  followCampaign,
   likeComment,
   paymentSuccess,
   removeComment,
@@ -12,8 +11,10 @@ import {
   unLikeComment,
   updateComment,
   checkCampaignOfUser,
+  deleteCampaign,
 } from '~/api/user/campaign.api';
 
+// handleAPI
 export const useStartCampaignMutation = () => {
   return useMutation({
     mutationKey: ['useStartCampaignMutation'],
@@ -21,6 +22,7 @@ export const useStartCampaignMutation = () => {
   });
 };
 
+// handleAPI
 export const useCheckCampaignOfUserMutation = () => {
   return useMutation({
     mutationKey: ['useCheckCampaignOfUserMutation'],
@@ -28,6 +30,7 @@ export const useCheckCampaignOfUserMutation = () => {
   });
 };
 
+// handleAPI
 export const useEditCampaignByIdMutation = () => {
   return useMutation({
     mutationKey: ['useEditCampaignByIdMutation'],
@@ -35,45 +38,19 @@ export const useEditCampaignByIdMutation = () => {
   });
 };
 
-export const useFollowCampaignMutation = () => {
+// handleAPI
+export const useLaunchCampaignMutation = () => {
   return useMutation({
-    mutationKey: ['useFollowCampaignMutation'],
-    mutationFn: followCampaign,
+    mutationKey: ['useLaunchCampaignMutation'],
+    mutationFn: launchCampaign,
   });
 };
 
-export const useRemoveCommentMutation = () => {
+// handleAPI
+export const useDeleteCampaignMutation = () => {
   return useMutation({
-    mutationKey: ['useRemoveCommentMutation'],
-    mutationFn: removeComment,
-  });
-};
-
-export const useUpdateCommentMutation = () => {
-  return useMutation({
-    mutationKey: ['useUpdateCommentMutation'],
-    mutationFn: updateComment,
-  });
-};
-
-export const useLikeCommentMutation = () => {
-  return useMutation({
-    mutationKey: ['useLikeCommentMutation'],
-    mutationFn: likeComment,
-  });
-};
-
-export const useUnLikeCommentMutation = () => {
-  return useMutation({
-    mutationKey: ['useUnLikeCommentMutation'],
-    mutationFn: unLikeComment,
-  });
-};
-
-export const useCreateCommentMutation = () => {
-  return useMutation({
-    mutationKey: ['useCreateCommentMutation'],
-    mutationFn: createComment,
+    mutationKey: ['useDeleteCampaignMutation'],
+    mutationFn: deleteCampaign,
   });
 };
 
@@ -88,12 +65,5 @@ export const usePaymentSuccessMutation = () => {
   return useMutation({
     mutationKey: ['usePaymentSuccessMutation'],
     mutationFn: paymentSuccess,
-  });
-};
-
-export const useLaunchCampaignMutation = () => {
-  return useMutation({
-    mutationKey: ['useLaunchCampaignMutation'],
-    mutationFn: launchCampaign,
   });
 };

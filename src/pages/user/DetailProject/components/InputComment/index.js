@@ -4,10 +4,9 @@ import Icons from '../IconComment';
 import classNames from 'classnames/bind';
 import styles from './InputComment.module.scss';
 import { useParams } from 'react-router-dom';
-import baseURL from '~/utils/baseURL';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { CustomAxios } from '~/config';
-import { useCreateCommentMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+import { useCreateCommentMutation } from '~/hooks/api/mutations/user/comment.mutation';
+
 const cx = classNames.bind(styles);
 const InputComment = ({ children, setListComments, onReply, setOnReply }) => {
   const { id } = useParams();

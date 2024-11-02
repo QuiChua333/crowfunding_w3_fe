@@ -24,11 +24,11 @@ import { useGetListPerksByCampaignId } from '~/hooks/api/queries/user/perk.query
 import {
   useGetCampaignByIdQuery,
   useGetMoneyQuery,
-  useGetQuantityCampaignByUserQuery,
+  useGetQuantityCampaignsOfOwnerQuery,
   useGetQuantityPeopleQuery,
 } from '~/hooks/api/queries/user/campaign.query';
-import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
+import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-campaign.mutation';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -203,7 +203,7 @@ function DetailProject() {
     useGetListPerksByCampaignId(id);
   const { data: dataProjectById, isSuccess: isSuccessGetProjectById } = useGetCampaignByIdQuery(id);
   const { data: dataGetQuantityCampaignOfUser, isSuccess: isSuccessGetQuantityCampaignOfUser } =
-    useGetQuantityCampaignByUserQuery(id);
+    useGetQuantityCampaignsOfOwnerQuery(id);
 
   const { data: dataQuantityPeople, isSuccess: isSuccessGetQuantityPeople } = useGetQuantityPeopleQuery(id);
   const { data: dataMoney, isSuccess: isSuccessGetMoney } = useGetMoneyQuery(id);

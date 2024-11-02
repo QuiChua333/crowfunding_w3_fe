@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { useDeleteCampaignMutation } from '~/hooks/api/mutations/admin/admin.campaigns.mutation';
+import { useDeleteCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 const cx = classNames.bind(styles);
 
 function ItemCampaign({ item, getCampaignsFollowed }) {

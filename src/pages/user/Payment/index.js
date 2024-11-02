@@ -10,7 +10,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import formatMoney from '~/utils/formatMoney';
 import axios from 'axios';
 import { PaymentModal, ItemPayment } from './components';
-import { useGetCampaignByIdQuery, useGetQuantityCampaignByUserQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useGetCampaignByIdQuery, useGetQuantityCampaignOfUserQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
 import { usePaymentMomoMutation } from '~/hooks/api/mutations/user/contribution.mutation';
 
@@ -47,7 +47,7 @@ function Payment() {
       return newItem;
     }),
   });
-  const { data: responseQuantity } = useGetQuantityCampaignByUserQuery(id);
+  const { data: responseQuantity } = useGetQuantityCampaignOfUserQuery(id);
   useEffect(() => {
     if (responseQuantity) {
       console.log({ responseQuantity });

@@ -31,49 +31,21 @@ export const launchCampaign = async (id) => {
   return response.data;
 };
 
-export const getQuantityCampaignByUser = async (campaignId) => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/getQuantityCampaignByUser/${campaignId}`);
-  return response.data;
+// handleAPI
+export const deleteCampaign = async (id) => {
+  const response = await CustomAxios.delete(`${baseUrl}/campaign/${id}`);
+  return response;
 };
 
-export const getPopulateCampaigns = async () => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/getPopulateCampaigns`);
-  return response.data.data;
+// handleAPI
+export const getCampaignsOfOwner = async (userId) => {
+  const response = await CustomAxios.get(`${baseUrl}/campaign/owner/${userId}`);
+  return response;
 };
 
-export const getQuantityPeople = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/contribution/getQuantityPeopleByCampaign/${id}`);
-  return response.data;
-};
-
-export const getMoney = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/contribution/getMoneyByCampaign/${id}`);
-  return response.data;
-};
-
-export const followCampaign = async (id) => {
-  const response = await CustomAxios.patch(`${baseUrl}/user/handleFollowedCampaigns`, { campaignId: id });
-  return response.data;
-};
-
-export const removeComment = async (id) => {
-  await CustomAxios.delete(`${baseUrl}/comment/deleteComment/${id}`);
-};
-
-export const updateComment = async (dataApi) => {
-  await CustomAxios.patch(`${baseUrl}/comment/updateComment/${dataApi.id}`, dataApi.content);
-};
-
-export const likeComment = async (id) => {
-  await CustomAxios.patch(`${baseUrl}/comment/likeComment/${id}`);
-};
-
-export const unLikeComment = async (id) => {
-  await CustomAxios.patch(`${baseUrl}/comment/unLikeComment/${id}`);
-};
-
-export const createComment = async (data) => {
-  const response = await CustomAxios.post(`${baseUrl}/comment/createComment`, data);
+// handleAPI
+export const getQuantityCampaignsOfOwner = async (campaignId) => {
+  const response = await CustomAxios.get(`${baseUrl}/campaign/quantity/owner/${campaignId}`);
   return response.data;
 };
 
@@ -85,4 +57,9 @@ export const sendReport = async (body) => {
 export const paymentSuccess = async (url) => {
   const response = await CustomAxios.post(url);
   return response.data;
+};
+
+export const getPopulateCampaigns = async () => {
+  const response = await CustomAxios.get(`${baseUrl}/campaign/getPopulateCampaigns`);
+  return response.data.data;
 };

@@ -8,7 +8,8 @@ import CommentMenu from '../CommentMenu';
 import InputComment from '../InputComment';
 import styles from './CommenCard.module.scss';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { useLikeCommentMutation, useUnLikeCommentMutation, useUpdateCommentMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+import { useUpdateCommentMutation } from '~/hooks/api/mutations/user/comment.mutation';
+import { useLikeCommentMutation } from '~/hooks/api/mutations/user/comment-like.mutation';
 const cx = classNames.bind(styles);
 const CommentCard = ({ children, comment, campaign, commentId, setListComments, handleRemoveComment, members }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -37,9 +38,9 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
     if (comment.content !== content) {
       dispatch(setLoading(true));
       const dataApi = {
-        id: comment._id,
+        commentId: comment._id,
         content,
-      }
+      };
       updateComment.mutate(dataApi, {
         onSuccess: () => {
           console.log('Cập nhật bình luận thành công');
@@ -61,7 +62,7 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
         onSettled: () => {
           dispatch(setLoading(false));
         },
-      })
+      });
     } else {
       setOnEdit(false);
     }
@@ -88,14 +89,13 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
       onSettled: () => {
         setLoadLike(false);
       },
-    })
+    });
   };
 
-  const unLikeComment = useUnLikeCommentMutation();
   const handleUnLike = async () => {
     if (loadLike) return;
     setLoadLike(true);
-    unLikeComment.mutate(comment._id, {
+    likeComment.mutate(comment._id, {
       onSuccess: () => {
         setListComments((prev) =>
           [...prev].map((item) => {
@@ -111,7 +111,7 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
       onSettled: () => {
         setLoadLike(false);
       },
-    })
+    });
   };
 
   const handleReply = () => {

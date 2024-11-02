@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { changeStatusCampaign, deleteCampaign } from '~/api/admin/admin.campaigns.api';
+import { changeStatusCampaign, adminDeleteCampaign } from '~/api/admin/admin.campaigns.api';
 
 export const useChangeStatusCampaignMutation = () => {
   return useMutation({
@@ -8,10 +8,9 @@ export const useChangeStatusCampaignMutation = () => {
   });
 };
 
-export const useDeleteCampaignMutation = () => {
+export const useAdminDeleteCampaignMutation = () => {
   return useMutation({
     mutationKey: ['useDeleteCampaignMutation'],
-    mutationFn: deleteCampaign,
+    mutationFn: adminDeleteCampaign,
   });
 };
-

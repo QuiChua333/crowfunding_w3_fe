@@ -10,6 +10,6 @@ export const changeStatusCampaign = async (dataApi) => {
   await CustomAxios.patch(`${baseURL}/campaign/adminChangeStatusCampaign/${dataApi.id}`, dataApi.status);
 };
 
-export const deleteCampaign = async (id) => {
+export const adminDeleteCampaign = async (id) => {
   await CustomAxios.delete(`${baseURL}campaign/adminDeleteCampaign/${id}`);
 };

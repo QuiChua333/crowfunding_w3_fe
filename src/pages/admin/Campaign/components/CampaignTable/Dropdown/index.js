@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import {
   useChangeStatusCampaignMutation,
-  useDeleteCampaignMutation,
+  useAdminDeleteCampaignMutation,
 } from '~/hooks/api/mutations/admin/admin.campaigns.mutation';
 const cx = classNames.bind(styles);
 
@@ -97,7 +97,7 @@ function DropDown({ menu, onClickItem, index, campaign, getAllCampaigns }) {
     });
   };
 
-  const handleDeleteCampaign = useDeleteCampaignMutation();
+  const handleDeleteCampaign = useAdminDeleteCampaignMutation();
 
   const deleteCampaign = async () => {
     dispatch(setLoading(true));

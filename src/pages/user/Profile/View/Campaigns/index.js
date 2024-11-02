@@ -6,11 +6,8 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ItemCampaign from './components/ItemCampaign';
 import { useSelector } from 'react-redux';
-import {
-  useGetCampaignsFollowedQuery,
-  useGetCampaignsQuery,
-  useGetInfoUserQuery,
-} from '~/hooks/api/queries/user/user.profile.query';
+import { useGetCampaignsQuery, useGetInfoUserQuery } from '~/hooks/api/queries/user/user.profile.query';
+import { useGetCampaignsFollowedQuery } from '~/hooks/api/queries/user/follow-campaign.query';
 const cx = classNames.bind(styles);
 function ViewCampaigns() {
   const [isHasCampaign, setHasCampaign] = useState(false);
@@ -37,7 +34,7 @@ function ViewCampaigns() {
   }, [dataUser]);
 
   const { data: dataCampaignsFollowed, refetch } = useGetCampaignsFollowedQuery(id);
-  console.log('con tro này', dataCampaignsFollowed);
+
   useEffect(() => {
     if (dataCampaignsFollowed) {
       setCampaignsFollowed(dataCampaignsFollowed?.data?.data);

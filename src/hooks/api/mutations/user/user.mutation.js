@@ -14,3 +14,31 @@ export const useGetLinkVerifyUserMutation = () => {
     mutationFn: getLinkVerifyUser,
   });
 };
+
+export const useUpdateProfileUserMutation = () => {
+  return useMutation({
+    mutationKey: ['useUpdateProfileUserMutation'],
+    mutationFn: updateProfileUser,
+  });
+};
+
+export const useGetInfoVerifyUserMutation = () => {
+  return useMutation({
+    mutationKey: ['useGetInfoVerifyUserMutation'],
+    mutationFn: getInfoVerifyUser,
+  });
+};
+
+export const useUpdatePasswordMutation = () => {
+  return useMutation({
+    mutationKey: ['useUpdatePasswordMutation'],
+    mutationFn: updatePasswordUser,
+  });
+};
+
+export const useRequestVerifyUserUserMutation = () => {
+  return useMutation({
+    mutationKey: ['useRequestVerifyUserUserMutation'],
+    mutationFn: requestVerifyInfoUser,
+  });
+};
