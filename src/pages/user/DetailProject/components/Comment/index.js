@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CommentDisplay from '../CommentDisplay';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
+import { useDeleteCommentMutation } from '~/hooks/api/mutations/user/comment.mutation';
 
 const Comments = ({ campaign, comments, setListComments, members }) => {
   const [commentsOrigin, setCommentsOrigin] = useState([]);

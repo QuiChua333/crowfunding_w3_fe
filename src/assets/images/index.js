@@ -5,6 +5,7 @@ export const logo5 = require('~/assets/images/jpg/logo5.jpg');
 export const logo6 = require('~/assets/images/jpg/logo6.jpg');
 export const bgLogin = require('~/assets/images/jpg/bg-login.jpg');
 export const paypal = require('~/assets/images/jpg/paypal.jpg');
+export const defaultCardCampaign = require('~/assets/images/jpg/default-card-campaign.jpg');
 
 export const arrow = require('~/assets/images/png/arrow.png');
 export const defaultAvt = require('~/assets/images/png/default-avt.png');

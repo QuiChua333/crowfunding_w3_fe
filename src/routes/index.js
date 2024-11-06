@@ -49,7 +49,6 @@ const publicRoutes = [
   { path: '/individuals/:id/campaigns', component: ViewCampaigns, layout: NormalLayout },
   { path: '/individuals/:id/profile', component: ProfilePersonal, layout: NormalLayout },
   { path: '/start-a-campaign', component: PrefixCampaign, layout: NormalLayout },
-  { path: '/givefun/verify-user/:tokenLinkVerifyUser', component: VerifyUser, layout: null },
   { path: '/campaigns/team/invitation/:tokenLinkInvitation', component: SuccessVerifyInvitation, layout: null },
   { path: '/payment/thank', component: ThankPayment, layout: null },
   { path: '/about-us', component: AboutUs, layout: NormalLayout },
@@ -76,6 +75,7 @@ const privateUserRoutes = {
     { path: '/campaigns/:id/edit/funding', component: FundingCampaign, layout: CampaignLayout },
     { path: '/campaigns/:id/edit/settings', component: SettingCampaign, layout: CampaignLayout },
     { path: '/campaigns/:id/edit/contribution', component: ContributionCampaign, layout: CampaignLayout },
+    { path: '/givefun/verify', component: VerifyUser, layout: null },
   ],
   individuals: [
     { path: '/individuals/:id/edit/profile', component: EditProfile, layout: NormalLayout },

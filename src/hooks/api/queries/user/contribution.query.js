@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCampaignById } from '~/api/user/campaign.api';
 import {
   getAllContributionsByCampaign,
   getMoneyByCampaign,
+  getQuantityContributeOfUser,
   getQuantityPeopleByCampaign,
   getTopUserContributionByCampaign,
 } from '~/api/user/contribution.api';
 
+// handleAPI
 export const useGetTopUserContributionByCampaignQuery = (id) => {
   return useQuery({
     queryKey: [`useGetTopUserContributionByCampaignQuery`],
@@ -15,6 +16,7 @@ export const useGetTopUserContributionByCampaignQuery = (id) => {
   });
 };
 
+// handleAPI
 export const useGetMoneyByCampaignQuery = (id) => {
   return useQuery({
     queryKey: [`useGetMoneyByCampaignQuery`],
@@ -23,10 +25,37 @@ export const useGetMoneyByCampaignQuery = (id) => {
   });
 };
 
+// handleAPI
 export const useGetQuantityPeopleByCampaignQuery = (id) => {
   return useQuery({
     queryKey: [`useGetQuantityPeopleByCampaignQuery`],
     queryFn: () => getQuantityPeopleByCampaign(id),
+    refetchOnWindowFocus: false,
+  });
+};
+
+// handleAPI
+export const useGetMoneyQuery = (id) => {
+  return useQuery({
+    queryKey: [`getMoney`],
+    queryFn: () => getMoneyByCampaign(id),
+    refetchOnWindowFocus: false,
+  });
+};
+
+// handleAPI
+export const useGetQuantityContributeOfUserQuery = (id) => {
+  return useQuery({
+    queryKey: [`useGetQuantityContributeOfUserQuery`],
+    queryFn: () => getQuantityContributeOfUser(id),
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetAllContributionsByCampaignQuery = () => {
+  return useQuery({
+    queryKey: [`useGetAllContributionsByCampaignQuery`],
+    queryFn: () => getAllContributionsByCampaign(),
     refetchOnWindowFocus: false,
   });
 };

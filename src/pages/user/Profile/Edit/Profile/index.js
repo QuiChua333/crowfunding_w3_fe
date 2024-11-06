@@ -9,7 +9,7 @@ import { setLoading } from '~/redux/slides/GlobalApp';
 import { toast } from 'react-toastify';
 import { setCurrentUser } from '~/redux/slides/User';
 import { defaultAvt } from '~/assets/images';
-import { useUpdateProfileUserMutation } from '~/hooks/api/mutations/user/user.profile.mutation';
+import { useUpdateProfileUserMutation } from '~/hooks/api/mutations/user/user.mutation';
 const cx = classNames.bind(styles);
 function EditProfile() {
   const { id } = useParams();
@@ -98,11 +98,8 @@ function EditProfile() {
   const updateProfileUserMutation = useUpdateProfileUserMutation();
   const handleSave = async () => {
     dispatch(setLoading(true));
-    const dataApi = {
-      id,
-      body: userState,
-    };
-    updateProfileUserMutation.mutate(dataApi, {
+    const data = userState;
+    updateProfileUserMutation.mutate(data, {
       onSuccess(response) {
         dispatch(setCurrentUser(response));
         toast.success('Cập nhật thông tin thành công');

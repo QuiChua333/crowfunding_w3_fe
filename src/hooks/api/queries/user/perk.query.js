@@ -1,11 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  getListPerksByCampaignId,
-  getPerk,
-  getPerksByCampaignId,
-  getPerksHasListItemsByCampaignId,
-} from '~/api/user/perk.api';
+import { getPerk, getPerksByCampaignId, getPerksHasListItemsByCampaignId } from '~/api/user/perk.api';
 
+// handleAPI
 export const useGetPerksByCampaignIdQuery = (id) => {
   return useQuery({
     queryKey: [`useGetPerksByCampaignIdQuery`],
@@ -14,6 +10,7 @@ export const useGetPerksByCampaignIdQuery = (id) => {
   });
 };
 
+// handleAPI
 export const useGetPerk = (id) => {
   return useQuery({
     queryKey: [`useGetPerk`],
@@ -22,14 +19,7 @@ export const useGetPerk = (id) => {
   });
 };
 
-export const useGetListPerksByCampaignId = (id) => {
-  return useQuery({
-    queryKey: [`getListPerksByCampaignId`],
-    queryFn: () => getListPerksByCampaignId(id),
-    refetchOnWindowFocus: false,
-  });
-};
-
+// handleAPI
 export const useGetPerksHasListItemsByCampaignIdQuery = (id) => {
   return useQuery({
     queryKey: [`useGetPerksHasListItemsByCampaignIdQuery`],

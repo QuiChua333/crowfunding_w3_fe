@@ -53,17 +53,3 @@ export const useDeleteCampaignMutation = () => {
     mutationFn: deleteCampaign,
   });
 };
-
-export const useSendReportCampaignMutation = () => {
-  return useMutation({
-    mutationKey: ['useSendReportCampaignMutation'],
-    mutationFn: sendReport,
-  });
-};
-
-export const usePaymentSuccessMutation = () => {
-  return useMutation({
-    mutationKey: ['usePaymentSuccessMutation'],
-    mutationFn: paymentSuccess,
-  });
-};

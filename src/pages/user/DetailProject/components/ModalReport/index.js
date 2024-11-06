@@ -8,12 +8,12 @@ import baseURL from '~/utils/baseURL';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setMessageBox } from '~/redux/slides/GlobalApp';
-import { CustomAxios } from '~/config';
-import { useSendReportCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+import { useSendReportCampaignMutation } from '~/hooks/api/mutations/user/report.mutation';
 
 const cx = classNames.bind(styles);
 
 function ModalReport({ setIsOpenModalReport }) {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const messageBox = useSelector((state) => state.globalApp.messageBox);
   const [topic, setTopic] = useState('');
@@ -70,15 +70,13 @@ function ModalReport({ setIsOpenModalReport }) {
         return itemp.imageBase64;
       });
       const data = {
+        campaignId: id,
         title: topic.toUpperCase(),
         content: textContent,
         images: [...newListImage],
       };
-      const body = {
-        url: `${baseURL}/report/reportCampaign/${idCampaign.id}`,
-        data,
-      };
-      sendReport.mutate(body, {
+
+      sendReport.mutate(data, {
         onSuccess: (res) => {
           if (res?.data) {
             dispatch(setLoading(false));

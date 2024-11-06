@@ -1,10 +1,6 @@
 import classNames from 'classnames/bind';
-import SidebarCampaign from '../components/Sidebar';
-
-import Footer from '~/layout/components/Footer';
 import TeamMember from './components/TeamMember';
 import { IoSquareOutline, IoCheckboxSharp } from 'react-icons/io5';
-import { TiCancel } from 'react-icons/ti';
 import { setMessageBox } from '~/redux/slides/GlobalApp';
 
 import styles from './Teams.module.scss';
@@ -18,8 +14,7 @@ import { CustomAxios } from '~/config';
 import { setContentError, setShowErrorDelete } from '~/redux/slides/UserCampaign';
 import { useGetUserByEmailMutation } from '~/hooks/api/mutations/user/user.mutation';
 
-import { useDeleteItemMutation } from '~/hooks/api/mutations/user/item.mutation';
-import { useSendInvitationMutation } from '~/hooks/api/mutations/user/team.mutation';
+import { useDeleteMemberMutation, useSendInvitationMutation } from '~/hooks/api/mutations/user/team.mutation';
 import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
 const cx = classNames.bind(styles);
 
@@ -112,7 +107,7 @@ function TeamCampaign() {
       }),
     );
   };
-  const deleteMemberMutation = useDeleteItemMutation();
+  const deleteMemberMutation = useDeleteMemberMutation();
   const deleteMember = async (memberId) => {
     deleteMemberMutation.mutate(
       {

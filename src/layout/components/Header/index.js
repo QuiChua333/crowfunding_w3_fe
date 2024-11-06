@@ -14,6 +14,7 @@ import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
 import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLogOutMutation } from '~/hooks/api/mutations/auth/auth.mutation';
+import { defaultAvt, logoTrangNho } from '~/assets/images';
 const cx = classNames.bind(styles);
 // Component dùng chung
 function Header({ type = 'page' }) {
@@ -135,7 +136,7 @@ function Header({ type = 'page' }) {
                   onClick={() => setShowDropdownUser((prev) => !prev)}
                   ref={boxFilterElement}
                 >
-                  <img className={cx('user-avatar')} src={user.avatar?.url} />
+                  <img className={cx('user-avatar')} src={defaultAvt} />
                   <span className={cx('user-name')}>
                     {user.fullName} <FaAngleDown className={cx('icon', { active: showDropdownUser })} />
                   </span>
@@ -143,12 +144,12 @@ function Header({ type = 'page' }) {
                     <div className={cx('dropdownBoxFilter')}>
                       {!user.isAdmin && (
                         <>
-                          <span onClick={() => navigate(`/individuals/${user._id}/campaigns`)}>Chiến dịch của tôi</span>
-                          <span onClick={() => navigate(`/individuals/${user._id}/contributions`)}>
+                          <span onClick={() => navigate(`/individuals/${user.id}/campaigns`)}>Chiến dịch của tôi</span>
+                          <span onClick={() => navigate(`/individuals/${user.id}/contributions`)}>
                             Đóng góp của tôi
                           </span>
-                          <span onClick={() => navigate(`/individuals/${user._id}/profile`)}>Hồ sơ</span>
-                          <span onClick={() => navigate(`/individuals/${user._id}/edit/settings`)}>Cài đặt</span>
+                          <span onClick={() => navigate(`/individuals/${user.id}/profile`)}>Hồ sơ</span>
+                          <span onClick={() => navigate(`/individuals/${user.id}/edit/settings`)}>Cài đặt</span>
                         </>
                       )}
                       {user.isAdmin && <span onClick={() => navigate(`/admin`)}>Đến trang quản lý</span>}

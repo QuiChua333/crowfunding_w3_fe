@@ -9,6 +9,7 @@ import {
   submitLogin,
 } from '~/api/auth/auth.api';
 
+// handleAPI
 export const useRegisterMutation = () => {
   return useMutation({
     mutationKey: ['useRegisterMutation'],
@@ -16,6 +17,7 @@ export const useRegisterMutation = () => {
   });
 };
 
+// handleAPI
 export const useSubmitEmailForgotPasswordMutation = () => {
   return useMutation({
     mutationKey: ['useSubmitEmailForgotPasswordMutation'],
@@ -23,6 +25,7 @@ export const useSubmitEmailForgotPasswordMutation = () => {
   });
 };
 
+// handleAPI
 export const useSubmitLoginMutation = () => {
   return useMutation({
     mutationKey: ['useSubmitLoginMutation'],
@@ -30,6 +33,7 @@ export const useSubmitLoginMutation = () => {
   });
 };
 
+// handleAPI
 export const useSubmitResetPasswordMutation = () => {
   return useMutation({
     mutationKey: ['useSubmitResetPasswordMutation'],
@@ -37,6 +41,7 @@ export const useSubmitResetPasswordMutation = () => {
   });
 };
 
+// handleAPI
 export const useResendEmailConfirmMutation = () => {
   return useMutation({
     mutationKey: ['useResendEmailConfirmMutation'],
@@ -44,6 +49,7 @@ export const useResendEmailConfirmMutation = () => {
   });
 };
 
+// handleAPI
 export const useLogOutMutation = () => {
   return useMutation({
     mutationKey: ['useLogOutMutation'],
@@ -51,6 +57,7 @@ export const useLogOutMutation = () => {
   });
 };
 
+// handleAPI
 export const useLoginGoogleMutation = () => {
   return useMutation({
     mutationKey: ['useLoginGoogle'],

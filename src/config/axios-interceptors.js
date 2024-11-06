@@ -28,9 +28,9 @@ CustomAxios.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const { response, config } = error;
-    const message = response?.message;
-    if (message && message === 'Token has expired') {
+    const { config } = error;
+    const status = error.response?.status || 500;
+    if (status === 401) {
       try {
         const refreshToken = localStorage.getItem('refreshToken') || '';
 
@@ -46,10 +46,10 @@ CustomAxios.interceptors.response.use(
         config.headers.Authorization = `Bearer ${accessToken}`;
         return CustomAxios(config);
       } catch (err) {
-        if (err.response?.status === 403) {
+        console.log(err);
+        if (err.response.status === 401) {
           backToLogin();
-        }
-        return Promise.reject(error);
+        } else return Promise.reject(error);
       }
     } else return Promise.reject(error);
   },

@@ -7,47 +7,31 @@ export const getCurrentUser = async () => {
   return response.data;
 };
 
+// handleAPI
 export const getUserByEmail = async (email) => {
-  const response = await CustomAxios.get(`${baseUrl}/user/getUserByEmail/${email}`);
+  const response = await CustomAxios.get(`${baseUrl}/user/email${email}`);
   return response.data;
 };
 
-export const getLinkVerifyUser = async (ownerId) => {
-  const response = await CustomAxios.get(`${baseUrl}/user/getLinkVerifyUser/${ownerId}`);
-  return response.data;
-};
-
-export const updateProfileUser = async (dataUser) => {
-  const response = await CustomAxios.patch(`${baseUrl}/user/editUser/${dataUser.id}`, dataUser.body);
-  return response.data.data;
-};
-
-export const getInfoVerifyUser = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/user/getLinkVerifyUser/${id}`);
-  return response.data.data;
-};
-
-export const updatePasswordUser = async (body) => {
-  const response = await CustomAxios.patch(`${baseUrl}/user/updatePassword`, body);
+// handleAPI
+export const getUserById = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/user/${id}`);
   return response;
 };
 
-export const getInfoUser = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/user/getInfoUser/${id}`);
+// handleAPI
+export const updateProfileUser = async (data) => {
+  const response = await CustomAxios.patch(`${baseUrl}/user`, data);
+  return response.data;
+};
+
+// handleAPI
+export const updatePasswordUser = async ({ currentPassword, newPassword }) => {
+  const response = await CustomAxios.patch(`${baseUrl}/user/updatePassword`, { currentPassword, newPassword });
   return response;
 };
 
 export const getAllContributesOfUser = async (url) => {
   const response = await CustomAxios.get(url);
   return response.data;
-};
-
-export const requestVerifyInfoUser = async (dataApi) => {
-  const response = await CustomAxios.patch(`${baseUrl}/user/editUser/${dataApi.id}`, dataApi.infoVerify);
-  return response;
-};
-
-export const checkLink = async (tokenLinkVerifyUser) => {
-  const response = await CustomAxios.get(`${baseUrl}/user/checkLinkVerifyUser/${tokenLinkVerifyUser}`);
-  return response;
 };

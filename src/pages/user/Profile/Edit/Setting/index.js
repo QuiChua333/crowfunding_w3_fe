@@ -5,12 +5,9 @@ import { FaRegEdit } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading, setPreviousLink } from '~/redux/slides/GlobalApp';
+import { setLoading } from '~/redux/slides/GlobalApp';
 import { toast } from 'react-toastify';
-import {
-  useGetInfoVerifyUserMutation,
-  useUpdatePasswordMutation,
-} from '~/hooks/api/mutations/user/user.profile.mutation';
+import { useUpdatePasswordMutation } from '~/hooks/api/mutations/user/user.mutation';
 const cx = classNames.bind(styles);
 function EditSetting() {
   const dispatch = useDispatch();
@@ -44,17 +41,8 @@ function EditSetting() {
     }));
   };
 
-  const getInfoVerifyUser = useGetInfoVerifyUserMutation();
   const handleClickVerify = async () => {
-    dispatch(setPreviousLink('@settingInfo' + window.location.href));
-    getInfoVerifyUser.mutate(user._id, {
-      onSuccess: (res) => {
-        navigate(res);
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    });
+    navigate('/givefun/verify');
   };
 
   const updatePasswordUser = useUpdatePasswordMutation();

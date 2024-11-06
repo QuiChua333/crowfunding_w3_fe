@@ -8,7 +8,7 @@ import ModalDetailPerk from './components/ModalDetailPerk';
 import formatMoney from '~/utils/formatMoney';
 import { useDispatch } from 'react-redux';
 import { setPayment } from '~/redux/slides/Payment';
-import { useGetListPerksByCampaignId } from '~/hooks/api/queries/user/perk.query';
+import { useGetPerksHasListItemsByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
 const cx = classNames.bind(styles);
 
 function DetailPerk() {
@@ -24,7 +24,7 @@ function DetailPerk() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data } = useGetListPerksByCampaignId(id);
+  const { data } = useGetPerksHasListItemsByCampaignIdQuery(id);
   useEffect(() => {
     if (data) {
       setListPerkByCampaignId([...data?.data]);

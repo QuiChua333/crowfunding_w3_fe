@@ -20,15 +20,12 @@ import CommentSection from './components/CommentTab';
 import { useSelector } from 'react-redux';
 import { convertDateFromString } from '~/utils';
 import { defaultAvt } from '~/assets/images';
-import { useGetListPerksByCampaignId } from '~/hooks/api/queries/user/perk.query';
-import {
-  useGetCampaignByIdQuery,
-  useGetMoneyQuery,
-  useGetQuantityCampaignsOfOwnerQuery,
-  useGetQuantityPeopleQuery,
-} from '~/hooks/api/queries/user/campaign.query';
+
+import { useGetCampaignByIdQuery, useGetQuantityCampaignsOfOwnerQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
 import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-campaign.mutation';
+import { useGetMoneyQuery, useGetQuantityPeopleByCampaignQuery } from '~/hooks/api/queries/user/contribution.query';
+import { useGetPerksHasListItemsByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -200,12 +197,12 @@ function DetailProject() {
   };
 
   const { data: dataListPerksByCampaignId, isSuccess: isSuccessGetListPerksByCampaignId } =
-    useGetListPerksByCampaignId(id);
+    useGetPerksHasListItemsByCampaignIdQuery(id);
   const { data: dataProjectById, isSuccess: isSuccessGetProjectById } = useGetCampaignByIdQuery(id);
   const { data: dataGetQuantityCampaignOfUser, isSuccess: isSuccessGetQuantityCampaignOfUser } =
     useGetQuantityCampaignsOfOwnerQuery(id);
 
-  const { data: dataQuantityPeople, isSuccess: isSuccessGetQuantityPeople } = useGetQuantityPeopleQuery(id);
+  const { data: dataQuantityPeople, isSuccess: isSuccessGetQuantityPeople } = useGetQuantityPeopleByCampaignQuery(id);
   const { data: dataMoney, isSuccess: isSuccessGetMoney } = useGetMoneyQuery(id);
   const { data: dataTeams, isSuccess: isSuccessGetTeam } = useGetTeamMemberByCampaignId(id);
   useEffect(() => {

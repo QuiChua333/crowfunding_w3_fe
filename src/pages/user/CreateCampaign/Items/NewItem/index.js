@@ -113,7 +113,7 @@ function NewItem() {
   const handleClickSaveItem = async () => {
     if (idItem === 'new') {
       addItemMutation.mutate(
-        { ...itemState, campaign: id },
+        { ...itemState, campaignId: id },
         {
           onSuccess() {
             navigate(`/campaigns/${id}/edit/items/table`);
@@ -127,7 +127,8 @@ function NewItem() {
       editItemMutation.mutate(
         {
           id: itemState.id,
-          item: { ...itemState },
+          campaignId: id,
+          ...itemState,
         },
         {
           onSuccess() {
@@ -198,7 +199,7 @@ function NewItem() {
       setShowBtnAddOption(true);
     }
   }, [listOption]);
-  const { data: response } = useGetItemContainPerks({ itemId: idItem, campaignId: id }, idItem !== 'new');
+  const { data: response } = useGetItemContainPerks(idItem, idItem !== 'new');
   useEffect(() => {
     if (response) {
       setItemState({

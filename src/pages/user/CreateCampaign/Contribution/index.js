@@ -20,12 +20,13 @@ import ModalGift from './components/ModalGift';
 import { arrow, noPerk } from '~/assets/images';
 import { useQueryClient } from '@tanstack/react-query';
 import {
+  useGetAllContributionsByCampaignQuery,
   useGetMoneyByCampaignQuery,
   useGetQuantityPeopleByCampaignQuery,
   useGetTopUserContributionByCampaignQuery,
 } from '~/hooks/api/queries/user/contribution.query';
-import { useGetAllContributionsByCampaignQuery } from '~/hooks/api/mutations/user/contribution.mutation';
-import { useGetAllGiftsByCampaignQuery } from '~/hooks/api/mutations/user/gift.mutation';
+import { useGetAllGiftsByCampaignQuery } from '~/hooks/api/queries/user/gift.query';
+
 const cx = classNames.bind(styles);
 
 function ContributionCampaign() {

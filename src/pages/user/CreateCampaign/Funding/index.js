@@ -7,7 +7,6 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useQueryClient } from '@tanstack/react-query';
-import { useGetLinkVerifyUserMutation } from '~/hooks/api/mutations/user/user.mutation';
 import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 const cx = classNames.bind(styles);
 
@@ -48,17 +47,8 @@ function FundingCampaign() {
     }
   }, [dataCampaign]);
 
-  const getLinkVerifyUserMutation = useGetLinkVerifyUserMutation();
   const handleClickVerifyUser = async () => {
-    if (campagin.owner?._id !== currentUser._id) return;
-    getLinkVerifyUserMutation.mutate(campagin.owner._id, {
-      onSuccess(data) {
-        navigate(data.data);
-      },
-      onError(err) {
-        console.log(err);
-      },
-    });
+    navigate('/givefun/verify');
   };
 
   const [textValidateGoal, setTextValidateGoal] = useState('');

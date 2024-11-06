@@ -83,6 +83,7 @@ function Home() {
   }, [data]);
 
   const navigate = useNavigate();
+
   return (
     <div className={cx('wrapper', 'responsive')}>
       <Header type="home" />

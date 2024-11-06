@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import { useRef, useEffect, useState } from 'react';
 
 import styles from './SectionTrust.module.scss';
-import { defaultAvt, logoTrangNho, paypal, phone } from '~/assets/images';
+import { logoTrangNho } from '~/assets/images';
 
 const cx = classNames.bind(styles);
 

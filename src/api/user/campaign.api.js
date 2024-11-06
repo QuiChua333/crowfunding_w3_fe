@@ -20,9 +20,19 @@ export const checkCampaignOfUser = async (id) => {
 };
 
 // handleAPI
-export const editCampaignById = async (data) => {
-  const response = await CustomAxios.patch(`${baseUrl}/campaign/${data.id}`, data.body);
-  return response.data;
+export const editCampaignById = async ({ id, formData, data }) => {
+  if (formData) {
+    console.log(formData);
+    const response = await CustomAxios.patch(`${baseUrl}/campaign/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } else {
+    const response = await CustomAxios.patch(`${baseUrl}/campaign/${id}`, data);
+    return response.data;
+  }
 };
 
 // handleAPI
@@ -34,13 +44,13 @@ export const launchCampaign = async (id) => {
 // handleAPI
 export const deleteCampaign = async (id) => {
   const response = await CustomAxios.delete(`${baseUrl}/campaign/${id}`);
-  return response;
+  return response.data;
 };
 
 // handleAPI
 export const getCampaignsOfOwner = async (userId) => {
   const response = await CustomAxios.get(`${baseUrl}/campaign/owner/${userId}`);
-  return response;
+  return response.data;
 };
 
 // handleAPI
@@ -49,17 +59,20 @@ export const getQuantityCampaignsOfOwner = async (campaignId) => {
   return response.data;
 };
 
-export const sendReport = async (body) => {
-  const response = await CustomAxios.post(body.url, body.data);
+// handleAPI
+export const getCampaignsOfUser = async (userId) => {
+  const response = await CustomAxios.get(`${baseUrl}/campaign/user/${userId}`);
+  return response;
+};
+
+// handleAPI
+export const getQuantityCampaignsOfUser = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/campaign/quantity/user/${id}`);
   return response.data;
 };
 
-export const paymentSuccess = async (url) => {
-  const response = await CustomAxios.post(url);
-  return response.data;
-};
-
+// handleAPI
 export const getPopulateCampaigns = async () => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/getPopulateCampaigns`);
+  const response = await CustomAxios.get(`${baseUrl}/campaign/populate`);
   return response.data.data;
 };

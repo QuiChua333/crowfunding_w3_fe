@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getItemContainPerks, getItemsByCampaignId, getItemsContainPerksByCampaignId } from '~/api/user/item.api';
 
+// handleAPI
 export const useGetItemsByCampaignIdQuery = (id, enable = true) => {
   return useQuery({
     queryKey: [`useGetItemsByCampaignIdQuery`],
@@ -10,6 +11,7 @@ export const useGetItemsByCampaignIdQuery = (id, enable = true) => {
   });
 };
 
+// handleAPI
 export const useGetItemsContainPerksByCampaignIdQuery = (id) => {
   return useQuery({
     queryKey: [`useGetItemsContainPerksByCampaignIdQuery`],
@@ -18,10 +20,11 @@ export const useGetItemsContainPerksByCampaignIdQuery = (id) => {
   });
 };
 
-export const useGetItemContainPerks = (body, enable = true) => {
+// handleAPI
+export const useGetItemContainPerks = (id, enable = true) => {
   return useQuery({
     queryKey: [`useGetItemContainPerks`],
-    queryFn: () => getItemContainPerks(body),
+    queryFn: () => getItemContainPerks(id),
     refetchOnWindowFocus: false,
     enabled: enable,
   });

@@ -21,6 +21,7 @@ function BasicCampaign() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+  const [file, setFile] = useState();
   const [campaginState, setCampaignState] = useState({});
   const [campagin, setCampaign] = useState({});
   const [listFieldGrouByCategory, setListFieldGrouByCategory] = useState([]);
@@ -33,6 +34,7 @@ function BasicCampaign() {
   const handleChangeCardImage = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
+      setFile(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
@@ -47,6 +49,7 @@ function BasicCampaign() {
     setCampaignState((prev) => {
       return { ...prev, cardImage: '' };
     });
+    setFile(null);
   };
 
   const elementCategory = useRef(null);
@@ -78,11 +81,7 @@ function BasicCampaign() {
         cardImage: dataCampaign.cardImage || '',
         location: dataCampaign.location || '',
         field: dataCampaign.field || '',
-        category: dataCampaign.category || '',
         duration: dataCampaign.duration || '',
-        status: dataCampaign.status,
-        owner: dataCampaign.owner || '',
-        team: dataCampaign.team || [],
       };
       setCampaignState({ ...infoBasic });
       setCampaign({ ...infoBasic });
@@ -92,19 +91,13 @@ function BasicCampaign() {
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    if (name === 'country' || name === 'city') {
-      setCampaignState((prev) => {
-        return { ...prev, location: value };
-      });
-    } else {
-      setCampaignState((prev) => {
-        return { ...prev, [name]: value };
-      });
-    }
-  };
-  const handleChangeField = (field, category) => {
     setCampaignState((prev) => {
-      return { ...prev, field: field, category };
+      return { ...prev, [name]: value };
+    });
+  };
+  const handleChangeField = (field) => {
+    setCampaignState((prev) => {
+      return { ...prev, field: field };
     });
   };
 
@@ -204,29 +197,36 @@ function BasicCampaign() {
   const editCampaignByIdMutation = useEditCampaignByIdMutation();
   const handleClickSaveContinue = async () => {
     const body = { ...campaginState };
-    const id = body.id;
-    delete body.id;
-    delete body.status;
-    delete body.owner;
-    delete body.team;
     let flagTitle = validateTitle(body.title);
     let flagTagline = validateTagline(body.tagline);
     let flagImage = validateCardImage(body.cardImage.url);
-    let flagCountry = validateCountry(body.location.country);
-    let flagLocation = validateLocation(body.location.city);
-    let flagField = validateField(body.field);
+    let flagCountry = validateCountry(body.location);
+    let flagField = true || validateField(body.field);
     let flagDuartion = validateDuration(body.duration);
 
-    if (flagTitle && flagTagline && flagImage && flagCountry && flagLocation && flagField && flagDuartion) {
-      dispatch(setLoading(true));
+    if (flagTitle && flagTagline && flagImage && flagCountry && flagField && flagDuartion) {
+      // dispatch(setLoading(true));
+      const id = body.id;
+      delete body.cardImage;
+      const formData = new FormData();
+      console.log(body);
+      if (file) {
+        formData.append('file', file);
+        formData.append('imageTypeName', 'cardImage');
+      }
+
+      Object.entries(body).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
       editCampaignByIdMutation.mutate(
         {
           id,
-          body,
+          formData,
         },
         {
           onSuccess(data) {
-            navigate(`/campaigns/${id}/edit/story`);
+            // navigate(`/campaigns/${id}/edit/story`);
           },
           onError(error) {
             console.log(error.message);
@@ -319,9 +319,7 @@ function BasicCampaign() {
               {campaginState.cardImage && (
                 <div>
                   <img
-                    style={{ position: 'relative', objectFit: 'cover' }}
-                    width="400"
-                    height="400"
+                    style={{ position: 'relative', objectFit: 'cover', width: '400px', height: '400px' }}
                     src={campaginState.cardImage}
                   />
                   <div className={cx('editFile')}>
@@ -369,24 +367,12 @@ function BasicCampaign() {
             <div className={cx('container-input')}>
               <input
                 type="text"
-                placeholder="Quốc gia"
                 className={cx('itext-field')}
-                name="country"
-                value={campaginState.location?.country}
+                name="location"
+                value={campaginState.location}
                 onChange={handleChangeInputText}
               />
               <span className={cx('entreField-validationLabel')}>{textValidateCountry}</span>
-            </div>
-            <div className={cx('container-input')}>
-              <input
-                type="text"
-                placeholder="Thành phố"
-                className={cx('itext-field')}
-                name="city"
-                value={campaginState.location?.city}
-                onChange={handleChangeInputText}
-              />
-              <span className={cx('entreField-validationLabel')}>{textValidateLocation}</span>
             </div>
           </div>
         </div>
@@ -420,7 +406,6 @@ function BasicCampaign() {
         <div className={cx('entreField')}>
           <label className={cx('entreField-label')}>
             Thời gian của chiến dịch <span className={cx('entreField-required')}>*</span>{' '}
-            <AiFillQuestionCircle style={{ fontSize: '20px' }} />
           </label>
           <div className={cx('entreField-subLabel')}>
             Thời gian từ lúc chiến dịch của bạn được đăng tải cho đến khi nó kết thúc. Chúng tôi quy định thời gian tối

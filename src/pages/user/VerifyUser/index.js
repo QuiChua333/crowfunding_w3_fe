@@ -3,34 +3,35 @@ import styles from './VerifyUser.module.scss';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
 import { TiTick } from 'react-icons/ti';
 import { toast } from 'react-toastify';
 import { logoTrangNho } from '~/assets/images';
 import { PageNotFound } from '~/pages/common';
-import { useRequestVerifyUserUserMutation } from '~/hooks/api/mutations/user/user.requestVerifyUser.mutation';
-import useCheckLinkUserQuery from '~/hooks/api/queries/user/user.requestVerifyUser.query';
+import { useGetInfoVerifyUserQuery } from '~/hooks/api/queries/user/user-verify.query';
+import { useRequestVerifyUserUserMutation } from '~/hooks/api/mutations/user/user-verify.muatation';
 
 const cx = classNames.bind(styles);
 
 function VerifyUser() {
   const previousLink = useSelector((state) => state.globalApp.previousLink);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const inputElement = useRef(null);
-  const { tokenLinkVerifyUser } = useParams();
+  const { id } = useParams();
   const [user, setUser] = useState({});
   const [validLink, setValidLink] = useState(null);
   const handleClickBack = () => {
     if (previousLink.startsWith('@campaignFund')) {
       const link = previousLink.substring(13);
-      window.location.href = link;
+      navigate(link);
     } else if (previousLink.startsWith('@settingInfo')) {
       const link = previousLink.substring(12);
-      window.location.href = link;
+      navigate(link);
     } else {
-      window.location.href = '/';
+      navigate('/');
     }
   };
   const handleChangeInputText = (e) => {
@@ -149,10 +150,6 @@ function VerifyUser() {
   const handleClickVerify = async () => {
     dispatch(setLoading(true));
     const infoVerify = { ...user.infoVerify };
-    const dataApi = {
-      infoVerify,
-      id: user._id,
-    };
     let flagFullname = validateFullname(infoVerify.fullName);
     let flagSDT = validateSDT(infoVerify.phoneNumber);
     let flagBirthday = validateBirthday(infoVerify.birthday);
@@ -160,7 +157,7 @@ function VerifyUser() {
     let flagCCCD = validateCCCD(infoVerify.identifyCode);
     let flagImageUrl = validateImageUrl(infoVerify.identifyCardImage?.url || '');
     if (flagFullname && flagSDT && flagBirthday && flagLocation && flagCCCD && flagImageUrl) {
-      requestVerifyInfoUser.mutate(dataApi, {
+      requestVerifyInfoUser.mutate(infoVerify, {
         onSuccess: (res) => {
           toast.success('Gửi thông tin xác minh thành công');
           setUser(res.data.data);
@@ -176,15 +173,15 @@ function VerifyUser() {
     }
   };
 
-  const { data } = useCheckLinkUserQuery(tokenLinkVerifyUser);
+  const { data, isError } = useGetInfoVerifyUserQuery(id);
   useEffect(() => {
     if (data) {
-      setUser(data?.data?.data);
-      setValidLink(true);
-    } else {
-      setValidLink(false);
+      setUser(data);
     }
   }, [data]);
+  if (isError) {
+    navigate('/not-found');
+  }
 
   return (
     <>

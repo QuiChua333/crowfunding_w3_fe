@@ -3,8 +3,8 @@ import { baseUrl } from '~/utils';
 
 // handleAPI
 export const getCampaignsFollowed = async () => {
-  const response = await CustomAxios.get(`${baseUrl}/follow-campaign/me}`);
-  return response;
+  const response = await CustomAxios.get(`${baseUrl}/follow-campaign/me`);
+  return response.data;
 };
 
 // handleAPI

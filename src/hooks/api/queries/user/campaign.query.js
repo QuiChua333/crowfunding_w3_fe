@@ -1,12 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCampaignById, getMoney, getPopulateCampaigns, getQuantityCampaignsOfOwner } from '~/api/user/campaign.api';
-import { getQuantityPeopleByCampaign } from '~/api/user/contribution.api';
+import {
+  getCampaignById,
+  getCampaignsOfOwner,
+  getCampaignsOfUser,
+  getPopulateCampaigns,
+  getQuantityCampaignsOfOwner,
+  getQuantityCampaignsOfUser,
+} from '~/api/user/campaign.api';
 
 // handleAPI
 export const useGetCampaignByIdQuery = (id) => {
   return useQuery({
     queryKey: [`getCampaignById`],
     queryFn: () => getCampaignById(id),
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  });
+};
+
+// handleAPI
+export const useGetCampaignsOfOwnerQuery = (id) => {
+  return useQuery({
+    queryKey: [`useGetCampaignsOfOwnerQuery`],
+    queryFn: () => getCampaignsOfOwner(id),
     refetchOnWindowFocus: false,
   });
 };
@@ -20,25 +36,29 @@ export const useGetQuantityCampaignsOfOwnerQuery = (campaignId) => {
   });
 };
 
-export const useGetPopulateCampaigns = () => {
+// handleAPI
+export const useGetCampaignsOfUserQuery = (id) => {
   return useQuery({
-    queryKey: [`getPopulateCampaigns`],
-    queryFn: () => getPopulateCampaigns(),
-  });
-};
-
-export const useGetQuantityPeopleQuery = (id) => {
-  return useQuery({
-    queryKey: [`getQuantityPeople`],
-    queryFn: () => getQuantityPeopleByCampaign(id),
+    queryKey: [`useGetCampaignsOfUserQuery`],
+    queryFn: () => getCampaignsOfUser(id),
     refetchOnWindowFocus: false,
   });
 };
 
-export const useGetMoneyQuery = (id) => {
+// handleAPI
+export const useGetQuantityCampaignOfUserQuery = (id) => {
   return useQuery({
-    queryKey: [`getMoney`],
-    queryFn: () => getMoney(id),
+    queryKey: [`getQuantityCampaignOfUser`],
+    queryFn: () => getQuantityCampaignsOfUser(id),
+    refetchOnWindowFocus: false,
+  });
+};
+
+// handleAPI
+export const useGetPopulateCampaigns = () => {
+  return useQuery({
+    queryKey: [`getPopulateCampaigns`],
+    queryFn: () => getPopulateCampaigns(),
     refetchOnWindowFocus: false,
   });
 };

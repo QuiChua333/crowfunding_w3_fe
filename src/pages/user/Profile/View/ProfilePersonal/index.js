@@ -10,11 +10,9 @@ import { useSelector } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
 import { defaultAvt } from '~/assets/images';
-import {
-  useGetInfoUserQuery,
-  useGetQuantityCampaignOfUserQuery,
-  useGetQuantityContributeOfUserQuery,
-} from '~/hooks/api/queries/user/user.profile.query';
+import { useGetInfoUserQuery } from '~/hooks/api/queries/user/user.query';
+import { useGetQuantityContributeOfUserQuery } from '~/hooks/api/queries/user/contribution.query';
+import { useGetQuantityCampaignOfUserQuery } from '~/hooks/api/queries/user/campaign.query';
 const cx = classNames.bind(styles);
 
 function ProfilePersonal() {

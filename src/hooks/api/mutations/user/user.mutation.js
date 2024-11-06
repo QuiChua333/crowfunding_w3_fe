@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
-import { getLinkVerifyUser, getUserByEmail } from '~/api/user/user.api';
+import { getLinkVerifyUser, getUserByEmail, updatePasswordUser, updateProfileUser } from '~/api/user/user.api';
 
+// handleAPI
 export const useGetUserByEmailMutation = () => {
   return useMutation({
     mutationKey: [`useGetUserByEmailMutation`],
@@ -8,13 +9,7 @@ export const useGetUserByEmailMutation = () => {
   });
 };
 
-export const useGetLinkVerifyUserMutation = () => {
-  return useMutation({
-    mutationKey: [`useGetLinkVerifyUserMutation`],
-    mutationFn: getLinkVerifyUser,
-  });
-};
-
+// handleAPI
 export const useUpdateProfileUserMutation = () => {
   return useMutation({
     mutationKey: ['useUpdateProfileUserMutation'],
@@ -22,23 +17,10 @@ export const useUpdateProfileUserMutation = () => {
   });
 };
 
-export const useGetInfoVerifyUserMutation = () => {
-  return useMutation({
-    mutationKey: ['useGetInfoVerifyUserMutation'],
-    mutationFn: getInfoVerifyUser,
-  });
-};
-
+// handleAPI
 export const useUpdatePasswordMutation = () => {
   return useMutation({
     mutationKey: ['useUpdatePasswordMutation'],
     mutationFn: updatePasswordUser,
-  });
-};
-
-export const useRequestVerifyUserUserMutation = () => {
-  return useMutation({
-    mutationKey: ['useRequestVerifyUserUserMutation'],
-    mutationFn: requestVerifyInfoUser,
   });
 };

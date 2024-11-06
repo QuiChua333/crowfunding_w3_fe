@@ -21,7 +21,7 @@ import ItemShipping from './ItemShipping';
 import ItemInclude from './ItemInclude';
 import { convertDateFromString } from '~/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { useGetPerk, useGetPerksByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
+import { useGetPerk } from '~/hooks/api/queries/user/perk.query';
 import { useGetItemsByCampaignIdQuery } from '~/hooks/api/queries/user/item.query';
 import { useAddPerkMutation, useEditPerkMutation } from '~/hooks/api/mutations/user/perk.mutation';
 import { useAddItemMutation } from '~/hooks/api/mutations/user/item.mutation';
@@ -209,7 +209,7 @@ function NewPerk() {
   const addNewItemMutation = useAddItemMutation();
   const addNewItem = async (item) => {
     addNewItemMutation.mutate(
-      { ...item, campaign: id },
+      { ...item, campaignId: id },
       {
         onSuccess() {
           refetchItems();
@@ -345,11 +345,11 @@ function NewPerk() {
       const body = {
         ...perkState,
         image: perkState.perkImage,
-        items: perkState.items.map((item) => ({ item: item.id, quantity: item.quantity })),
+        items: perkState.items.map((item) => ({ itemId: item.id, quantity: item.quantity })),
       };
       dispatch(setLoading(true));
       addPerkMutation.mutate(
-        { perk: body, campaignId: id },
+        { campaignId: id, ...body },
         {
           onSuccess(data) {
             navigate(`/campaigns/${id}/edit/perks/table`);
@@ -370,7 +370,7 @@ function NewPerk() {
       };
       dispatch(setLoading(true));
       editPerkMutation.mutate(
-        { id: perkState.id, perk: body },
+        { perkId: perkState.id, data: body },
         {
           onSuccess(data) {
             navigate(`/campaigns/${id}/edit/perks/table`);

@@ -11,7 +11,7 @@ import ContributeTable from './components/ContributeTable';
 import Search from '~/pages/admin/components/Search';
 import Filter from '~/pages/admin/components/Filter';
 import ModalDetailContribution from './components/ModalDetailContribution';
-import { useGetAllContributesOfUserQuery, useGetInfoUserQuery } from '~/hooks/api/queries/user/user.profile.query';
+import { useGetAllContributesOfUserQuery, useGetInfoUserQuery } from '~/hooks/api/queries/user/user.query';
 
 const cx = classNames.bind(styles);
 
