@@ -17,7 +17,7 @@ export const sendInvitation = async ({ campaignId, email, isEdit }) => {
 };
 
 // handleAPI
-export const deleteMember = async ({ campaignId, userId }) => {
-  const response = await CustomAxios.delete(`${baseUrl}/team-member/campaign/${campaignId}/${userId}`);
+export const deleteMember = async ({ campaignId, email }) => {
+  const response = await CustomAxios.delete(`${baseUrl}/team-member/campaign/${campaignId}/${email}`);
   return response.data;
 };

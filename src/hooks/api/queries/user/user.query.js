@@ -8,6 +8,7 @@ export const useGetCurrentUserQuery = () => {
     queryKey: [`getCurrentUser`],
     queryFn: getCurrentUser,
     refetchOnWindowFocus: false,
+    staleTime: Infinity,
     enabled: !!token,
   });
 };

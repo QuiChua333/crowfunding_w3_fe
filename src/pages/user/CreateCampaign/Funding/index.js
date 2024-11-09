@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
+import { setTab } from '~/redux/slides/UserCampaign';
 const cx = classNames.bind(styles);
 
 function FundingCampaign() {
@@ -28,15 +29,10 @@ function FundingCampaign() {
   useEffect(() => {
     if (dataCampaign) {
       let infoBasic = {
-        id: dataCampaign.data._id,
-        title: dataCampaign.data.title || '',
-        cardImage: dataCampaign.data.cardImage || { url: '', public_id: '' },
-        status: dataCampaign.data.status,
-        goal: dataCampaign.data.goal || '',
-        momoNumber: dataCampaign.data.momoNumber || '',
-        momoNumberConfirm: dataCampaign.data.momoNumber || '',
-        owner: dataCampaign.data.owner || '',
-        team: dataCampaign.data.team || [],
+        goal: dataCampaign.goal || '',
+        bankAccountNumber: dataCampaign.bankAccountNumber || '',
+        bankName: dataCampaign.bankName || '',
+        bankUsername: dataCampaign.bankUsername || '',
       };
       setCampaign({ ...infoBasic });
       setCampaignState({ ...infoBasic });
@@ -78,36 +74,42 @@ function FundingCampaign() {
     }
   };
 
-  const [textValidateMomo, setTextValidateMomo] = useState('');
-  const validateMomo = (value) => {
+  const [textValidateBankAccountNumber, setTextValidateBankAccountNumber] = useState('');
+  const validateBankAccountNumber = (value) => {
     if (value?.trim().length === 0 || value?.trim() === '') {
-      setTextValidateMomo('* Vui lòng nhập số tài khoản momo của bạn');
+      setTextValidateBankAccountNumber('* Vui lòng nhập số tài khoản ngân hàng của bạn');
       return false;
     } else {
-      var vnf_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+      var vnf_regex = /^\d+$/;
       if (vnf_regex.test(value?.trim()) === false) {
-        setTextValidateMomo('* Số tài khoản momo không hợp lệ ');
+        setTextValidateBankAccountNumber('* Số tài khoản ngân hàng không hợp lệ ');
         return false;
       } else {
-        setTextValidateMomo('');
+        setTextValidateBankAccountNumber('');
         return true;
       }
     }
   };
 
-  const [textValidateMomoConfirm, setTextValidateMomoConfirm] = useState('');
-  const validateMomoConfirm = (value, sdt) => {
+  const [textBankName, setTextBankName] = useState('');
+  const validateBankName = (value) => {
     if (value?.trim().length === 0 || value?.trim() === '') {
-      setTextValidateMomoConfirm('* Vui lòng nhập lại số tài khoản momo của bạn');
+      setTextBankName('* Vui lòng nhập tên ngân hàng');
       return false;
     } else {
-      if (value?.trim() !== sdt) {
-        setTextValidateMomoConfirm('* Số tài khoản momo không khớp');
-        return false;
-      } else {
-        setTextValidateMomoConfirm('');
-        return true;
-      }
+      setTextBankName('');
+      return true;
+    }
+  };
+
+  const [textBankUsername, setTextBankUsername] = useState('');
+  const validateBankUsername = (value) => {
+    if (value?.trim().length === 0 || value?.trim() === '') {
+      setTextBankUsername('* Vui lòng nhập tên tài khoản');
+      return false;
+    } else {
+      setTextBankUsername('');
+      return true;
     }
   };
 
@@ -117,17 +119,13 @@ function FundingCampaign() {
     const body = { ...campaginState };
     const id = body.id;
     delete body.id;
-    delete body.status;
-    delete body.title;
-    delete body.cardImage;
-    delete body.owner;
-    delete body.team;
 
     let flagGoal = validateGoal(body.goal);
-    let flagMomo = validateMomo(body.momoNumber);
-    let flagMomoConfirm = validateMomoConfirm(body.momoNumberConfirm, body.momoNumber);
+    let flagBankAccountNumber = validateBankAccountNumber(body.bankAccountNumber);
+    let flagBankName = validateBankName(body.bankName);
+    let flagBankUsername = validateBankUsername(body.bankUsername);
 
-    if (flagGoal && flagMomo && flagMomoConfirm) {
+    if (flagGoal && flagBankAccountNumber && flagBankName && flagBankUsername) {
       dispatch(setLoading(true));
       editCampaignByIdMutation.mutate(
         {
@@ -148,7 +146,14 @@ function FundingCampaign() {
       );
     }
   };
-
+  useEffect(() => {
+    dispatch(
+      setTab({
+        number: 6,
+        content: 'Gây quỹ',
+      }),
+    );
+  }, []);
   return (
     <div className={cx('body-content')}>
       <div className={cx('entreSection')}>
@@ -163,7 +168,7 @@ function FundingCampaign() {
           <div className={cx('inputCurrencyField')}>
             <input
               placeholder={'Ví dụ: 10000000'}
-              type="text"
+              type="number"
               maxlength="50"
               className={cx('itext-field', 'inputCurrencyField-input')}
               value={campaginState.goal}
@@ -187,7 +192,7 @@ function FundingCampaign() {
         </div>
 
         <div className={cx('entreField')}>
-          {!campagin.owner?.isVerifiedUser ? (
+          {campagin.owner?.verifyStatus !== 'Đã xác thực' ? (
             <span onClick={handleClickVerifyUser} className={cx('btn-ok')} style={{ marginLeft: '0' }}>
               XÁC MINH ID
             </span>
@@ -210,10 +215,7 @@ function FundingCampaign() {
 
       <div className={cx('entreSection')}>
         <div className={cx('entreField-header')}>Thông Tin Ngân Hàng</div>
-        <div className={cx('entreField-subHeader')}>
-          Điền thông tin tài khoản ngân hàng của bạn. Chúng tôi sẽ chỉ có thể gửi tiền cho bạn nếu bạn đã huy động được
-          tối thiểu 4 triệu đồng.
-        </div>
+        <div className={cx('entreField-subHeader')}>Điền thông tin tài khoản ngân hàng của bạn.</div>
 
         <div className={cx('entreField')}>
           <label className={cx('entreField-label')}>
@@ -224,29 +226,48 @@ function FundingCampaign() {
             không thể chuyển tiền cho bạn.
           </div>
           <input
-            type="text"
-            className={cx('itext-field')}
+            type="number"
+            className={cx('itext-field', 'account-number-input')}
             placeholder="000000000000"
-            value={campaginState.momoNumber}
+            value={campaginState.bankAccountNumber}
             onChange={handleChangeInputText}
-            name="momoNumber"
+            name="bankAccountNumber"
             disabled={!isEditComponent}
           />
-          <span className={cx('entreField-validationLabel')}>{textValidateMomo}</span>
+          <span className={cx('entreField-validationLabel')}>{textValidateBankAccountNumber}</span>
+        </div>
+        <div className={cx('entreField')}>
+          <label className={cx('entreField-label')}>
+            Tên ngân hàng <span className={cx('entreField-required')}>*</span>
+          </label>
 
-          <div className={cx('entreField-subLabel')} style={{ marginTop: '16px' }}>
-            Nhập lại số tài khoản.
-          </div>
           <input
             type="text"
-            className={cx('itext-field')}
-            placeholder="000000000000"
-            value={campaginState.momoNumberConfirm}
+            className={cx('itext-field', 'mt-[10px]')}
+            placeholder="Vietcombank"
+            value={campaginState.bankName}
             onChange={handleChangeInputText}
-            name="momoNumberConfirm"
+            name="bankName"
             disabled={!isEditComponent}
           />
-          <span className={cx('entreField-validationLabel')}>{textValidateMomoConfirm}</span>
+          <span className={cx('entreField-validationLabel')}>{textBankName}</span>
+        </div>
+
+        <div className={cx('entreField')}>
+          <label className={cx('entreField-label')}>
+            Tên tài khoản <span className={cx('entreField-required')}>*</span>
+          </label>
+
+          <input
+            type="text"
+            className={cx('itext-field', 'mt-[10px]')}
+            placeholder="Nguyễn Văn A"
+            value={campaginState.bankUsername}
+            onChange={handleChangeInputText}
+            name="bankUsername"
+            disabled={!isEditComponent}
+          />
+          <span className={cx('entreField-validationLabel')}>{textBankUsername}</span>
         </div>
         <div className={cx('container-btn')}>
           <span onClick={handleClickSaveContinue} className={cx('btn-ok')}>

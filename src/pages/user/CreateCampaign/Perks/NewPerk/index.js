@@ -25,6 +25,8 @@ import { useGetPerk } from '~/hooks/api/queries/user/perk.query';
 import { useGetItemsByCampaignIdQuery } from '~/hooks/api/queries/user/item.query';
 import { useAddPerkMutation, useEditPerkMutation } from '~/hooks/api/mutations/user/perk.mutation';
 import { useAddItemMutation } from '~/hooks/api/mutations/user/item.mutation';
+import { toast } from 'react-toastify';
+import { setTab } from '~/redux/slides/UserCampaign';
 
 const cx = classNames.bind(styles);
 
@@ -34,6 +36,7 @@ function NewPerk() {
   const navigate = useNavigate();
   const [perkState, setPerkState] = useState({});
   const [campaign, setCampaign] = useState({});
+  const [file, setFile] = useState();
   const [perk, setPerk] = useState({});
   const showErrorDelete = useSelector((state) => state.userCampaign.showErrorDelete);
   const contentError = useSelector((state) => state.userCampaign.contentError);
@@ -44,87 +47,81 @@ function NewPerk() {
   const [listItemsAvailable, setListItemsAvailable] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [optionEdit, setOptionEdit] = useState({});
-  const inputPerkImageWrapperElement = useRef();
-  const perkImageElement = useRef();
+  const inputimageWrapperElement = useRef();
+  const imageElement = useRef();
   const dateInputElement = useRef(null);
   const [showBtnAddShip, setShowBtnAddShip] = useState(true);
 
   const handleMouseOverDateFilter = () => {
     dateInputElement.current?.showPicker();
   };
-  const queryClient = useQueryClient();
-  const dataCampaign = queryClient.getQueryData(['getCampaignById']);
+  const campaignRoot = useSelector((state) => state.userCampaign.campaign);
   useEffect(() => {
-    if (dataCampaign) {
+    dispatch(
+      setTab({
+        number: 3,
+        content: 'Đặc quyền',
+      }),
+    );
+  }, []);
+
+  useEffect(() => {
+    if (campaignRoot) {
       let infoBasic = {
-        id: dataCampaign.data._id,
-        title: dataCampaign.data.title || '',
-        cardImage: dataCampaign.data.cardImage || { url: '', public_id: '' },
-        status: dataCampaign.data.status,
-        owner: dataCampaign.data.owner || '',
-        team: dataCampaign.data.team || [],
+        id: campaignRoot.id,
       };
       setCampaign({ ...infoBasic });
     }
-  }, [dataCampaign]);
+  }, [campaignRoot]);
   const { data: response } = useGetPerk(idPerk);
   useEffect(() => {
     if (response) {
       setPerkState({
-        id: response.data._id,
-        title: response.data.title || '',
-        price: response.data.price || '',
-        isVisible: response.data.isVisible || false,
-        items:
-          response.data?.items.map((item) => ({ name: item.item.name, quantity: item.quantity, id: item.item._id })) ||
+        id: response.id,
+        name: response.name || '',
+        price: response.price || '',
+        isVisible: response.isVisible || false,
+        detailPerks:
+          response?.detailPerks.map((item) => ({ name: item.item.name, quantity: item.quantity, id: item.item.id })) ||
           [],
-        description: response.data.description || '',
-        perkImage: response.data.image || {
-          url: '',
-          public_id: '',
-        },
-        quantity: response.data.quantity || '',
-        estDelivery: response.data.estDelivery
-          ? convertDateFromString(response.data.estDelivery, 'less')
+        description: response.description || '',
+        image: response.image || '',
+        quantity: response.quantity || '',
+        estDeliveryDate: response.estDeliveryDate
+          ? convertDateFromString(response.estDeliveryDate, 'less')
           : convertDateFromString(new Date(), 'less'),
-        isShipping: response.data.isShipping || false,
-        listShippingFee: response.data.listShippingFee || [],
+        isShipping: response.isShipping || false,
+        shippingFees: response.shippingFees || [],
       });
       setPerk({
-        id: response.data._id,
-        title: response.data.title || '',
-        price: response.data.price || '',
-        isVisible: response.data.isVisible || false,
-        items:
-          response.data?.items.map((item) => ({ name: item.item.name, quantity: item.quantity, id: item.item._id })) ||
+        id: response.id,
+        name: response.title || '',
+        price: response.price || '',
+        isVisible: response.isVisible || false,
+        detailPerks:
+          response?.detailPerks.map((item) => ({ name: item.item.name, quantity: item.quantity, id: item.item.id })) ||
           [],
-        description: response.data.description || '',
-        perkImage: response.data.image || {
-          url: '',
-          public_id: '',
-        },
-        quantity: response.data.quantity || '',
-        estDelivery: response.data.estDelivery
-          ? convertDateFromString(response.data.estDelivery)
+        description: response.description || '',
+        image: response.image || '',
+        quantity: response.quantity || '',
+        estDeliveryDate: response.estDeliveryDate
+          ? convertDateFromString(response.estDeliveryDate)
           : convertDateFromString(new Date()),
-        isShipping: response.data.isShipping || false,
-        listShippingFee: response.data.listShippingFee || [],
+        isShipping: response.isShipping || false,
+        shippingFees: response.shippingFees || [],
       });
     } else {
       setPerkState({
-        title: '',
+        name: '',
+        description: '',
         price: '',
         isVisible: true,
-        items: [],
-        description: '',
-        perkImage: {
-          url: '',
-          public_id: '',
-        },
-        quantity: '',
-        estDelivery: '',
         isShipping: false,
-        listShippingFee: [],
+        quantity: '',
+        image: '',
+        detailPerks: [],
+        estDeliveryDate: '',
+        shippingFees: [],
       });
     }
   }, [response]);
@@ -140,12 +137,12 @@ function NewPerk() {
   useEffect(() => {
     if (responseItems) {
       setListItemsAvailable(
-        responseItems.data.map((item) => {
+        responseItems.map((item) => {
           return {
             name: item.name,
             isHasOption: item.isHasOption,
             options: item.options,
-            id: item._id,
+            id: item.id,
           };
         }) || [],
       );
@@ -154,10 +151,10 @@ function NewPerk() {
 
   useEffect(() => {
     if (listItemsAvailable.length > 0) {
-      if (perkState.items?.length === 0) {
+      if (perkState.detailPerks?.length === 0) {
         setPerkState((prev) => ({
           ...prev,
-          items: [{ name: '', quantity: 1 }],
+          detailPerks: [{ name: '', quantity: 1 }],
         }));
       }
     }
@@ -175,10 +172,8 @@ function NewPerk() {
     setPerkState((prev) => ({
       ...prev,
       isShipping: true,
-      listShippingFee:
-        [...prev.listShippingFee].length === 0
-          ? [{ location: 'Tất cả các tỉnh thành', fee: '' }]
-          : prev.listShippingFee,
+      shippingFees:
+        [...prev.shippingFees].length === 0 ? [{ location: 'Tất cả các tỉnh thành', fee: '' }] : prev.shippingFees,
     }));
   };
   const handleCheckNoShipping = () => {
@@ -189,13 +184,14 @@ function NewPerk() {
   }, [perkState]);
   const handleChangeDateInput = (e) => {
     let value = e.target.value;
+    console.log(value);
     if (!value) {
-      setPerkState((prev) => ({ ...prev, estDelivery: '' }));
+      setPerkState((prev) => ({ ...prev, estDeliveryDate: '' }));
       return;
     }
-    const res = convertDateFromString(value);
+    const res = convertDateFromString(value, 'less');
 
-    setPerkState((prev) => ({ ...prev, estDelivery: res }));
+    setPerkState((prev) => ({ ...prev, estDeliveryDate: res }));
   };
   const handleChangeInputText = (e) => {
     const name = e.target.name;
@@ -215,6 +211,7 @@ function NewPerk() {
           refetchItems();
 
           setShowModal(false);
+          toast.success('Thêm vật phẩm thành công');
         },
         onError(err) {
           console.log(err);
@@ -227,47 +224,49 @@ function NewPerk() {
     setListItemsAvailable((prev) => [...prev, { ...item, quantity: null }]);
   };
   const handleClickAddItem = () => {
-    if (perkState.items?.length === 0) {
+    if (perkState.detailPerks?.length === 0) {
       setOptionEdit({ type: 'add' });
       setShowModal(true);
     } else {
       setPerkState((prev) => ({
         ...prev,
-        items: [...prev.items, { name: '', quantity: 1 }],
+        detailPerks: [...prev.detailPerks, { name: '', quantity: 1 }],
       }));
     }
   };
-  const handleChangePerkImage = (e) => {
+  const handleChangeimage = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
+      setFile(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         let res = reader.result;
         setPerkState((prev) => {
-          return { ...prev, perkImage: { ...prev.perkImage, url: res } };
+          return { ...prev, image: res };
         });
       };
     }
   };
-  const handleRemovePerkImage = () => {
+  const handleRemoveimage = () => {
     setPerkState((prev) => {
-      return { ...prev, perkImage: { ...prev.perkImage, url: '' } };
+      return { ...prev, image: '' };
     });
+    setFile(null);
   };
   const handleClickAddShip = () => {
     setPerkState((prev) => ({
       ...prev,
-      listShippingFee: [...prev.listShippingFee, { location: '', fee: '' }],
+      shippingFees: [...prev.shippingFees, { location: '', fee: '' }],
     }));
   };
   useEffect(() => {
-    const lengthListShippingFee = perkState.listShippingFee?.length;
-    if (lengthListShippingFee === 0 || lengthListShippingFee === 1) {
+    const lengthshippingFees = perkState.shippingFees?.length;
+    if (lengthshippingFees === 0 || lengthshippingFees === 1) {
       setListLocationShip(['Tất cả các tỉnh thành', ...listLocationShipOrigin]);
       setPerkState((prev) => ({
         ...prev,
-        listShippingFee: [...prev.listShippingFee].map((item) => {
+        shippingFees: [...prev.shippingFees].map((item) => {
           if (item.location === 'Các tỉnh thành còn lại')
             return {
               ...item,
@@ -276,11 +275,11 @@ function NewPerk() {
           else return item;
         }),
       }));
-    } else if (lengthListShippingFee >= 2) {
+    } else if (lengthshippingFees >= 2) {
       setListLocationShip(['Các tỉnh thành còn lại', ...listLocationShipOrigin]);
       setPerkState((prev) => ({
         ...prev,
-        listShippingFee: [...prev.listShippingFee].map((item) => {
+        shippingFees: [...prev.shippingFees].map((item) => {
           if (item.location === 'Tất cả các tỉnh thành')
             return {
               ...item,
@@ -290,19 +289,19 @@ function NewPerk() {
         }),
       }));
     }
-  }, [perkState.listShippingFee?.length]);
+  }, [perkState.shippingFees?.length]);
   useEffect(() => {
-    const list = perkState.listShippingFee?.filter((item) => item.location !== '');
+    const list = perkState.shippingFees?.filter((item) => item.location !== '');
     setListLocationShipChoosen(list?.map((item) => item.location));
-  }, [perkState.listShippingFee]);
+  }, [perkState.shippingFees]);
   useEffect(() => {
-    const list = perkState.items?.filter((item) => item.name !== '');
+    const list = perkState.detailPerks?.filter((item) => item.name !== '');
     setListItemChoosen(list?.map((item) => item.name));
-  }, [perkState.items]);
+  }, [perkState.detailPerks]);
   const handleChangeItemShipping = (itemChange, indexChange) => {
     setPerkState((prev) => ({
       ...prev,
-      listShippingFee: [...prev.listShippingFee].map((item, index) => {
+      shippingFees: [...prev.shippingFees].map((item, index) => {
         if (index === indexChange) {
           return { ...itemChange };
         } else return item;
@@ -312,13 +311,13 @@ function NewPerk() {
   const handleRemoveItemShipping = (index) => {
     setPerkState((prev) => ({
       ...prev,
-      listShippingFee: [...prev.listShippingFee].filter((item, index2) => index2 !== index),
+      shippingFees: [...prev.shippingFees].filter((item, index2) => index2 !== index),
     }));
   };
   const handleChangeItemInclude = (itemChange, indexChange) => {
     setPerkState((prev) => ({
       ...prev,
-      items: [...prev.items].map((item, index) => {
+      detailPerks: [...prev.detailPerks].map((item, index) => {
         if (index === indexChange) {
           return { ...itemChange };
         } else return item;
@@ -328,28 +327,40 @@ function NewPerk() {
   const handleRemoveItemInclude = (index) => {
     setPerkState((prev) => ({
       ...prev,
-      items: [...prev.items].filter((item, index2) => index2 !== index),
+      detailPerks: [...prev.detailPerks].filter((item, index2) => index2 !== index),
     }));
   };
 
   const addPerkMutation = useAddPerkMutation();
   const editPerkMutation = useEditPerkMutation();
   const handleClickSavePerk = async () => {
-    const dateString = perkState.estDelivery;
-    let dateArray = dateString.split('/');
-    let month = parseInt(dateArray[0], 10);
-    let year = parseInt(dateArray[1], 10);
-    let dateObject = new Date(year, month - 1, 1);
-    perkState.estDelivery = dateObject;
+    // const dateString = perkState.estDeliveryDate;
+    // let dateArray = dateString.split('/');
+    // let month = parseInt(dateArray[0], 10);
+    // let year = parseInt(dateArray[1], 10);
+    // let dateObject = new Date(year, month - 1, 1);
+    // perkState.estDeliveryDate = dateObject;
+    const body = {
+      ...perkState,
+      detailPerks: perkState.detailPerks.map((item) => ({ itemId: item.id, quantity: item.quantity })),
+    };
+    delete body.image;
+    const formData = new FormData();
+    Object.entries(body).forEach(([key, value]) => {
+      if (key === 'detailPerks' || key === 'shippingFees') {
+        formData.append(key, JSON.stringify(value));
+      } else formData.append(key, value);
+    });
+
+    if (file) {
+      formData.append('file', file);
+    }
+
     if (idPerk === 'new') {
-      const body = {
-        ...perkState,
-        image: perkState.perkImage,
-        items: perkState.items.map((item) => ({ itemId: item.id, quantity: item.quantity })),
-      };
+      formData.append('campaignId', id);
       dispatch(setLoading(true));
       addPerkMutation.mutate(
-        { campaignId: id, ...body },
+        { formData },
         {
           onSuccess(data) {
             navigate(`/campaigns/${id}/edit/perks/table`);
@@ -363,14 +374,9 @@ function NewPerk() {
         },
       );
     } else {
-      const body = {
-        ...perkState,
-        image: perkState.perkImage,
-        items: perkState.items.map((item) => ({ item: item.id, quantity: item.quantity })),
-      };
       dispatch(setLoading(true));
       editPerkMutation.mutate(
-        { perkId: perkState.id, data: body },
+        { perkId: perkState.id, formData },
         {
           onSuccess(data) {
             navigate(`/campaigns/${id}/edit/perks/table`);
@@ -497,8 +503,8 @@ function NewPerk() {
             <input
               type="text"
               className={cx('itext-field')}
-              name="title"
-              value={perkState.title}
+              name="name"
+              value={perkState.name}
               onChange={handleChangeInputText}
             />
             <div className={cx('entreField-validationLabel')}>50</div>
@@ -516,22 +522,22 @@ function NewPerk() {
 
             {listItemsAvailable.length > 0 && (
               <>
-                {perkState.items?.length > 0 && (
+                {perkState.detailPerks?.length > 0 && (
                   <div style={{ width: '90%' }}>
                     <div className={cx('inputDoubleField-headers')} style={{ display: 'flex' }}>
-                      <div style={{ padding: '6px' }} class="col-8">
+                      <div style={{ padding: '6px' }} className="w-[80%]">
                         <label className={cx('entreField-label')} style={{ marginBottom: '0px' }}>
                           Item Selection
                         </label>
                       </div>
-                      <div style={{ padding: '6px' }} class="col-3">
+                      <div style={{ padding: '6px' }} className="w-[30%]">
                         <label className={cx('entreField-label')} style={{ marginBottom: '0px' }}>
                           Quantity
                         </label>
                       </div>
                     </div>
 
-                    {perkState.items.map((item, index) => {
+                    {perkState.detailPerks.map((item, index) => {
                       return (
                         <ItemInclude
                           key={index}
@@ -540,7 +546,7 @@ function NewPerk() {
                           removeItem={handleRemoveItemInclude}
                           listItemsAvailable={listItemsAvailable}
                           itemData={item}
-                          lengthListItem={perkState.items?.length}
+                          lengthListItem={perkState.detailPerks?.length}
                           setOpenModalItem={setShowModal}
                           setOptionEdit={setOptionEdit}
                           listItemChoosen={listItemChoosen}
@@ -602,12 +608,12 @@ function NewPerk() {
             <div>
               <div
                 onClick={() => {
-                  perkImageElement.current.click();
+                  imageElement.current.click();
                 }}
                 className={cx('entreField-input-image')}
-                ref={inputPerkImageWrapperElement}
+                ref={inputimageWrapperElement}
               >
-                {!perkState.perkImage?.url && (
+                {!perkState.image && (
                   <div className={cx('tertiaryAction')}>
                     <span className={cx('tertiaryAction-icon')}>
                       <HiCamera style={{ color: '#7A69B3', fontSize: '18px' }} />
@@ -617,9 +623,9 @@ function NewPerk() {
                   </div>
                 )}
 
-                {perkState.perkImage?.url && (
+                {perkState.image && (
                   <div>
-                    <img className={cx('img-copntainer-perk')} src={perkState.perkImage?.url} />
+                    <img className={cx('img-copntainer-perk')} src={perkState.image} accept="image/png, image/jpeg" />
                     <div className={cx('editFile')}>
                       <span className={cx('editFile-icon')}>
                         <MdEdit style={{ color: '#7a69b3', fontSize: '18px' }} />
@@ -627,8 +633,8 @@ function NewPerk() {
                       <span
                         onClick={(e) => {
                           e.stopPropagation();
-                          perkImageElement.current.value = null;
-                          handleRemovePerkImage();
+                          imageElement.current.value = null;
+                          handleRemoveimage();
                         }}
                         className={cx('editFile-icon')}
                       >
@@ -640,9 +646,9 @@ function NewPerk() {
               </div>
 
               <input
-                onChange={handleChangePerkImage}
+                onChange={handleChangeimage}
                 className={cx('entreImage-file')}
-                ref={perkImageElement}
+                ref={imageElement}
                 name="file"
                 type="file"
                 accept="image/jpg, image/jpeg, image/png"
@@ -680,8 +686,8 @@ function NewPerk() {
               <input
                 type="text"
                 className={cx('itext-field-2')}
-                name="estDelivery"
-                value={perkState.estDelivery}
+                name="estDeliveryDate"
+                value={perkState.estDeliveryDate}
                 disabled
               />
               <div
@@ -749,21 +755,22 @@ function NewPerk() {
           </div>
           {perkState.isShipping && (
             <>
-              {perkState.listShippingFee?.length > 0 && (
+              {perkState.shippingFees?.length > 0 && (
                 <div className={cx('entreField')}>
                   <div className={cx('inputDoubleField-headers')} style={{ display: 'flex' }}>
-                    <div style={{ padding: '6px' }} class="col-8">
+                    <div style={{ padding: '6px' }} className="w-8/12">
                       <label className={cx('entreField-label')} style={{ marginBottom: '0px' }}>
                         Địa điểm vận chuyển
                       </label>
                     </div>
-                    <div style={{ padding: '6px' }} class="col-4">
+                    <div style={{ padding: '6px' }} className="w-4/12">
                       <label className={cx('entreField-label')} style={{ marginBottom: '0px' }}>
                         Phí vận chuyển
                       </label>
                     </div>
+                    <di className="w-1/12"></di>
                   </div>
-                  {perkState.listShippingFee.map((item, index) => {
+                  {perkState.shippingFees.map((item, index) => {
                     return (
                       <ItemShipping
                         key={index}
@@ -771,7 +778,7 @@ function NewPerk() {
                         onChangeItem={handleChangeItemShipping}
                         removeItem={handleRemoveItemShipping}
                         listLocationShip={listLocationShip}
-                        lengthListItemShiping={perkState.listShippingFee.length}
+                        lengthListItemShiping={perkState.shippingFees.length}
                         itemData={item}
                         listLocationShipChoosen={listLocationShipChoosen}
                       />

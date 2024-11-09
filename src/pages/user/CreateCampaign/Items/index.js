@@ -5,25 +5,34 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ItemTable from './components/ItemTable';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { arrow, noItem } from '~/assets/images';
 import { useGetItemsContainPerksByCampaignIdQuery } from '~/hooks/api/queries/user/item.query';
+import { setTab } from '~/redux/slides/UserCampaign';
 
 const cx = classNames.bind(styles);
 
 function ItemsCampaign() {
   const { id } = useParams();
   const [isHasItem, setHasItem] = useState(true);
+  const dispatch = useDispatch();
   const [listItems, setListItems] = useState();
-  const { data: response } = useGetItemsContainPerksByCampaignIdQuery(id);
+  const { data: response, refetch } = useGetItemsContainPerksByCampaignIdQuery(id);
   useEffect(() => {
     if (response) {
-      setListItems(response.data || []);
+      setListItems(response || []);
     }
   }, [response]);
 
   const isEditComponent = useSelector((state) => state.userCampaign.isEditAll);
-
+  useEffect(() => {
+    dispatch(
+      setTab({
+        number: 4,
+        content: 'Vật phẩm',
+      }),
+    );
+  }, []);
   return (
     <div className={cx('body')}>
       {listItems?.length > 0 && (
@@ -66,11 +75,19 @@ function ItemsCampaign() {
             <img src={arrow} style={{ width: '40px', height: '60px', objectFit: 'cover', marginTop: '32px' }} />
 
             <div style={{ marginTop: '40px' }}>
-              <a href={`/campaigns/${id}/edit/perks/table`} className={cx('btn-ok')} style={{ fontSize: '16px' }}>
+              <Link to={`/campaigns/${id}/edit/perks/table`} className={cx('btn-ok')} style={{ fontSize: '16px' }}>
                 ĐI ĐẾN TRANG ĐẶC QUYỀN{' '}
-              </a>
+              </Link>
             </div>
           </div>
+        </div>
+      )}
+
+      {listItems?.length > 0 && (
+        <div className={cx('btn-final')}>
+          <Link to={`/campaigns/${id}/edit/items/team`} className={cx('btn', 'btn-ok')}>
+            TIẾP TỤC
+          </Link>
         </div>
       )}
     </div>

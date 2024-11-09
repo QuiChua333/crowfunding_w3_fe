@@ -11,7 +11,7 @@ import {
 // handleAPI
 export const useGetCampaignByIdQuery = (id) => {
   return useQuery({
-    queryKey: [`getCampaignById`],
+    queryKey: [`getCampaignById`, id],
     queryFn: () => getCampaignById(id),
     refetchOnWindowFocus: false,
     staleTime: Infinity,

@@ -1,27 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  title: '',
-  tagline: '',
-  cardImage: '',
-  location: {
-    country: '',
-    city: '',
+  campaign: {},
+  tab: {
+    number: 1,
+    content: 'Cơ bản',
   },
-  category: '',
-  field: '',
-  status: '',
-  startDate: null,
-  duration: 0,
-  videoUrl: '',
-  imageDetailPage: '',
-  story: '',
-  goal: 0,
-  momoNumber: '',
-  faqs: [],
-  owner: '',
-  team: [],
-
   showErrorDelete: false,
   contentError: '',
   isEditAll: true,
@@ -32,6 +16,12 @@ const slice = createSlice({
   name: 'userCampaign',
   initialState,
   reducers: {
+    setCampaign: (state, action) => {
+      state.campaign = action.payload;
+    },
+    setTab: (state, action) => {
+      state.tab = action.payload;
+    },
     setShowErrorDelete: (state, action) => {
       state.showErrorDelete = action.payload;
     },
@@ -48,4 +38,4 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
-export const { setShowErrorDelete, setContentError, setEditAll, setEditComponent } = slice.actions;
+export const { setShowErrorDelete, setContentError, setEditAll, setEditComponent, setCampaign, setTab } = slice.actions;

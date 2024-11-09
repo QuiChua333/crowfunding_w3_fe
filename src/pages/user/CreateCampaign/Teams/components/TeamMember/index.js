@@ -5,37 +5,38 @@ import { useState } from 'react';
 
 import { IoSquareOutline, IoCheckboxSharp } from 'react-icons/io5';
 import { IoCloseSharp } from 'react-icons/io5';
+import { defaultAvt } from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
-function TeamMember({ changeRole, member, isOwner, removeMember, changeEdit }) {
+function TeamMember({ changeRole, member, removeMember, changeEdit }) {
   const [isCheckRoleEditing, setCheckRoleEditng] = useState(false);
   const handleRemoveMember = () => {
-    removeMember(member.user._id);
+    removeMember(member.email);
   };
   const handleChangeEdit = () => {
-    if (!member.isAccepted) {
+    if (member?.confirmStatus === 'Chờ xác nhận') {
       return;
     }
-    changeEdit(member.user._id, !member.canEdit);
+    changeEdit(member.email, !member.isEdit);
   };
 
   const handleChangeRole = (e) => {
     const role = e.target.value;
-    changeRole(member.user._id, role);
+    changeRole(member.email, role);
   };
   return (
     <div className={cx('wrapper')}>
       <div className={cx('container')}>
-        <div className="col-6" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-          <div className={cx('avt')} style={{ opacity: !member?.user?.avatar?.url && '0' }}>
-            <img src={member?.user?.avatar?.url} />
+        <div className="w-3/12" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+          <div className={cx('avt')}>
+            <img src={member?.avatar || defaultAvt} />
           </div>
 
           <div>
-            {!isOwner && (
+            {!member?.isOwner && (
               <>
-                {!member?.isAccepted && (
+                {member?.confirmStatus === 'Chờ xác nhận' && (
                   <div
                     style={{
                       padding: '1px 6px',
@@ -47,10 +48,10 @@ function TeamMember({ changeRole, member, isOwner, removeMember, changeEdit }) {
                       borderRadius: '2px',
                     }}
                   >
-                    CHỜ CHẤP NHẬN
+                    CHỜ XÁC NHẬN
                   </div>
                 )}
-                {member?.isAccepted && (
+                {member?.confirmStatus === 'Đã xác nhận' && (
                   <div
                     style={{
                       padding: '1px 6px',
@@ -62,15 +63,15 @@ function TeamMember({ changeRole, member, isOwner, removeMember, changeEdit }) {
                       borderRadius: '2px',
                     }}
                   >
-                    ĐÃ CHẤP NHẬN
+                    ĐÃ XÁC NHẬN
                   </div>
                 )}
               </>
             )}
-            <div style={{ marginTop: '8px' }}>{member?.user?.fullName} </div>
-            <div>{member?.user?.email} </div>
+            <div style={{ marginTop: '8px' }}>{member?.name} </div>
+            <div>{member?.email} </div>
 
-            {!isOwner && (
+            {!member?.isOwner && (
               <label
                 onClick={handleChangeEdit}
                 style={{
@@ -83,7 +84,7 @@ function TeamMember({ changeRole, member, isOwner, removeMember, changeEdit }) {
                 }}
               >
                 <span>
-                  {!member?.canEdit ? (
+                  {!member?.isEdit ? (
                     <IoSquareOutline style={{ fontSize: '26px', color: '#ccc' }} />
                   ) : (
                     <IoCheckboxSharp style={{ fontSize: '26px', color: '#000' }} />
@@ -94,19 +95,21 @@ function TeamMember({ changeRole, member, isOwner, removeMember, changeEdit }) {
             )}
           </div>
         </div>
-        <div className="col-5">
-          <label className={cx('entreField-label')}>Vai trò</label>
-          <input
-            type="text"
-            maxLength="50"
-            className={cx('itext-field')}
-            value={member?.role}
-            onChange={handleChangeRole}
-          />
-        </div>
+        {!member?.isOwner && (
+          <div className="w-3/12">
+            <label className={cx('entreField-label')}>Vai trò</label>
+            <input
+              type="text"
+              maxLength="50"
+              className={cx('itext-field')}
+              value={member?.role}
+              onChange={handleChangeRole}
+            />
+          </div>
+        )}
 
-        {!isOwner && (
-          <div class="col ml-4">
+        {!member?.isOwner && (
+          <div class="w-1/12 ml-4">
             <div style={{ cursor: 'pointer', marginTop: '32px' }}>
               <span
                 onClick={handleRemoveMember}
@@ -127,6 +130,7 @@ function TeamMember({ changeRole, member, isOwner, removeMember, changeEdit }) {
             </div>
           </div>
         )}
+        {member?.isOwner && <div className="w-1/12"></div>}
       </div>
     </div>
   );

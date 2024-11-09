@@ -5,36 +5,37 @@ import { setMessageBox } from '~/redux/slides/GlobalApp';
 
 import styles from './Teams.module.scss';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import baseURL from '~/utils/baseURL';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { CustomAxios } from '~/config';
-import { setContentError, setShowErrorDelete } from '~/redux/slides/UserCampaign';
+import { setContentError, setShowErrorDelete, setTab } from '~/redux/slides/UserCampaign';
 import { useGetUserByEmailMutation } from '~/hooks/api/mutations/user/user.mutation';
 
 import { useDeleteMemberMutation, useSendInvitationMutation } from '~/hooks/api/mutations/user/team.mutation';
 import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
+import { toast } from 'react-toastify';
 const cx = classNames.bind(styles);
 
 function TeamCampaign() {
   const messageBox = useSelector((state) => state.globalApp.messageBox);
+  const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [members, setMembers] = useState([]);
   const [isCheckRoleEditing, setCheckRoleEditng] = useState(false);
-  const [memberId, setMemberId] = useState('');
+  const [emailDelete, setEmailDelete] = useState('');
   const { data: response, refetch } = useGetTeamMemberByCampaignId(id);
   useEffect(() => {
     if (response) {
-      setMembers(response.data);
+      setMembers(response);
     }
   }, [response]);
 
   const [invalidEmail, setInvalidEmail] = useState(false);
-  const getUserByEmailMutation = useGetUserByEmailMutation();
   const sendInvitationMutation = useSendInvitationMutation();
   const handleClickSendInvitation = async () => {
     // check validate email
@@ -50,52 +51,36 @@ function TeamCampaign() {
     }
     setInvalidEmail(false);
     dispatch(setShowErrorDelete(false));
+    const isExists = members.some((member) => member.email === email.trim());
+    if (isExists) {
+      dispatch(setContentError('Email người dùng này đã nằm trong team của bạn!'));
+      dispatch(setShowErrorDelete(true));
+      dispatch(setLoading(false));
+      return;
+    }
     dispatch(setLoading(true));
-    getUserByEmailMutation.mutate(email, {
-      onSuccess(data) {
-        if (!data.data) {
-          dispatch(setContentError('Email người dùng này không tồn tại trong hệ thống'));
-          dispatch(setShowErrorDelete(true));
-          dispatch(setLoading(false));
-
-          return;
-        }
-
-        if (members?.some((item) => item.user.email === email)) {
-          dispatch(setContentError('Email người dùng này đã nằm trong team của bạn!'));
-          dispatch(setShowErrorDelete(true));
-          dispatch(setLoading(false));
-
-          return;
-        }
-
-        sendInvitationMutation.mutate(
-          {
-            campaignId: id,
-            email,
-            isEdit: isCheckRoleEditing,
-          },
-          {
-            onSuccess() {
-              dispatch(setLoading(false));
-              dispatch(setShowErrorDelete(false));
-              setEmail('');
-              setCheckRoleEditng(false);
-              refetch();
-            },
-            onError(error) {
-              console.log(error.message);
-            },
-          },
-        );
+    sendInvitationMutation.mutate(
+      {
+        campaignId: id,
+        email,
+        isEdit: isCheckRoleEditing,
       },
-      onError(err) {
-        console.log(console.log(err));
+      {
+        onSuccess() {
+          dispatch(setLoading(false));
+          dispatch(setShowErrorDelete(false));
+          setEmail('');
+          setCheckRoleEditng(false);
+          refetch();
+        },
+        onError(error) {
+          console.log(error.message);
+        },
       },
-    });
+    );
   };
-  const handleRemoveMember = (memberId) => {
-    setMemberId(memberId);
+  const handleRemoveMember = (email) => {
+    setEmailDelete(email);
     dispatch(
       setMessageBox({
         title: 'Xóa thành viên?',
@@ -108,35 +93,37 @@ function TeamCampaign() {
     );
   };
   const deleteMemberMutation = useDeleteMemberMutation();
-  const deleteMember = async (memberId) => {
+  const deleteMember = async (email) => {
     deleteMemberMutation.mutate(
       {
         campaignId: id,
-        memberId: memberId,
+        email: email,
       },
       {
         onSuccess() {
+          toast.success('Xóa thành viên thành công');
           refetch();
         },
         onError(err) {
-          console.log(err.message);
+          toast.error('Xóa thành viên thất bại');
+          console.log(err.response.data.message);
         },
       },
     );
   };
-  const handleChangeEdit = (memberId, valueEdit) => {
+  const handleChangeEdit = (email, valueEdit) => {
     setMembers((prev) =>
       [...prev].map((item) => {
-        if (item.user._id === memberId) {
-          return { ...item, canEdit: valueEdit };
+        if (item.email === email) {
+          return { ...item, isEdit: valueEdit };
         } else return item;
       }),
     );
   };
-  const handleChangeRole = (memberId, role) => {
+  const handleChangeRole = (email, role) => {
     setMembers((prev) =>
       [...prev].map((item) => {
-        if (item.user._id === memberId) {
+        if (item.email === email) {
           return { ...item, role: role };
         } else return item;
       }),
@@ -149,7 +136,7 @@ function TeamCampaign() {
   useEffect(() => {
     if (messageBox.type === 'deleteMember') {
       if (messageBox.result === true) {
-        deleteMember(memberId);
+        deleteMember(emailDelete);
       }
     }
   }, [messageBox.result]);
@@ -157,15 +144,23 @@ function TeamCampaign() {
   const handleClickSaveTeam = async () => {
     dispatch(setLoading(true));
     try {
-      const res = await CustomAxios.patch(`${baseURL}/campaign/editCampaign/${id}`, {
-        team: [...members].map((item) => ({ ...item, user: item.user._id })),
+      const res = await CustomAxios.patch(`${baseURL}/team-member/campaign/${id}`, {
+        members: members,
       });
       dispatch(setLoading(false));
-      window.location.href = `/campaigns/${id}/edit/funding`;
+      navigate(`/campaigns/${id}/edit/funding`);
     } catch (error) {
       console.log(error.message);
     }
   };
+  useEffect(() => {
+    dispatch(
+      setTab({
+        number: 5,
+        content: 'Team',
+      }),
+    );
+  }, []);
 
   return (
     <>
@@ -181,7 +176,7 @@ function TeamCampaign() {
           <div className={cx('entreField')}>
             <label className={cx('entreField-label')}>Email Thành Viên Mới</label>
             <div className={cx('container-input')}>
-              <div style={{ flex: '1' }} class>
+              <div className="w-[400px]">
                 <input
                   type="email"
                   className={cx('itext-field')}
@@ -222,11 +217,7 @@ function TeamCampaign() {
                 <div className={cx('team-owner')}>
                   <label className={cx('entreField-label')}>Chủ sỡ hữu</label>
                   <div style={{ borderTop: '1px solid #C8C8C8' }}></div>
-                  <TeamMember
-                    isOwner
-                    member={members?.find((item) => item.isOwner === true)}
-                    changeRole={handleChangeRole}
-                  />
+                  <TeamMember member={members?.find((item) => item.isOwner === true)} changeRole={handleChangeRole} />
                 </div>
                 <div className={cx('team-members')}>
                   <label className={cx('entreField-label')}>Thành viên</label>

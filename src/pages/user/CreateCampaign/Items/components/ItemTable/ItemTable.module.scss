@@ -1,61 +1,64 @@
 .wrapper {
-    table {
-        width: 100%;
+  table {
+    width: 100%;
 
-        border-collapse: collapse;
-    }
+    border-collapse: collapse;
+  }
 
-    thead th {
-        font-weight: 400;
-        font-size: 15px;
-    }
-    tr td {
-        font-weight: 300;
-        font-size: 15px;
-    }
+  thead th {
+    font-weight: 400;
+    font-size: 15px;
+  }
+  tr td {
+    font-weight: 300;
+    font-size: 15px;
+  }
 
-    thead th {
-        padding: 14px 0;
-        background-color: #f5f5f5;
+  thead th {
+    padding: 14px 0;
+    background-color: #f5f5f5;
+  }
+  tr td {
+    padding: 18px 0;
+  }
+  tr {
+    cursor: pointer;
+    border: 1px solid #c8c8c8;
+    background-color: #fff;
+    &:hover {
+      background-color: #eee5f2;
     }
-    tr td {
-        padding: 18px 0;
-    }
-    tr {
-        cursor: pointer;
-        border: 1px solid #c8c8c8;
-        background-color: #fff;
-        &:hover {
-            background-color: #eee5f2;
-        }
-    }
-    th,
-    td {
-        width: calc(100% / 3);
-    }
+  }
+  th,
+  td {
+    width: calc(100% / 3);
+  }
 
-    th.name,
-    td.name {
-        padding-left: 24px;
-        padding-right: 16px;
-    }
+  th.name,
+  td.name {
+    padding-left: 24px;
+    padding-right: 16px;
+    text-align: center;
+  }
 
-    th.option,
-    td.option {
-        padding-left: 24px;
-    }
+  th.option,
+  td.option {
+    padding-left: 24px;
+    text-align: center;
+  }
 
-    th.associated,
-    td.associated {
-        padding-left: 24px;
-    }
+  th.associated,
+  td.associated {
+    padding-left: 24px;
+    text-align: center;
+  }
 }
 
 @keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

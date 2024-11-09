@@ -4,7 +4,6 @@ import { MdEdit } from 'react-icons/md';
 import { IoCloseSharp } from 'react-icons/io5';
 import { useRef, useEffect } from 'react';
 import { FaAngleDown } from 'react-icons/fa';
-import { AiFillQuestionCircle } from 'react-icons/ai';
 import { useState } from 'react';
 import styles from './Basic.module.scss';
 import MenuDropDown from './components/MenuDropDown';
@@ -12,8 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
-import { useQueryClient } from '@tanstack/react-query';
-import { setEditComponent } from '~/redux/slides/UserCampaign';
+import { setEditComponent, setTab } from '~/redux/slides/UserCampaign';
 import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
 
 const cx = classNames.bind(styles);
@@ -21,6 +19,7 @@ function BasicCampaign() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+  const [fileId, setFiledId] = useState('');
   const [file, setFile] = useState();
   const [campaginState, setCampaignState] = useState({});
   const [campagin, setCampaign] = useState({});
@@ -67,26 +66,25 @@ function BasicCampaign() {
   const { data: dataField } = useGetFieldGroupByCategoryQuery(id);
   useEffect(() => {
     if (dataField) {
-      setListFieldGrouByCategory(dataField.data);
+      setListFieldGrouByCategory(dataField);
     }
   }, [dataField]);
-  const queryClient = useQueryClient();
-  const dataCampaign = queryClient.getQueryData(['getCampaignById']);
+  const campaign = useSelector((state) => state.userCampaign.campaign);
   useEffect(() => {
-    if (dataCampaign) {
+    if (campaign) {
       let infoBasic = {
-        id: dataCampaign.id,
-        title: dataCampaign.title || '',
-        tagline: dataCampaign.tagline || '',
-        cardImage: dataCampaign.cardImage || '',
-        location: dataCampaign.location || '',
-        field: dataCampaign.field || '',
-        duration: dataCampaign.duration || '',
+        id: campaign.id,
+        title: campaign.title || '',
+        tagline: campaign.tagline || '',
+        cardImage: campaign.cardImage || '',
+        location: campaign.location || '',
+        field: campaign.field?.name || '',
+        duration: campaign.duration || '',
       };
       setCampaignState({ ...infoBasic });
       setCampaign({ ...infoBasic });
     }
-  }, [dataCampaign]);
+  }, [campaign]);
 
   const handleChangeInputText = (e) => {
     const name = e.target.name;
@@ -95,15 +93,21 @@ function BasicCampaign() {
       return { ...prev, [name]: value };
     });
   };
-  const handleChangeField = (field) => {
+  const handleChangeField = (fieldId, fieldName) => {
     setCampaignState((prev) => {
-      return { ...prev, field: field };
+      return { ...prev, field: fieldName };
     });
+    setFiledId(fieldId);
   };
 
   useEffect(() => {
-    console.log(campaginState);
-  }, [campaginState]);
+    dispatch(
+      setTab({
+        number: 1,
+        content: 'Cơ bản',
+      }),
+    );
+  }, []);
 
   // validate
   const [textValidateTitle, setTextValidateTitle] = useState('');
@@ -128,7 +132,7 @@ function BasicCampaign() {
   };
   const [textValidateCardImage, setTextValidateCardImage] = useState('');
   const validateCardImage = (value) => {
-    if (value?.trim().length === 0 || value?.trim() === '') {
+    if (value?.trim() === '') {
       setTextValidateCardImage('* Vui lòng chọn ảnh thẻ cho chiến dịch');
       return false;
     } else {
@@ -139,23 +143,14 @@ function BasicCampaign() {
   const [textValidateCountry, setTextValidateCountry] = useState('');
   const validateCountry = (value) => {
     if (value?.trim().length === 0 || value?.trim() === '') {
-      setTextValidateCountry('* Vui lòng nhập quốc gia nơi bạn đang sinh sống');
+      setTextValidateCountry('* Vui lòng nhập địa điểm triển khai chiến dịch');
       return false;
     } else {
       setTextValidateCountry('');
       return true;
     }
   };
-  const [textValidateLocation, setTextValidateLocation] = useState('');
-  const validateLocation = (value) => {
-    if (value?.trim().length === 0 || value?.trim() === '') {
-      setTextValidateLocation('* Vui lòng nhập tỉnh hoặc thành phố nơi bạn đang sinh sống');
-      return false;
-    } else {
-      setTextValidateLocation('');
-      return true;
-    }
-  };
+
   const [textValidateField, setTextValidateField] = useState('');
   const validateField = (value) => {
     if (value?.trim().length === 0 || value?.trim() === '') {
@@ -199,17 +194,18 @@ function BasicCampaign() {
     const body = { ...campaginState };
     let flagTitle = validateTitle(body.title);
     let flagTagline = validateTagline(body.tagline);
-    let flagImage = validateCardImage(body.cardImage.url);
+    let flagImage = validateCardImage(body.cardImage);
     let flagCountry = validateCountry(body.location);
-    let flagField = true || validateField(body.field);
-    let flagDuartion = validateDuration(body.duration);
+    let flagField = validateField(body.field);
+    let flagDuartion = validateDuration(`${body.duration}`);
 
     if (flagTitle && flagTagline && flagImage && flagCountry && flagField && flagDuartion) {
-      // dispatch(setLoading(true));
+      dispatch(setLoading(true));
       const id = body.id;
       delete body.cardImage;
+      delete body.field;
       const formData = new FormData();
-      console.log(body);
+
       if (file) {
         formData.append('file', file);
         formData.append('imageTypeName', 'cardImage');
@@ -219,6 +215,9 @@ function BasicCampaign() {
         formData.append(key, value);
       });
 
+      if (fileId) {
+        formData.append('fieldId', fileId);
+      }
       editCampaignByIdMutation.mutate(
         {
           id,
@@ -226,7 +225,7 @@ function BasicCampaign() {
         },
         {
           onSuccess(data) {
-            // navigate(`/campaigns/${id}/edit/story`);
+            navigate(`/campaigns/${id}/edit/story`);
           },
           onError(error) {
             console.log(error.message);

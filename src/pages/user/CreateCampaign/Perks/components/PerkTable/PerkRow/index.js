@@ -4,14 +4,17 @@ import styles from '../PerkTable.module.scss';
 import { PiDotsThreeBold } from 'react-icons/pi';
 import DropDown from '../DropDown';
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import axios from 'axios';
 import baseURL from '~/utils/baseURL';
 import { convertDateFromString } from '~/utils';
+import { useEditPerkMutation } from '~/hooks/api/mutations/user/perk.mutation';
+import { toast } from 'react-toastify';
 const cx = classNames.bind(styles);
 function PerkRow({ index, perk, setChecked, getPerksByCampaignId, isEditComponent, handleDeletePerK }) {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const [openDropDown, setOpenDropDown] = useState(false);
   const docElement = useRef(null);
@@ -24,7 +27,7 @@ function PerkRow({ index, perk, setChecked, getPerksByCampaignId, isEditComponen
     handleDeletePerK(perk);
   };
   const handleClickPerk = () => {
-    navigate(`/campaigns/${perk.campaign}/edit/perks/${perk._id}`);
+    navigate(`/campaigns/${id}/edit/perks/${perk.id}`);
   };
 
   useEffect(() => {
@@ -38,23 +41,40 @@ function PerkRow({ index, perk, setChecked, getPerksByCampaignId, isEditComponen
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [docElement]);
-
+  const editPerkMutation = useEditPerkMutation();
   const changeFeatured = async (isFeatured) => {
     console.log(isFeatured);
-    const body = { isFeatured };
     dispatch(setLoading(true));
-    try {
-      const res = await axios.patch(`${baseURL}/perk/editPerk/${perk._id}`, body);
-      dispatch(setLoading(false));
-      getPerksByCampaignId();
-    } catch (error) {
-      console.log(error.message);
-    }
+    const formData = new FormData();
+    formData.append('isFeatured', isFeatured);
+    editPerkMutation.mutate(
+      {
+        perkId: perk.id,
+        formData,
+      },
+      {
+        onSuccess() {
+          dispatch(setLoading(false));
+          if (isFeatured) {
+            toast.success('Đặt nổi bật thành công');
+          } else toast.success('Dừng làm nổi bật thành công');
+
+          getPerksByCampaignId();
+        },
+        onError(err) {
+          dispatch(setLoading(false));
+          console.log(err.response.data.message);
+          if (isFeatured) {
+            toast.success('Đặt nổi bật thất bại');
+          } else toast.error('Dừng làm nổi bật thất bại');
+        },
+      },
+    );
   };
   return (
     <tr onClick={handleClickPerk}>
       <td className={cx('title')}>
-        {perk.title}
+        {perk.name}
         {!perk.isVisible && (
           <>
             <br />
@@ -65,7 +85,7 @@ function PerkRow({ index, perk, setChecked, getPerksByCampaignId, isEditComponen
       <td className={cx('price')}>{perk.price} VNĐ</td>
       <td className={cx('type')}>{perk.isFeatured && <span className={cx('featured')}>NỔI BẬT</span>}</td>
       <td className={cx('quantity')}>{perk.claimed + '/' + perk.quantity}</td>
-      <td className={cx('est')}>{perk.estDelivery ? convertDateFromString(perk.estDelivery, 'less') : ''}</td>
+      <td className={cx('est')}>{perk.estDeliveryDate ? convertDateFromString(perk.estDeliveryDate, 'less') : ''}</td>
       <td className={cx('action')}>
         <div
           className={cx('action-doc')}

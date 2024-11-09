@@ -16,6 +16,7 @@ export const useGetPerk = (id) => {
     queryKey: [`useGetPerk`],
     queryFn: () => getPerk(id),
     refetchOnWindowFocus: false,
+    enabled: id !== 'new',
   });
 };
 

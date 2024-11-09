@@ -4,14 +4,17 @@ import { FaAngleDown, FaAngleUp, FaBars, FaArrowCircleLeft } from 'react-icons/f
 import { useNavigate } from 'react-router-dom';
 
 import styles from './Sidebar.module.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTab } from '~/redux/slides/UserCampaign';
 
 const cx = classNames.bind(styles);
 
-function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, setContentTag }) {
+function SidebarCampaign({ status, title, cardImage, id }) {
   const [downEditor, setDownEditor] = useState(true);
 
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const tab = useSelector((state) => state.userCampaign.tab);
   const handleClickSection = function (event) {
     event.preventDefault();
     setDownEditor(!downEditor);
@@ -49,6 +52,8 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {}, []);
   return (
     <>
       <button className={cx('toggle-btn')} onClick={handleToggleOpen} id="btn-open">
@@ -90,14 +95,12 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
                 <div className={cx('navSection-children')}>
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': current === 1,
+                      'navItem--current': tab.number === 1,
                     })}
                   >
                     <div
                       onClick={() => {
                         navigate(`/campaigns/${id}/edit/basic`);
-                        setCurrent(1);
-                        setContentTag('Cơ bản');
                       }}
                       className={cx('navItem-link')}
                     >
@@ -106,14 +109,12 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
                   </div>
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': current === 2,
+                      'navItem--current': tab.number === 2,
                     })}
                   >
                     <div
                       onClick={() => {
                         navigate(`/campaigns/${id}/edit/story`);
-                        setCurrent(2);
-                        setContentTag('Nội dung');
                       }}
                       className={cx('navItem-link')}
                     >
@@ -122,14 +123,12 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
                   </div>
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': current === 3,
+                      'navItem--current': tab.number === 3,
                     })}
                   >
                     <div
                       onClick={() => {
                         navigate(`/campaigns/${id}/edit/perks/table`);
-                        setCurrent(3);
-                        setContentTag('Đặc quyền');
                       }}
                       className={cx('navItem-link')}
                     >
@@ -138,14 +137,12 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
                   </div>
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': current === 4,
+                      'navItem--current': tab.number === 4,
                     })}
                   >
                     <div
                       onClick={() => {
                         navigate(`/campaigns/${id}/edit/items/table`);
-                        setCurrent(4);
-                        setContentTag('Vật phẩm');
                       }}
                       className={cx('navItem-link')}
                     >
@@ -154,14 +151,12 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
                   </div>
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': current === 5,
+                      'navItem--current': tab.number === 5,
                     })}
                   >
                     <div
                       onClick={() => {
                         navigate(`/campaigns/${id}/edit/team`);
-                        setCurrent(5);
-                        setContentTag('Team');
                       }}
                       className={cx('navItem-link')}
                     >
@@ -170,14 +165,12 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
                   </div>
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': current === 6,
+                      'navItem--current': tab.number === 6,
                     })}
                   >
                     <div
                       onClick={() => {
                         navigate(`/campaigns/${id}/edit/funding`);
-                        setCurrent(6);
-                        setContentTag('Gây quỹ');
                       }}
                       className={cx('navItem-link')}
                     >
@@ -186,14 +179,12 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
                   </div>
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': current === 7,
+                      'navItem--current': tab.number === 7,
                     })}
                   >
                     <div
                       onClick={() => {
                         navigate(`/campaigns/${id}/edit/settings`);
-                        setCurrent(7);
-                        setContentTag('CÀI ĐẶT');
                       }}
                       className={cx('navItem-link')}
                     >
@@ -203,14 +194,12 @@ function SidebarCampaign({ status, title, cardImage, id, current, setCurrent, se
 
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': current === 8,
+                      'navItem--current': tab.number === 8,
                     })}
                   >
                     <div
                       onClick={() => {
                         navigate(`/campaigns/${id}/edit/contribution`);
-                        setCurrent(8);
-                        setContentTag('ĐÓNG GÓP');
                       }}
                       className={cx('navItem-link')}
                     >

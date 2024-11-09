@@ -20,14 +20,27 @@ export const deletePerk = async (id) => {
 };
 
 // handleAPI
-export const addPerk = async (data) => {
-  const response = await CustomAxios.post(`${baseUrl}/perk`, data);
-  return response.data;
+export const addPerk = async ({ id, formData, data }) => {
+  if (formData) {
+    const response = await CustomAxios.post(`${baseUrl}/perk`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } else {
+    const response = await CustomAxios.post(`${baseUrl}/perk`, data);
+    return response.data;
+  }
 };
 
 // handleAPI
-export const editPerk = async ({ perkId, data }) => {
-  const response = await CustomAxios.patch(`${baseUrl}/perk/${perkId}`, data);
+export const editPerk = async ({ perkId, formData }) => {
+  const response = await CustomAxios.patch(`${baseUrl}/perk/${perkId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 };
 

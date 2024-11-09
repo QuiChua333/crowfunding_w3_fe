@@ -10,11 +10,10 @@ import styles from './Content.module.scss';
 import FAQ from './components/FAQ';
 import { useNavigate, useParams } from 'react-router-dom';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CustomUploadCKEAdapter } from '~/config';
-import { useGetCampaignByIdQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
-import { useQueryClient } from '@tanstack/react-query';
+import { setTab } from '~/redux/slides/UserCampaign';
 
 ClassicEditor.create(document.querySelector('#editor'), {
   extraPlugins: [CustomUploadCKEAdapter],
@@ -29,7 +28,7 @@ function ContentCampaign() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [campaginState, setCampaignState] = useState({});
-  const [campagin, setCampaign] = useState({});
+  const [file, setFile] = useState();
   const [urlEmbedVideo, setUrlEmbedVideo] = useState();
   const [showErrorUrl, setShowErrorUrl] = useState(false);
   const [typeIPitch, setTypeIPitch] = useState(1);
@@ -38,37 +37,39 @@ function ContentCampaign() {
   const handleClickAddRemoveVideo = (e) => {
     e.preventDefault();
     if (!urlEmbedVideo) {
-      if (!checkLink(campaginState.videoUrl)) {
+      if (!checkLink(campaginState.youtubeUrl)) {
         setShowErrorUrl(true);
       } else {
         setShowErrorUrl(false);
-        const urlEmbedVideo = '//www.youtube.com/embed/' + getId(campaginState.videoUrl);
+        const urlEmbedVideo = '//www.youtube.com/embed/' + getId(campaginState.youtubeUrl);
         setUrlEmbedVideo(urlEmbedVideo);
       }
     } else {
       setUrlEmbedVideo('');
       setCampaignState((prev) => {
-        return { ...prev, videoUrl: '' };
+        return { ...prev, youtubeUrl: '' };
       });
     }
   };
   const handleChangeImageDetailPage = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
+      setFile(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         let res = reader.result;
         setCampaignState((prev) => {
-          return { ...prev, imageDetailPage: { ...prev.imageDetailPage, url: res } };
+          return { ...prev, imageDetailPage: res };
         });
       };
     }
   };
   const handleRemoveImageDetailPage = () => {
     setCampaignState((prev) => {
-      return { ...prev, imageDetailPage: { ...prev.imageDetailPage, url: '' } };
+      return { ...prev, imageDetailPage: '' };
     });
+    setFile(null);
   };
   function uploadPlugin(editor) {
     editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
@@ -113,8 +114,13 @@ function ContentCampaign() {
   };
 
   useEffect(() => {
-    console.log(campaginState);
-  }, [campaginState]);
+    dispatch(
+      setTab({
+        number: 2,
+        content: 'Nội dung',
+      }),
+    );
+  }, []);
 
   const handleChangeInputText = (e) => {
     const name = e.target.name;
@@ -127,33 +133,27 @@ function ContentCampaign() {
     var regex = /(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?/;
     return regex.test(link);
   };
-  const queryClient = useQueryClient();
-  const dataCampaign = queryClient.getQueryData(['getCampaignById']);
+  const campaign = useSelector((state) => state.userCampaign.campaign);
   useEffect(() => {
-    if (dataCampaign) {
+    if (campaign) {
       let infoBasic = {
-        id: dataCampaign.data._id,
-        title: dataCampaign.data.title || '',
-        cardImage: dataCampaign.data.cardImage || { url: '', public_id: '' },
-        status: dataCampaign.data.status,
-        videoUrl: dataCampaign.data.videoUrl || '',
-        imageDetailPage: dataCampaign.data.imageDetailPage || { url: '', public_id: '' },
-        story: dataCampaign.data.story || '',
-        faqs: (dataCampaign.data.faqs.length > 0 && dataCampaign.data.faqs) || [{ question: '', answer: '' }],
-        owner: dataCampaign.data.owner || '',
-        team: dataCampaign.data.team || [],
+        id: campaign.id,
+        youtubeUrl: campaign.youtubeUrl || '',
+        imageDetailPage: campaign.imageDetailPage || '',
+        story: campaign.story || '',
+        faqs: campaign.faqs || [{ question: '', answer: '' }],
       };
       setCampaignState({ ...infoBasic });
-      setCampaign({ ...infoBasic });
-      const urlEmbedVideoTMP = '//www.youtube.com/embed/' + getId(dataCampaign.data.videoUrl);
+
+      const urlEmbedVideoTMP = campaign.youtubeUrl ? '//www.youtube.com/embed/' + getId(campaign.youtubeUrl) : '';
       setUrlEmbedVideo(urlEmbedVideoTMP);
     }
-  }, [dataCampaign]);
+  }, [campaign]);
 
   const [textValidateCardImageAndVideo, setTextValidateCardImageAndVideo] = useState('');
-  const validateCardImageAndVideo = (imageUrl, videoUrl) => {
+  const validateCardImageAndVideo = (imageUrl, youtubeUrl) => {
     let flagImage = imageUrl?.trim().length === 0 || imageUrl?.trim() === '';
-    let flagVideo = videoUrl?.trim().length === 0 || videoUrl?.trim() === '';
+    let flagVideo = youtubeUrl?.trim().length === 0 || youtubeUrl?.trim() === '';
     if (flagImage && flagVideo) {
       setTextValidateCardImageAndVideo('* Vui lòng chọn ít nhất 1 ảnh hoặc video cho chiến dịch');
       return false;
@@ -169,21 +169,31 @@ function ContentCampaign() {
   const editCampaignByIdMutation = useEditCampaignByIdMutation();
   const handleClickSaveContinue = async () => {
     const body = { ...campaginState };
-    const id = body.id;
-    delete body.id;
-    delete body.status;
-    delete body.title;
-    delete body.cardImage;
-    delete body.owner;
-    delete body.team;
-    let flagURL = validateCardImageAndVideo(body.imageDetailPage.url, body.videoUrl);
+
+    let flagURL = validateCardImageAndVideo(body.imageDetailPage, body.youtubeUrl);
     setIsClicked(true);
     if (flagURL && flagFaqs) {
       dispatch(setLoading(true));
+      const id = body.id;
+      delete body.id;
+      delete body.imageDetailPage;
+      const formData = new FormData();
+
+      if (file) {
+        formData.append('file', file);
+        formData.append('imageTypeName', 'imageDetailPage');
+      }
+
+      Object.entries(body).forEach(([key, value]) => {
+        if (key === 'faqs') {
+          formData.append(key, JSON.stringify(value));
+        } else formData.append(key, value);
+      });
+
       editCampaignByIdMutation.mutate(
         {
           id,
-          body,
+          formData,
         },
         {
           onSuccess(data) {
@@ -248,8 +258,8 @@ function ContentCampaign() {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <input
                   onChange={handleChangeInputText}
-                  name="videoUrl"
-                  value={campaginState.videoUrl}
+                  name="youtubeUrl"
+                  value={campaginState.youtubeUrl}
                   type="text"
                   placeholder="http://"
                   className={cx('itext-field')}
@@ -308,7 +318,7 @@ function ContentCampaign() {
                   }}
                   className={cx('entreField-input-image')}
                 >
-                  {!campaginState.imageDetailPage?.url && (
+                  {!campaginState.imageDetailPage && (
                     <div className={cx('tertiaryAction')}>
                       <span className={cx('tertiaryAction-icon')}>
                         <HiCamera style={{ color: '#7A69B3', fontSize: '18px' }} />
@@ -318,9 +328,9 @@ function ContentCampaign() {
                     </div>
                   )}
 
-                  {campaginState.imageDetailPage?.url && (
+                  {campaginState.imageDetailPage && (
                     <div className={cx('image-upload')}>
-                      <img className={cx('container-image-upload')} src={campaginState.imageDetailPage?.url} />
+                      <img className={cx('container-image-upload')} src={campaginState.imageDetailPage} />
                       <div className={cx('editFile')}>
                         <span className={cx('editFile-icon')}>
                           <MdEdit style={{ color: '#7a69b3', fontSize: '18px' }} />
@@ -380,51 +390,101 @@ function ContentCampaign() {
                   '|',
                   'bold',
                   'italic',
+                  'underline',
+                  'strikethrough',
+                  'subscript',
+                  'superscript',
+                  '|',
                   'link',
+                  'unlink',
                   'bulletedList',
                   'numberedList',
+                  'todoList',
                   '|',
-                  'indent',
+                  'alignment',
                   'outdent',
+                  'indent',
                   '|',
                   'imageUpload',
                   'blockQuote',
                   'insertTable',
                   'mediaEmbed',
+                  '|',
                   'undo',
                   'redo',
-                  'paragraph',
+                  'fontColor',
+                  'fontBackgroundColor',
+                  'fontSize',
+                  'fontFamily',
+                  '|',
+                  'highlight',
+                  'horizontalLine',
+                  'specialCharacters',
+                  'removeFormat',
                 ],
               },
               image: {
-                toolbar: [
-                  'imageStyle:full',
-                  'imageStyle:side',
-                  'toggleImageCaption',
-                  'PictureEditing',
-                  '|',
-                  'imageTextAlternative',
-                  'resizeImage:50',
-                  'resizeImage:75',
-                  'resizeImage:original',
+                // toolbar: [
+                //   'imageStyle:full',
+                //   'imageStyle:side',
+                //   'toggleImageCaption',
+                //   'PictureEditing',
+                //   '|',
+                //   'imageTextAlternative',
+                //   'resizeImage:50',
+                //   'resizeImage:75',
+                //   'resizeImage:original',
+                // ],
+                styles: [
+                  'alignLeft', // Căn trái
+                  'alignCenter', // Căn giữa
+                  'alignRight', // Căn phải
+                  'side', // Hiển thị ảnh bên cạnh văn bản
+                  'full', // Hiển thị ảnh toàn dòng
                 ],
                 resizeOptions: [
                   {
                     name: 'resizeImage:original',
+                    label: 'Kích thước gốc',
                     value: null,
-                    icon: 'original',
                   },
                   {
                     name: 'resizeImage:50',
+                    label: '50%',
                     value: '50',
-                    icon: 'medium',
                   },
                   {
                     name: 'resizeImage:75',
+                    label: '75%',
                     value: '75',
-                    icon: 'large',
                   },
                 ],
+                toolbar: [
+                  'imageTextAlternative', // Văn bản thay thế
+                  'imageStyle:alignLeft',
+                  'imageStyle:alignCenter',
+                  'imageStyle:alignRight',
+                  'imageStyle:side',
+                  'imageStyle:full',
+                  'resizeImage', // Điều chỉnh kích thước
+                ],
+                // resizeOptions: [
+                //   {
+                //     name: 'resizeImage:original',
+                //     value: null,
+                //     icon: 'original',
+                //   },
+                //   {
+                //     name: 'resizeImage:50',
+                //     value: '50',
+                //     icon: 'medium',
+                //   },
+                //   {
+                //     name: 'resizeImage:75',
+                //     value: '75',
+                //     icon: 'large',
+                //   },
+                // ],
               },
               table: {
                 contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],

@@ -1,10 +1,5 @@
 import classNames from 'classnames/bind';
-import SidebarCampaign from '../components/Sidebar';
-
-import Footer from '~/layout/components/Footer';
 import PerkTable from './components/PerkTable';
-
-import { TiCancel } from 'react-icons/ti';
 
 import styles from './Perks.module.scss';
 import { useEffect, useState } from 'react';
@@ -14,12 +9,9 @@ import { setLoading, setMessageBox } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { arrow, noPerk } from '~/assets/images';
-import { HeaderCreateCampaign } from '~/layout/components';
-import { useQueryClient } from '@tanstack/react-query';
-import { useGetCampaignByIdQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useDeletePerkMutation } from '~/hooks/api/mutations/user/perk.mutation';
 import { useGetPerksByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
-import { setContentError, setEditAll, setEditComponent, setShowErrorDelete } from '~/redux/slides/UserCampaign';
+import { setContentError, setEditAll, setEditComponent, setShowErrorDelete, setTab } from '~/redux/slides/UserCampaign';
 
 const cx = classNames.bind(styles);
 
@@ -38,27 +30,21 @@ function PerksCampaign() {
     }, 0);
     setNumberSelected(num);
   };
-  const queryClient = useQueryClient();
-  const dataCampaign = queryClient.getQueryData(['getCampaignById']);
+  const campaign = useSelector((state) => state.userCampaign.campaign);
   useEffect(() => {
-    if (dataCampaign) {
+    if (campaign) {
       let infoBasic = {
-        id: dataCampaign.data._id,
-        title: dataCampaign.data.title || '',
-        cardImage: dataCampaign.data.cardImage || { url: '', public_id: '' },
-        status: dataCampaign.data.status,
-        owner: dataCampaign.data.owner || '',
-        team: dataCampaign.data.team || [],
+        id: campaign.id,
       };
       setCampaign({ ...infoBasic });
     }
-  }, [dataCampaign]);
-  const { data: response, refetch } = useGetPerksByCampaignIdQuery(id);
+  }, [campaign]);
+  const { data: perks, refetch, isLoading } = useGetPerksByCampaignIdQuery(id);
   useEffect(() => {
-    if (response) {
-      setListPerks(response.data);
+    if (perks) {
+      setListPerks(perks);
     } else setListPerks([]);
-  }, [response]);
+  }, [perks]);
 
   const handleDeletePerK = async (perk) => {
     setPerkDelete(perk);
@@ -85,11 +71,12 @@ function PerksCampaign() {
   const deletePerkMutation = useDeletePerkMutation();
   const deletePerk = async (perk) => {
     dispatch(setLoading(true));
-    deletePerkMutation.mutate(perk._id, {
+    deletePerkMutation.mutate(perk.id, {
       onSuccess(data) {
         // setShowErrorDelete(true);
         dispatch(setMessageBox({ result: null, isShow: false }));
-        toast.success(data.data.message);
+        toast.success('Xóa đặc quyền thành công');
+        refetch();
       },
       onError(error) {
         setContentError(error.response.data.message);
@@ -104,39 +91,19 @@ function PerksCampaign() {
 
   const isEditAll = useSelector((state) => state.userCampaign.isEditAll);
   const isEditComponent = useSelector((state) => state.userCampaign.isEditComponent);
-  const currentUser = useSelector((state) => state.user.currentUser);
-  useEffect(() => {
-    if (JSON.stringify(campagin) !== '{}') {
-      let edit = false;
-      if (currentUser.isAdmin) edit = true;
-      else {
-        if (campagin.owner?._id === currentUser._id) edit = true;
-        if (
-          campagin.team?.some((x) => {
-            return x.user === currentUser._id && x.isAccepted === true && x.canEdit === true;
-          })
-        ) {
-          edit = true;
-        }
-      }
-      if (edit === true) {
-        dispatch(setShowErrorDelete(false));
-      } else {
-        dispatch(setContentError('Bạn không có quyền chỉnh sửa lúc này!'));
 
-        dispatch(setShowErrorDelete(true));
-      }
-      dispatch(setEditAll(edit));
-      dispatch(setEditComponent(edit));
-    }
-  }, [campagin]);
   useEffect(() => {
-    let edit = false;
-  }, [campagin]);
+    dispatch(
+      setTab({
+        number: 3,
+        content: 'Đặc quyền',
+      }),
+    );
+  }, []);
 
   return (
     <div className={cx('body')}>
-      {listPerks?.length > 0 && (
+      {!isLoading && listPerks?.length > 0 && (
         <div>
           <div className={cx('entreSection')}>
             <div className={cx('entreField-header')}>Đặc quyền</div>
@@ -146,28 +113,15 @@ function PerksCampaign() {
             </div>
           </div>
           <div className={cx('perkTable-action')}>
-            {
-              <div style={{ opacity: numberSelected === 0 && '0' }}>
-                <span>
-                  <strong style={{ display: 'inline-block', minWidth: '12px' }}>{numberSelected}</strong> đặc quyền được
-                  chọn
-                </span>
-                <div style={{ display: 'inline-block', marginLeft: '24px', position: 'relative' }}>
-                  <a className={cx('btn', 'btn-ok')}>Xóa</a>
-                </div>
-              </div>
-            }
-
             <div
               style={{
                 display: 'inline-block',
-                marginLeft: '24px',
+
                 pointerEvents: !isEditComponent && 'none',
                 width: '100%',
-                textAlign: 'right',
               }}
             >
-              <Link to={`/campaigns/${id}/edit/perks/new`} className={cx('btn', 'btn-ok')}>
+              <Link to={`/campaigns/${id}/edit/perks/new`} className={cx('btn', 'btn-ok', 'ml-0')}>
                 TẠO ĐẶC QUYỀN
               </Link>
             </div>
@@ -184,7 +138,7 @@ function PerksCampaign() {
           </div>
         </div>
       )}
-      {listPerks?.length === 0 && (
+      {!isLoading && listPerks?.length === 0 && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div className={cx('container-body')}>
             <div style={{ fontSize: '24px', fontWeight: '600', marginTop: '32px' }}>
@@ -214,15 +168,8 @@ function PerksCampaign() {
       )}
 
       {/* Footer */}
-      {listPerks?.length === 0 && (
-        <div className={cx('btn-final')}>
-          <a href="#" className={cx('btn', 'btn-ok')}>
-            TIẾP TỤC
-          </a>
-        </div>
-      )}
 
-      {listPerks?.length > 0 && (
+      {!isLoading && listPerks?.length > 0 && (
         <div className={cx('btn-final')}>
           <Link to={`/campaigns/${id}/edit/items/table`} className={cx('btn', 'btn-ok')}>
             TIẾP TỤC

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { getLinkVerifyUser, getUserByEmail, updatePasswordUser, updateProfileUser } from '~/api/user/user.api';
+import { getUserByEmail, updatePasswordUser, updateProfileUser } from '~/api/user/user.api';
 
 // handleAPI
 export const useGetUserByEmailMutation = () => {

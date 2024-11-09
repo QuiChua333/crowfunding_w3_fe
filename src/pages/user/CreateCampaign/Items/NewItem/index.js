@@ -8,14 +8,14 @@ import styles from './NewItem.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setMessageBox } from '~/redux/slides/GlobalApp';
+import { setLoading, setMessageBox } from '~/redux/slides/GlobalApp';
 import {
   useAddItemMutation,
   useDeleteItemMutation,
   useEditItemMutation,
 } from '~/hooks/api/mutations/user/item.mutation';
 import { useGetItemContainPerks } from '~/hooks/api/queries/user/item.query';
-import { setContentError } from '~/redux/slides/UserCampaign';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -29,8 +29,27 @@ function NewItem() {
   const [listOption, setListOption] = useState(null);
   const [showBtnAddOption, setShowBtnAddOption] = useState(true);
   const [showErrorDelete, setShowErrorDelete] = useState(false);
+  const [contentError, setContentError] = useState('');
   const messageBox = useSelector((state) => state.globalApp.messageBox);
-  const contentError = useSelector((state) => state.userCampaign.contentError);
+  useEffect(() => {
+    if (messageBox.result) {
+      if (messageBox.type === 'deleteItem') {
+        if (messageBox.result === true) {
+          if (itemState.isHasAssociatedPerks) {
+            setContentError('Bạn không thể xóa vật phẩm này vì nó được bao gồm trong một đặc quyền');
+            setShowErrorDelete(true);
+            dispatch(setMessageBox({ result: null, isShow: false, type: '' }));
+
+            return;
+          } else {
+            dispatch(setMessageBox({ result: null, isShow: false, type: '' }));
+            deleteItem();
+          }
+        }
+      }
+    }
+  }, [messageBox.result]);
+
   const handleClickOption = () => {
     setChooseOption(true);
     if (idItem === 'new') {
@@ -111,6 +130,7 @@ function NewItem() {
   const addItemMutation = useAddItemMutation();
   const editItemMutation = useEditItemMutation();
   const handleClickSaveItem = async () => {
+    dispatch(setLoading(true));
     if (idItem === 'new') {
       addItemMutation.mutate(
         { ...itemState, campaignId: id },
@@ -120,6 +140,9 @@ function NewItem() {
           },
           onError(error) {
             console.log(error);
+          },
+          onSettled() {
+            dispatch(setLoading(false));
           },
         },
       );
@@ -136,6 +159,9 @@ function NewItem() {
           },
           onError(error) {
             console.log(error);
+          },
+          onSettled() {
+            dispatch(setLoading(false));
           },
         },
       );
@@ -156,32 +182,22 @@ function NewItem() {
 
   const deleteItemMutation = useDeleteItemMutation();
   const deleteItem = async () => {
+    dispatch(setLoading(true));
     deleteItemMutation.mutate(itemState.id, {
       onSuccess() {
         navigate(`/campaigns/${id}/edit/items/table`);
+        toast.success('Xóa vật phẩm thành công');
       },
       onError(error) {
-        console.log(error.message);
+        console.log(error.response.data.message);
+        toast.error('Xóa vật phẩm thất bại');
+      },
+      onSettled() {
+        dispatch(setLoading(false));
       },
     });
   };
-  useEffect(() => {
-    if (messageBox.result) {
-      if (messageBox.type === 'deleteItem') {
-        if (messageBox.result === true) {
-          if (itemState.isHasAssociatedPerks) {
-            dispatch(setContentError('Bạn không thể xóa vật phẩm này vì nó được bao gồm trong một đặc quyền'));
-            dispatch(setShowErrorDelete(true));
 
-            dispatch(setMessageBox({ result: null, isShow: false }));
-            return;
-          } else {
-            deleteItem();
-          }
-        }
-      }
-    }
-  }, [messageBox.result]);
   const handleChangeInputItemName = (e) => {
     setItemState((prev) => {
       return {
@@ -201,23 +217,31 @@ function NewItem() {
   }, [listOption]);
   const { data: response } = useGetItemContainPerks(idItem, idItem !== 'new');
   useEffect(() => {
-    if (response) {
+    if (idItem !== 'new' && response) {
       setItemState({
-        id: response.data._id,
-        name: response.data.name || '',
-        options: response.data.options || [],
-        isHasOption: response.data.isHasOption || false,
-        isHasAssociatedPerks: response.data.isHasAssociatedPerks || false,
+        id: response.id,
+        name: response.name || '',
+        options:
+          response.options?.map((option) => ({
+            ...option,
+            values: option.values.split('|'),
+          })) || [],
+        isHasOption: response.isHasOption || false,
+        isHasAssociatedPerks: response.detailPerks?.length > 0 || false,
       });
       setItem({
-        id: response.data._id,
-        name: response.data.name || '',
-        options: response.data.options || [],
-        isHasOption: response.data.isHasOption || false,
-        isHasAssociatedPerks: response.data.isHasAssociatedPerks || false,
+        id: response.id,
+        name: response.name || '',
+        options:
+          response.options?.map((option) => ({
+            ...option,
+            values: option.values.split('|'),
+          })) || [],
+        isHasOption: response.isHasOption || false,
+        isHasAssociatedPerks: response.detailPerks?.length > 0 || false,
       });
-      setChooseOption(response.data.isHasOption);
-    } else {
+      setChooseOption(response.isHasOption);
+    } else if (idItem === 'new') {
       setItemState({
         name: '',
         options: [],
@@ -315,12 +339,12 @@ function NewItem() {
             <>
               <div className={cx('entreField')}>
                 <div className={cx('inputDoubleField-headers')} style={{ display: 'flex' }}>
-                  <div style={{ padding: '6px' }} class="col-4">
+                  <div style={{ padding: '6px' }} className="w-4/12">
                     <label className={cx('entreField-label')} style={{ marginBottom: '0px' }}>
                       Tên tùy chọn
                     </label>
                   </div>
-                  <div style={{ padding: '6px' }} class="col-8">
+                  <div style={{ padding: '6px' }} className="w-8/12">
                     <label className={cx('entreField-label')} style={{ marginBottom: '0px' }}>
                       Giá trị tùy chọn
                     </label>
@@ -329,7 +353,7 @@ function NewItem() {
                 {itemState.options?.map((itemA, indexA) => {
                   return (
                     <div key={indexA} style={{ display: 'flex', marginTop: '8px' }}>
-                      <div class="col-4" style={{ padding: '6px' }}>
+                      <div className="w-4/12" style={{ padding: '6px' }}>
                         <input
                           onChange={(e) => handleChangeInputTagName(e, indexA)}
                           value={itemA.name}
@@ -338,7 +362,7 @@ function NewItem() {
                           placeholder="Size"
                         />
                       </div>
-                      <div class="col-7" style={{ padding: '6px' }}>
+                      <div className="w-7/12" style={{ padding: '6px' }}>
                         <div className={cx('inputTags')}>
                           {itemA.values.map((itemB, indexB) => {
                             return (
@@ -371,7 +395,7 @@ function NewItem() {
                         </div>
                       </div>
                       {itemState.options?.length > 1 && (
-                        <div class="col">
+                        <div className="w-1/12">
                           <div
                             onClick={() => handleClickClose(indexA)}
                             style={{ cursor: 'pointer', marginTop: '12px' }}

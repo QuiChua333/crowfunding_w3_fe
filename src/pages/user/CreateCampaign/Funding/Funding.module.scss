@@ -22,6 +22,12 @@
       padding-top: 60px;
       text-align: right;
     }
+
+    .account-number-input::-webkit-outer-spin-button,
+    .account-number-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
     .entreSection {
       width: 756px;
       margin-bottom: 60px;
@@ -92,7 +98,7 @@
         }
       }
       .entreField {
-        margin: 40px 0;
+        margin: 20px 0;
         .inputCurrencyField {
           width: 50%;
           border: 1px solid #ddd;
@@ -120,6 +126,11 @@
               border: 1px solid #333232;
             }
           }
+          .inputCurrencyField-input::-webkit-outer-spin-button,
+          .inputCurrencyField-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
           .inputCurrencyField-input {
             border: none;
             width: 100%;
@@ -134,6 +145,7 @@
             padding: 12px 16px;
           }
         }
+
         .entreField-validationLabel {
           font-size: 12px;
           color: #ff001e;
@@ -145,6 +157,9 @@
           font-size: 16px;
           font-weight: 600;
           margin-bottom: 8px;
+          .entreField-required {
+            color: #ff324b;
+          }
         }
 
         .entreField-subLabel {
@@ -174,6 +189,12 @@
       &:focus {
         border: 1px solid #333232;
       }
+    }
+
+    .account-number-input::-webkit-outer-spin-button,
+    .account-number-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
     .entreSection {
       width: 100%;
@@ -245,7 +266,7 @@
         }
       }
       .entreField {
-        margin: 40px 0;
+        margin: 20px 0;
         .inputCurrencyField {
           width: 50%;
           border: 1px solid #ddd;
@@ -273,6 +294,11 @@
               border: 1px solid #333232;
             }
           }
+          .inputCurrencyField-input::-webkit-outer-spin-button,
+          .inputCurrencyField-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
           .inputCurrencyField-input {
             border: none;
             width: 100%;
@@ -287,6 +313,7 @@
             padding: 12px 16px;
           }
         }
+
         .entreField-validationLabel {
           font-size: 12px;
           color: #ff001e;
@@ -298,6 +325,9 @@
           font-size: 16px;
           font-weight: 600;
           margin-bottom: 8px;
+          .entreField-required {
+            color: #ff324b;
+          }
         }
 
         .entreField-subLabel {
@@ -320,6 +350,11 @@
 @media only screen and (max-width: 768px) {
   .body-content {
     padding: 30px;
+    .account-number-input::-webkit-outer-spin-button,
+    .account-number-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
     .entreSection {
       width: 100%;
       margin-bottom: 60px;
@@ -393,7 +428,7 @@
         }
       }
       .entreField {
-        margin: 30px 0;
+        margin: 20px 0;
         .itext-field {
           font-size: 14px;
           line-height: 21px;
@@ -435,6 +470,11 @@
               border: 1px solid #333232;
             }
           }
+          .inputCurrencyField-input::-webkit-outer-spin-button,
+          .inputCurrencyField-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
           .inputCurrencyField-input {
             border: none;
             width: 100%;
@@ -449,6 +489,7 @@
             padding: 12px 16px;
           }
         }
+
         .entreField-validationLabel {
           font-size: 12px;
           color: #ff001e;

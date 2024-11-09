@@ -11,7 +11,7 @@ const cx = classNames.bind(styles);
 function ModalItem({ setShowModal, addNewItem, optionEdit, updateItem }) {
   const [itemName, setItemName] = useState('');
   const [chooseOption, setChooseOption] = useState(false);
-  const [listOption, setListOption] = useState(null);
+  const [listOption, setListOption] = useState([]);
   const [showBtnAddOption, setShowBtnAddOption] = useState(true);
   const noCheckOptionElement = useRef(null);
   const handleClickOption = () => {
