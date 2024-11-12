@@ -24,6 +24,12 @@ export const success = require('~/assets/images/png/success.png');
 export const traSua = require('~/assets/images/png/tra-sua.png');
 export const indemand = require('~/assets/images/png/indemand.png');
 export const prepost = require('~/assets/images/png/prepost.png');
+export const stripe = require('~/assets/images/png/stripe.png');
+export const logoCrowdfunding = require('~/assets/images/png/logo-crowdfunding.png');
+export const verifyEmailSuccess = require('~/assets/images/png/verify-email-success.png');
+export const checkSuccess = require('~/assets/images/png/check-success.png');
+export const logoEmail = require('~/assets/images/png/logo-email.png');
+export const giveLove = require('~/assets/images/png/give-love.png');
 
 export const audio = require('~/assets/images/svg/audio.svg').default;
 export const camera = require('~/assets/images/svg/camera.svg').default;

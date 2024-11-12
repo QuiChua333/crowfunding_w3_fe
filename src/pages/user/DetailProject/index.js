@@ -21,7 +21,11 @@ import { useSelector } from 'react-redux';
 import { convertDateFromString } from '~/utils';
 import { defaultAvt } from '~/assets/images';
 
-import { useGetCampaignByIdQuery, useGetQuantityCampaignsOfOwnerQuery } from '~/hooks/api/queries/user/campaign.query';
+import {
+  useGetCampaignByIdQuery,
+  useGetQuantityCampaignsOfOwnerQuery,
+  useGetQuantitySuccessCampaignByCampaignId,
+} from '~/hooks/api/queries/user/campaign.query';
 import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
 import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-campaign.mutation';
 import { useGetMoneyQuery, useGetQuantityPeopleByCampaignQuery } from '~/hooks/api/queries/user/contribution.query';
@@ -34,8 +38,6 @@ function DetailProject() {
   const [isOpenModalReport, setIsOpenModalReport] = useState(false);
   const [ItemProject, setItemProject] = useState({});
   const [listPerkByCampaignId, setListPerkByCampaignId] = useState([]);
-  const [quantityPeople, setQuantityPeople] = useState(0);
-  const [money, setMoney] = useState(0);
   const [members, setMembers] = useState([]);
   const [indexImage, setIndexImage] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -43,7 +45,6 @@ function DetailProject() {
   const [isOpenModalOption, setIsOpenModalOption] = useState(false);
   const [perkInModal, setPerkInModal] = useState(false);
   const [itemPerkSelected, setItemPerkSelected] = useState({});
-  const [quantityCampaignOfUser, setQuantityCampaignOfUser] = useState(0);
   const [openDropDown, setOpenDropDown] = useState(false);
   const docElement = useRef(null);
   const [listComments, setListComments] = useState([]);
@@ -61,177 +62,51 @@ function DetailProject() {
     };
   }, [docElement]);
 
-  const project = {
-    id: 'project1',
-    nameProject: 'The LUMA Collection by GOMATIC X Peter McKinnon',
-    desProject:
-      'Where design meets the demands of modern photography. Where design meets the demands of modern photography.Where design meets the demands of modern photography. Where design meets the demands of modern photography.',
-    author: {
-      avatar:
-        'https://g0.iggcdn.com/assets/individuals/missing/thumbnail-deaf450c2d4183b9309b493f6a7b20d62f8d31617ec828d060df465abe92ef2a.png',
-      name: 'Jacob Durham',
-      campaigns: 2,
-      address: 'SALT LAKE CITY, United States',
-    },
-    targetMoney: 5000,
-    totalFund: 6946,
-    backers: 27,
-    dayLeft: 24,
-    listImageProject: [
-      {
-        url: ItemProject.imageDetailPage?.url || '',
-        isImage: true,
-      },
-    ],
-    listPerk: [
-      {
-        id: 'perk1',
-        image:
-          'https://c4.iggcdn.com/indiegogo-media-prod-cld/image/upload/c_fill,w_762,g_center,q_auto:best,dpr_1.3,f_auto,h_506/mtixazdzdtgna6xcucwv',
-        name: 'Camera Sling 9L - Early Bird',
-        price: 95,
-        des: 'Save $25 by ordering today on Indiegogo. SHIPPING, VAT & DUTIES: Please note that the shipping fee covers ALL applicable shipping, VAT, and duties. You will not need pay any fees upon arrival. WANT TO ADD MORE ITEMS? If youd like to add other bags to your order you can do so on the following page after selecting this perk.',
-        includeItems: [
-          {
-            name: 'Camera Sling 9L',
-            options: [
-              {
-                name: 'Color',
-                itemsOption: ['Black', 'White', 'Gray'],
-              },
-              {
-                name: 'Size',
-                itemsOption: ['X', 'XL', '2xL'],
-              },
-            ],
-            // optionsSelected: [{name: '', value: ''}]
-          },
-        ],
-        claimed: 10,
-        quantity: 10,
-        estimateShipping: 'December 2023',
-        idProject: 'project1',
-      },
-      {
-        id: 'perk2',
-        image:
-          'https://c2.iggcdn.com/indiegogo-media-prod-cld/image/upload/c_fill,w_762,g_center,q_auto:best,dpr_1.3,f_auto,h_506/qnop6zs3pd2fozxak09u',
-        name: 'Camera Sling 12L - Early Bird',
-        price: 115,
-        des: 'Save $25 by ordering today on Indiegogo. SHIPPING, VAT & DUTIES: Please note that the shipping fee covers ALL applicable shipping, VAT, and duties. You will not need pay any fees upon arrival. WANT TO ADD MORE ITEMS? If youd like to add other bags to your order you can do so on the following page after selecting this perk.',
-        includeItems: [
-          {
-            name: 'Camera Sling 12L',
-          },
-        ],
-        claimed: 8,
-        quantity: 19,
-        estimateShipping: 'October 2023',
-        idProject: 'project1',
-      },
-      {
-        id: 'perk3',
-        image:
-          'https://c0.iggcdn.com/indiegogo-media-prod-cld/image/upload/c_fill,w_762,g_center,q_auto:best,dpr_1.3,f_auto,h_506/cyhnaum5uqrshdb4qbgr',
-        name: 'Camera Sling 18L - Early Bird',
-        price: 185,
-        des: 'Save $35 by ordering today on Indiegogo. SHIPPING, VAT & DUTIES: Please note that the shipping fee covers ALL applicable shipping, VAT, and duties. You will not need pay any fees upon arrival. WANT TO ADD MORE ITEMS? If youd like to add other bags to your order you can do so on the following page after selecting this perk.',
-        includeItems: [
-          {
-            name: 'Camera Sling 18L',
-            options: [
-              {
-                name: 'Color',
-                itemsOption: ['Black', 'Stone', 'Sage', 'Rust'],
-              },
-            ],
-          },
-        ],
-        claimed: 8,
-        quantity: 19,
-        estimateShipping: 'September 2023',
-        idProject: 'project1',
-      },
-      {
-        id: 'perk4',
-        image:
-          'https://c2.iggcdn.com/indiegogo-media-prod-cld/image/upload/c_fill,w_762,g_center,q_auto:best,dpr_1.3,f_auto,h_506/dhtcxfnltlwrbwgwfxnd',
-        name: 'One of Each Bag',
-        price: 385,
-        des: 'Save $95 by ordering today on Indiegogo. SHIPPING, VAT & DUTIES: Please note that the shipping fee covers ALL applicable shipping, VAT, and duties. You will not need pay any fees upon arrival. WANT TO ADD MORE ITEMS? If youd like to add other bags to your order you can do so on the following page after selecting this perk.',
-        includeItems: [
-          {
-            name: 'Camera Sling 9L',
-            options: [
-              {
-                name: 'Color',
-                itemsOption: ['Black', 'Stone', 'Sage', 'Rust'],
-              },
-            ],
-          },
-          {
-            name: 'Camera Sling 12L',
-            options: [
-              {
-                name: 'Color',
-                itemsOption: ['Black', 'Stone', 'Sage', 'Rust'],
-              },
-            ],
-          },
-          {
-            name: 'Camera Sling 18L',
-            options: [
-              {
-                name: 'Color',
-                itemsOption: ['Black', 'Stone', 'Sage', 'Rust'],
-              },
-            ],
-          },
-        ],
-        claimed: 7,
-        quantity: 19,
-        estimateShipping: 'July 2023',
-        idProject: 'project1',
-      },
-    ],
+  const getId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+
+    return match && match[2].length === 11 ? match[2] : null;
   };
 
-  const { data: dataListPerksByCampaignId, isSuccess: isSuccessGetListPerksByCampaignId } =
-    useGetPerksHasListItemsByCampaignIdQuery(id);
-  const { data: dataProjectById, isSuccess: isSuccessGetProjectById } = useGetCampaignByIdQuery(id);
-  const { data: dataGetQuantityCampaignOfUser, isSuccess: isSuccessGetQuantityCampaignOfUser } =
-    useGetQuantityCampaignsOfOwnerQuery(id);
+  const { data: dataListPerksByCampaignId } = useGetPerksHasListItemsByCampaignIdQuery(id);
+  const { data: dataProjectById } = useGetCampaignByIdQuery(id);
+  const { data: quantitySuccessCampaign } = useGetQuantitySuccessCampaignByCampaignId(id);
 
-  const { data: dataQuantityPeople, isSuccess: isSuccessGetQuantityPeople } = useGetQuantityPeopleByCampaignQuery(id);
-  const { data: dataMoney, isSuccess: isSuccessGetMoney } = useGetMoneyQuery(id);
-  const { data: dataTeams, isSuccess: isSuccessGetTeam } = useGetTeamMemberByCampaignId(id);
   useEffect(() => {
-    if (isSuccessGetListPerksByCampaignId) {
-      setListPerkByCampaignId([...dataListPerksByCampaignId?.data]);
+    if (dataProjectById) {
+      setItemProject(() => {
+        const listImageProject = [];
+        if (dataProjectById.imageDetailPage) {
+          listImageProject.push({
+            url: dataProjectById.imageDetailPage,
+            isImage: true,
+          });
+        }
+        if (dataProjectById.youtubeUrl) {
+          const urlEmbedVideo = '//www.youtube.com/embed/' + getId(dataProjectById.youtubeUrl);
+
+          listImageProject.push({
+            url: dataProjectById.youtubeUrl,
+            urlEmbedVideo,
+            isImage: false,
+          });
+        }
+        return {
+          ...dataProjectById,
+          listImageProject,
+        };
+      });
     }
-    if (isSuccessGetProjectById) {
-      setItemProject({ ...dataProjectById?.data });
-      setListComments(dataProjectById?.data?.comments);
+    if (dataListPerksByCampaignId) {
+      setListPerkByCampaignId(dataListPerksByCampaignId);
     }
-    if (isSuccessGetQuantityCampaignOfUser) {
-      setQuantityCampaignOfUser(dataGetQuantityCampaignOfUser?.data);
-    }
-    if (isSuccessGetQuantityPeople) {
-      setQuantityPeople(dataQuantityPeople?.data);
-    }
-    if (isSuccessGetMoney) {
-      setMoney(dataMoney?.data);
-    }
-    getDeadline();
-    if (isSuccessGetTeam) {
-      setMembers([...dataTeams?.data]);
-    }
-  }, []);
+  }, [dataProjectById, dataListPerksByCampaignId]);
 
   const [favourite, setFavourite] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
   useEffect(() => {
-    if (currentUser.followedCampaigns?.includes(ItemProject._id)) {
+    if (currentUser.followCampaigns?.includes(ItemProject.id)) {
       setFavourite(true);
     } else setFavourite(false);
   }, [ItemProject]);
@@ -239,9 +114,9 @@ function DetailProject() {
   const followCampaign = useFollowCampaignMutation();
 
   const handleClickFollowCampaign = async () => {
-    followCampaign.mutate(ItemProject._id, {
-      onSuccess: (res) => {
-        setFavourite(res?.data);
+    followCampaign.mutate(ItemProject.id, {
+      onSuccess: () => {
+        setFavourite(!favourite);
       },
       onError: (error) => {
         console.log('Error follow campaign', error);
@@ -262,46 +137,21 @@ function DetailProject() {
     return match && match[7].length === 11 ? 'https://img.youtube.com/vi/' + match[7] + '/default.jpg' : false;
   };
 
-  const formatMMDDYYYY = (tem) => {
-    var date = tem;
-    var datearray = date.split('/');
-    var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
-    return newdate.toString();
-  };
-  const getDeadline = () => {
-    let date1 = new Date();
-    let date2 = ItemProject.startDate;
-
-    date1 = formatMMDDYYYY(convertDateFromString(date1).toString());
-    date2 = formatMMDDYYYY(convertDateFromString(date2).toString());
-
-    date1 = new Date(date1.toString());
-    date2 = new Date(date2.toString());
-
-    let quantityDate = date1.getTime() - date2.getTime();
-
-    let temp = Math.ceil(quantityDate / (1000 * 3600 * 24));
-
-    let res = ItemProject.duration - temp;
-
-    return res > 0 ? res : 0;
-  };
-
   return (
     <div className={cx('container-main')}>
       <div className={cx('container-1')}>
         <div className={cx('container-left')}>
           <div className={cx('container-list-big')}>
-            {project.listImageProject[indexImage].isImage ? (
+            {ItemProject.listImageProject?.[indexImage].isImage ? (
               <img
                 style={{ width: '100%', height: '100%', borderRadius: '6px' }}
-                src={project.listImageProject[indexImage].url}
+                src={ItemProject.listImageProject?.[indexImage].url}
                 alt="sp"
               />
             ) : (
               <iframe
                 style={{ width: '100%', height: '100%', borderRadius: '6px' }}
-                src={project.listImageProject[indexImage].url}
+                src={ItemProject.listImageProject?.[indexImage].urlEmbedVideo}
                 alt="sp"
                 title="frame"
               />
@@ -311,7 +161,7 @@ function DetailProject() {
             <AiOutlineDoubleLeft
               className={cx('icon-slider')}
               style={{
-                display: project.listImageProject.length < 6 && 'none',
+                display: ItemProject.listImageProject?.length < 6 && 'none',
                 opacity: indexImage === 0 && '0.6',
                 pointerEvents: indexImage === 0 && 'none',
               }}
@@ -325,11 +175,11 @@ function DetailProject() {
                   display: 'flex',
                   alignItems: 'center',
                   width: '100%',
-                  justifyContent: project.listImageProject.length > 6 ? 'flex-start' : 'center',
+                  justifyContent: ItemProject.listImageProject?.length > 6 ? 'flex-start' : 'center',
                   transform: indexImage - 5 > 0 ? 'translateX(-' + (indexImage - 5) * 80 + 'px)' : 'translateX(0px)',
                 }}
               >
-                {project.listImageProject.map((item, index) => {
+                {ItemProject.listImageProject?.map((item, index) => {
                   return (
                     <img
                       key={index}
@@ -352,9 +202,9 @@ function DetailProject() {
             <AiOutlineDoubleRight
               className={cx('icon-slider')}
               style={{
-                display: project.listImageProject.length < 6 && 'none',
-                opacity: indexImage === project.listImageProject.length - 1 && '0.6',
-                pointerEvents: indexImage === project.listImageProject.length - 1 && 'none',
+                display: ItemProject.listImageProject?.length < 6 && 'none',
+                opacity: indexImage === ItemProject.listImageProject?.length - 1 && '0.6',
+                pointerEvents: indexImage === ItemProject.listImageProject?.length - 1 && 'none',
               }}
               onClick={() => setIndexImage((prev) => prev + 1)}
             />
@@ -373,17 +223,15 @@ function DetailProject() {
           <p className={cx('text-name')}>{ItemProject?.title}</p>
           <p className={cx('text-des')}>{ItemProject?.tagline}</p>
           <div className={cx('container-layout-info')}>
-            <img className={cx('avatar')} src={ItemProject.owner?.avatar?.url || defaultAvt} alt="avt" />
+            <img className={cx('avatar')} src={ItemProject.owner?.avatar || defaultAvt} alt="avt" />
             <div className={cx('container-info')}>
-              <a href={`/individuals/${ItemProject.owner?._id}/profile`} className={cx('name-user')}>
+              <a href={`/individuals/${ItemProject.owner?.id}/profile`} className={cx('name-user')}>
                 {ItemProject.owner?.fullName}
               </a>
               <div style={{ display: 'flex' }}>
-                <span>{quantityCampaignOfUser} chiến dịch</span>
+                <span>{quantitySuccessCampaign || 0} chiến dịch thành công</span>
                 <div className={cx('seprate')}></div>
-                <span>
-                  {ItemProject.location?.city}, {ItemProject.location?.country}
-                </span>
+                <span>{ItemProject.location}</span>
               </div>
             </div>
           </div>
@@ -391,11 +239,11 @@ function DetailProject() {
             <div className={cx('container-layout-money')}>
               <div className={cx('container-money')}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <b className={cx('text-current-money')}>{formatMoney(money)}</b>
+                  <b className={cx('text-current-money')}>{formatMoney(ItemProject.currentMoney)}</b>
                   <span className={cx('label-money')}>VNĐ</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <span className={cx('container-people')}>{quantityPeople}</span>
+                  <span className={cx('container-people')}>{ItemProject.totalContributions}</span>
                   <span className={cx('text-people')}>lượt đóng góp</span>
                 </div>
               </div>
@@ -409,14 +257,16 @@ function DetailProject() {
                 bgColor="#34ca96"
                 borderRadius="10px"
                 height="16px"
-                customLabel={formatPercent((money / ItemProject.goal) * 100)}
+                customLabel={formatPercent((ItemProject.currentMoney / ItemProject.goal) * 100)}
                 isLabelVisible={false}
                 maxCompleted={ItemProject.goal}
-                completed={money}
+                completed={ItemProject.currentMoney}
               />
               <div className={cx('container-layout-deadline')}>
                 <div className={cx('container-deadline')}>
-                  <b className={cx('text-money-total')}>{formatPercent((money / ItemProject.goal) * 100) + '%'}</b>
+                  <b className={cx('text-money-total')}>
+                    {formatPercent((ItemProject.currentMoney / ItemProject.goal) * 100) + '%'}
+                  </b>
                   <span className={cx('text-of')}>của</span>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <b className={cx('text-money-total')}>{formatMoney(ItemProject.goal)}</b>
@@ -425,7 +275,7 @@ function DetailProject() {
                 </div>
 
                 <b className={cx('container-people')}>
-                  {getDeadline()} <span className={cx('text-people')}>ngày còn lại</span>
+                  {ItemProject.daysLeft} <span className={cx('text-people')}>còn lại</span>
                 </b>
               </div>
             </div>
@@ -435,8 +285,8 @@ function DetailProject() {
               <div className={cx('end-status')}>
                 <div>Dự án đã kết thúc vào ngày: {endDate}</div>
                 <div>
-                  <span style={{ fontWeight: '700' }}>{formatMoney(money)}</span>VNĐ{' '}
-                  <span>bởi {quantityPeople} lượt đóng góp</span>
+                  <span style={{ fontWeight: '700' }}>{formatMoney(ItemProject.currentMoney)}</span>VNĐ{' '}
+                  <span>bởi {ItemProject.totalContributions} lượt đóng góp</span>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '24px' }}>
@@ -541,7 +391,7 @@ function DetailProject() {
         <div className={cx('container-under-right')}>
           <div style={{ position: 'sticky', top: '20px' }}>
             <p style={{ fontSize: '18px', marginLeft: '10px', fontWeight: 'bold', marginBottom: '20px' }}>
-              Chọn một quà tặng
+              Chọn một đặc quyền
             </p>
             <div style={{ maxHeight: '920px', overflowY: 'scroll' }}>
               {listPerkByCampaignId.map((item, index) => {
@@ -566,7 +416,23 @@ function DetailProject() {
       </div>
       {isOpenModalOption && (
         <ModalOptionPerk
-          itemPerk={itemPerkSelected}
+          itemPerk={{
+            ...itemPerkSelected,
+            detailPerks: itemPerkSelected.detailPerks.map((item) => ({
+              ...item,
+              item: {
+                ...item.item,
+                ...(item.item.isHasOption
+                  ? {
+                      options: item.item.options.map((option) => ({
+                        ...option,
+                        values: option.values?.split('|') ?? [],
+                      })),
+                    }
+                  : {}),
+              },
+            })),
+          }}
           close={() => setIsOpenModalOption(false)}
           setIsOpenModal={setIsOpenModal}
           perkInModal={perkInModal}
@@ -581,7 +447,7 @@ function DetailProject() {
           setPerkInModal={setPerkInModal}
         />
       )}
-      {isOpenModalMember && <ModalTeamMembersDetail members={members} setIsOpenModalMember={setIsOpenModalMember} />}
+      {isOpenModalMember && <ModalTeamMembersDetail setIsOpenModalMember={setIsOpenModalMember} />}
       {isOpenModalReport && <ModalReport setIsOpenModalReport={setIsOpenModalReport} />}
     </div>
   );

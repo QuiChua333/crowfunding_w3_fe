@@ -74,7 +74,7 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
             </h2>{' '}
             <span
               className={cx({
-                banNhap: item.status === 'Bản nháp' || item.status === 'Đã kết thúc',
+                banNhap: item.status === 'Bản nháp' || item.status === 'Đã hoàn thành' || item.status === 'Thất bại',
                 choXacNhan: item.status === 'Chờ xác nhận',
                 dangGayQuy: item.status === 'Đang gây quỹ',
               })}
@@ -84,7 +84,7 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
             </span>
           </div>
           <span className={cx('campaign-author')}>
-            by <Link to={`/individuals/${item.ownerId}/profile`}>{item.owner.fullName}</Link>
+            by <Link to={`/individuals/${item.ownerId}/profile`}>{item.owner?.fullName}</Link>
           </span>
 
           <p className={cx('campaign-tagline')}>{item.title}</p>

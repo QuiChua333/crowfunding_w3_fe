@@ -4,7 +4,7 @@ import styles from './SignUp.module.scss';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { logoTrangNho } from '~/assets/images';
+import { logoCrowdfunding } from '~/assets/images';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRegisterMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 import { toast } from 'react-toastify';
@@ -134,7 +134,10 @@ function SignUp() {
       <div className={cx('signup_container')}>
         <div className={cx('signup_form_container')}>
           <div className={cx('left')}>
-            <img style={{ width: '120px', height: '120px' }} src={logoTrangNho} alt="logo" />
+            <div className={cx('logo-wrapper')}>
+              <img style={{ width: '120px', height: '120px' }} src={logoCrowdfunding} alt="logo" />
+              <span className="text-[#4dd0d0]">Give Fun</span>
+            </div>
             <h2>Bạn đã có tài khoản?</h2>
             <Link to="/login">
               <button type="button" className={cx('white_btn')}>

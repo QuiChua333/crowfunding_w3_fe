@@ -17,9 +17,9 @@ function ItemDetailPerk({ item, setPerkSelected, setIsOpenModal, index, setIsOpe
       className={cx('itemPerk', { disabled: item.isSelected || item.quantity === item.claimed })}
     >
       <div>
-        <img src={item.image.url} alt="img" />
+        <img src={item.image} alt="img" />
         <div className={cx('content')}>
-          <span className={cx('name')}>{item.title}</span>
+          <span className={cx('name')}>{item.name}</span>
           <span className={cx('price')}>{formatMoney(item.price)} VND</span>
           <span className={cx('quantity')}>
             {item.claimed}/{item.quantity} <span style={{ fontWeight: '350' }}>đã được yêu cầu</span>

@@ -3,7 +3,6 @@ import classNames from 'classnames/bind';
 import styles from './ForgetPassword.module.scss';
 import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import baseURL from '~/utils/baseURL';
 import { useSubmitEmailForgotPasswordMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 const cx = classNames.bind(styles);
 

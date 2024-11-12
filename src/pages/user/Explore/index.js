@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import { AiOutlineSearch, AiOutlineClose } from 'react-icons/ai';
 import ProjectCardItem from '~/components/ProjectCardItem';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 import baseURL from '~/utils/baseURL';
 import styles from './Explore.module.scss';
 import { useEffect, useRef, useState } from 'react';
@@ -10,32 +10,42 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CustomAxios } from '~/config';
 import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
+import { useUserGetAllCampaignQuery } from '~/hooks/api/queries/user/campaign.query';
 const cx = classNames.bind(styles);
 
 function Explore() {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalCampaigns, setTotalCampaigns] = useState(0);
-  const filterExplore = useSelector((state) => state.globalApp.filterExplore);
-  const [listFieldGrouByCategory, setListFieldGrouByCategory] = useState([]);
-  const [pathWithQuery, setPathWithQuery] = useState('');
-  const [campaigns, setCampaigns] = useState([]);
+  const [listFieldGrouByname, setListFieldGrouByname] = useState([]);
   const [filter, setFilter] = useState(() => {
     const state = {
-      textSearch: '',
-      sort: 'Xu hướng',
-      category: 'Tất cả',
+      searchString: '',
+      criteria: 'Mới nhất',
+      name: 'Tất cả',
       status: 'Tất cả',
-      ...filterExplore,
+      page: 1,
+      field: 'Tất cả',
     };
-    if (filterExplore.field) {
-      delete state.category;
-    }
+
     return state;
   });
-  // useEffect(() => {
-  //     console.log(filter)
-  // }, [filter])
+  const handleClickItemFilteruserVerifyStatus = (item) => {
+    setFilter((prev) => ({ ...prev, userVerifyStatus: item }));
+  };
+  const handleClickItemFilterUserStatus = (item) => {
+    setFilter((prev) => ({ ...prev, userStatus: item }));
+  };
+  const handleChangeSearchInput = (value) => {
+    setFilter((prev) => ({ ...prev, searchString: value }));
+  };
+
+  const handleClickPreviousPage = () => {
+    if (filter.page === 1) return;
+    setFilter((prev) => ({ ...prev, page: prev.page - 1 }));
+  };
+  const handleClickNextPage = () => {
+    if (filter.page === dataCampaign?.totalPages) return;
+    setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -43,26 +53,26 @@ function Explore() {
   const { data } = useGetFieldGroupByCategoryQuery();
   useEffect(() => {
     if (data) {
-      setListFieldGrouByCategory(
-        [{ category: 'Tất cả', active: false }]
+      setListFieldGrouByname(
+        [{ name: 'Tất cả', active: false }]
           .concat(
             data.map((item) => {
               return {
                 ...item,
                 active: false,
                 showMore: false,
-                listFields: item.listFields.map((item) => ({ field: item, active: false })),
+                fields: item.fields.map((item) => ({ field: item.name, active: false })),
               };
             }),
           )
           .map((item) => {
-            if (item.category === filter.category) {
-              if (item.category !== 'Tất cả') {
+            if (item.name === filter.name) {
+              if (item.name !== 'Tất cả') {
                 return {
                   ...item,
                   showMore: true,
                   active: true,
-                  listFields: item.listFields.map((item2) => {
+                  fields: item.fields.map((item2) => {
                     return { ...item2, active: false };
                   }),
                 };
@@ -70,12 +80,12 @@ function Explore() {
                 return { ...item, active: true };
               }
             } else {
-              if (item.category !== 'Tất cả') {
+              if (item.name !== 'Tất cả') {
                 return {
                   ...item,
                   active: false,
-                  showMore: item.listFields.some((item2) => item2.field === filter.field),
-                  listFields: item.listFields.map((item2) => {
+                  showMore: item.fields.some((item2) => item2.field === filter.field),
+                  fields: item.fields.map((item2) => {
                     if (item2.field === filter.field) return { ...item2, active: true };
                     else return { ...item2, active: false };
                   }),
@@ -106,26 +116,16 @@ function Explore() {
   }, [boxFilterElement]);
   const [activeBoxFilter, setActiveBoxFilter] = useState(false);
 
-  const getAllCampaign = async () => {
-    try {
-      const res = await CustomAxios.get(pathWithQuery);
-      // setLoadingData(false)
-      console.log(res.data.data);
-
-      setCampaigns(res.data.data);
-      // setCampaignsOrigin(res.data.data.campaigns)
-    } catch (error) {}
-  };
   useEffect(() => {
-    setListFieldGrouByCategory((prev) => {
+    setListFieldGrouByname((prev) => {
       const nextState = [...prev].map((item) => {
-        if (item.category === filter.category) {
-          if (item.category !== 'Tất cả') {
+        if (item.name === filter.name) {
+          if (item.name !== 'Tất cả') {
             return {
               ...item,
               showMore: true,
               active: true,
-              listFields: item.listFields.map((item2) => {
+              fields: item.fields.map((item2) => {
                 return { ...item2, active: false };
               }),
             };
@@ -133,12 +133,12 @@ function Explore() {
             return { ...item, active: true };
           }
         } else {
-          if (item.category !== 'Tất cả') {
+          if (item.name !== 'Tất cả') {
             return {
               ...item,
               active: false,
-              showMore: item.listFields.some((item2) => item2.field === filter.field),
-              listFields: item.listFields.map((item2) => {
+              showMore: item.fields.some((item2) => item2.field === filter.field),
+              fields: item.fields.map((item2) => {
                 if (item2.field === filter.field) return { ...item2, active: true };
                 else return { ...item2, active: false };
               }),
@@ -153,61 +153,21 @@ function Explore() {
       });
       return nextState;
     });
-    getTotalCampaignsExplore();
-    getMoreCmapigns('reset');
+    console.log(filter);
   }, [filter]);
-  const getTotalCampaignsExplore = async () => {
-    try {
-      let queryParams = { searchString: filter.textSearch, sort: filter.sort, status: filter.status };
-      if (filter.category) {
-        queryParams.category = filter.category;
-      }
-      if (filter.field) {
-        queryParams.field = filter.field;
-      }
-      const queryString = new URLSearchParams(queryParams).toString();
-      const pathWithQuery = `${baseURL}/campaign/getTotalCampaignsExplore?${queryString}`;
-      // setPathWithQuery(pathWithQuery)
-      const res = await CustomAxios.get(pathWithQuery);
-      setTotalCampaigns((prev) => ({ ...prev, total: res.data.data }));
-    } catch (error) {}
-  };
 
-  useEffect(() => {
-    if (currentPage > 1) {
-      getMoreCmapigns('next');
-    }
-  }, [currentPage]);
-  const getMoreCmapigns = async (type) => {
-    try {
-      let queryParams = {
-        searchString: filter.textSearch,
-        sort: filter.sort,
-        status: filter.status,
-        page: type === 'reset' ? 1 : currentPage,
-      };
-      if (filter.category) {
-        queryParams.category = filter.category;
-      }
-      if (filter.field) {
-        queryParams.field = filter.field;
-      }
-      const queryString = new URLSearchParams(queryParams).toString();
-      const pathWithQuery = `${baseURL}/campaign/getMoreCampaigns?${queryString}`;
-      // setPathWithQuery(pathWithQuery)
-      const res = await CustomAxios.get(pathWithQuery);
-      if (type === 'reset') {
-        setCampaigns([...res.data.data]);
-      } else {
-        setCampaigns((prev) => [...prev, ...res.data.data]);
-      }
+  const { data: dataCampaign } = useUserGetAllCampaignQuery({
+    field: filter.field || '',
+    criteria: filter.criteria,
+    searchString: filter.searchString,
+    page: filter.page,
+    status: filter.status,
+    fieldGroup: filter.name || '',
+  });
 
-      // setCampaigns(res.data.data)
-    } catch (error) {}
-  };
-  const handleClickShowMore = (index, category) => {
-    if (category !== 'Tất cả') {
-      setListFieldGrouByCategory((prev) => {
+  const handleClickShowMore = (index, name) => {
+    if (name !== 'Tất cả') {
+      setListFieldGrouByname((prev) => {
         return [...prev].map((item, index2) => {
           if (index2 === index) {
             return {
@@ -218,9 +178,9 @@ function Explore() {
         });
       });
     }
-    if (category !== filter.category) {
+    if (name !== filter.name) {
       setFilter((prev) => {
-        let nextState = { ...prev, category };
+        let nextState = { ...prev, name };
         delete nextState.field;
         return nextState;
       });
@@ -230,13 +190,10 @@ function Explore() {
     if (field !== filter.field) {
       setFilter((prev) => {
         let nextState = { ...prev, field };
-        delete nextState.category;
+        delete nextState.name;
         return nextState;
       });
     }
-  };
-  const handleChangeSearchInput = (e) => {
-    setFilter((prev) => ({ ...prev, textSearch: e.target.value }));
   };
 
   const handleChangeStatus = (e) => {
@@ -267,12 +224,12 @@ function Explore() {
             <div className={cx('exploreFilters-subheader')}>LĨNH VỰC</div>
 
             <div>
-              {listFieldGrouByCategory.map((item, index) => {
+              {listFieldGrouByname.map((item, index) => {
                 return (
                   <div key={index} className={cx('categoryNavItem', { active: item.active })}>
-                    <h4 onClick={() => handleClickShowMore(index, item.category)}>
-                      {item.category}
-                      {item.category !== 'Tất cả' && (
+                    <h4 onClick={() => handleClickShowMore(index, item.name)} className="flex items-center gap-[4px]">
+                      {item.name}
+                      {item.name !== 'Tất cả' && (
                         <>
                           {!item.showMore ? (
                             <FaAngleDown style={{ fontSize: '12px' }} />
@@ -284,7 +241,7 @@ function Explore() {
                     </h4>
                     {item.showMore && (
                       <ul className={cx('list-field')}>
-                        {item.listFields.map((item2, index2) => {
+                        {item.fields.map((item2, index2) => {
                           return (
                             <li
                               onClick={() => handleFilterField(item2.field)}
@@ -325,10 +282,10 @@ function Explore() {
                   </span>
                 </label>
                 <label className={cx('inputRadioGroup-radio')}>
-                  <input type="radio" value={'Đã kết thúc'} name="status" onChange={handleChangeStatus} />
+                  <input type="radio" value={'Đã hoàn thành'} name="status" onChange={handleChangeStatus} />
                   <span className={cx('inputRadioGroup-radio-button')}></span>
                   <span className={cx('inputRadioGroup-radio-label')}>
-                    <span>Đã kết thúc</span>
+                    <span>Đã hoàn thành</span>
                   </span>
                 </label>
               </div>
@@ -344,11 +301,11 @@ function Explore() {
               type="text"
               placeholder="Search for campaigns"
               className={cx('exploreLayout-main-input')}
-              value={filter.textSearch}
-              onChange={handleChangeSearchInput}
+              value={filter.searchString}
+              onChange={(e) => handleChangeSearchInput(e.target.value)}
             />
             <span
-              onClick={() => setFilter((prev) => ({ ...prev, textSearch: '' }))}
+              onClick={() => setFilter((prev) => ({ ...prev, searchString: '' }))}
               className={cx('exploreLayout-main-icon-close')}
             >
               <AiOutlineClose />
@@ -365,20 +322,21 @@ function Explore() {
               className={cx('box-filter')}
               ref={boxFilterElement}
             >
-              <span>
-                {filter.sort} <FaAngleDown className={cx('icon', { active: activeBoxFilter })} />
-              </span>
+              <div className="flex items-center gap-[4px]">
+                <span>{filter.criteria === 'new' ? 'Mới nhất' : 'Quyên góp nhiều nhất'} </span>{' '}
+                <FaAngleDown className={cx('icon', { active: activeBoxFilter })} />
+              </div>
               {activeBoxFilter && (
                 <div className={cx('dropdownBoxFilter')}>
                   <span
-                    onClick={() => setFilter((prev) => ({ ...prev, sort: 'Xu hướng' }))}
-                    className={cx({ active: filter.sort === 'Xu hướng' })}
+                    onClick={() => setFilter((prev) => ({ ...prev, criteria: 'new' }))}
+                    className={cx({ active: filter.criteria === 'new' })}
                   >
-                    Xu hướng
+                    Mới nhất
                   </span>
                   <span
-                    onClick={() => setFilter((prev) => ({ ...prev, sort: 'Quyên góp nhiều nhất' }))}
-                    className={cx({ active: filter.sort === 'Quyên góp nhiều nhất' })}
+                    onClick={() => setFilter((prev) => ({ ...prev, criteria: 'most' }))}
+                    className={cx({ active: filter.criteria === 'most' })}
                   >
                     Quyên góp nhiều nhất
                   </span>
@@ -388,18 +346,45 @@ function Explore() {
           </div>
 
           <div>
-            <InfiniteScroll
-              style={{ overflow: 'hidden' }}
-              className={cx('exploreSearchResults')}
-              loader={<p>loading...</p>}
-              dataLength={campaigns.length}
-              next={() => setCurrentPage((prev) => prev + 1)}
-              hasMore={campaigns.length < totalCampaigns}
-            >
-              {campaigns?.map((item, index) => {
+            <div className={cx('exploreSearchResults')}>
+              {dataCampaign?.campaigns?.map((item, index) => {
                 return <ProjectCardItem key={index} campaign={item} />;
               })}
-            </InfiniteScroll>
+            </div>
+
+            {dataCampaign?.totalPages > 0 && (
+              <div className={cx('pagination-wrapper')}>
+                <div className={cx('pagination')}>
+                  <span
+                    className={cx(
+                      'icon',
+                      `${
+                        filter.page <= dataCampaign?.totalPages &&
+                        dataCampaign?.totalPages !== 1 &&
+                        filter.page > 1 &&
+                        'hover:bg-[#ebe8f1] hover:cursor-pointer'
+                      }`,
+                    )}
+                    onClick={handleClickPreviousPage}
+                  >
+                    <FaAngleLeft style={{ color: '#7a69b3', opacity: filter.page === 1 ? '0.3' : '1' }} />
+                  </span>
+
+                  <span className={cx('curent')}>{`${filter.page} của ${dataCampaign?.totalPages}`}</span>
+                  <span
+                    className={cx(
+                      'icon',
+                      `${filter.page < dataCampaign?.totalPages && 'hover:bg-[#ebe8f1] hover:cursor-pointer'}`,
+                    )}
+                    onClick={handleClickNextPage}
+                  >
+                    <FaAngleRight
+                      style={{ color: '#7a69b3', opacity: filter.page === dataCampaign?.totalPages ? '0.3' : '1' }}
+                    />
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

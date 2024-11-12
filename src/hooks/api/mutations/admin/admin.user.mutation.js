@@ -1,6 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
-import { changeStatusUser, verifyInfoUser } from '~/api/admin/admin.users.api';
+import { changeStatusUser, checkAdmin, verifyInfoUser } from '~/api/admin/admin.users.api';
 
+// handleAPI
+export const useCheckAdminMutation = () => {
+  return useMutation({
+    mutationKey: ['useCheckAdminMutation'],
+    mutationFn: checkAdmin,
+  });
+};
+
+// handleAPI
 export const useChangeStatusUserMutation = () => {
   return useMutation({
     mutationKey: ['useChangeStatusUserMutation'],
@@ -8,6 +17,7 @@ export const useChangeStatusUserMutation = () => {
   });
 };
 
+// handleAPI
 export const useVerifyInfoUserMutation = () => {
   return useMutation({
     mutationKey: ['useVerifyInfoUserMutation'],

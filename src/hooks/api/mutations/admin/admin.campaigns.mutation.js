@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { changeStatusCampaign, adminDeleteCampaign } from '~/api/admin/admin.campaigns.api';
 
+// handleAPI
 export const useChangeStatusCampaignMutation = () => {
   return useMutation({
     mutationKey: ['useChangeStatusCampaignMutation'],

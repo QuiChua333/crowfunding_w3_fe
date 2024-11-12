@@ -6,45 +6,43 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { useQueryClient } from '@tanstack/react-query';
 import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 import { setTab } from '~/redux/slides/UserCampaign';
 const cx = classNames.bind(styles);
 
 function FundingCampaign() {
   const { id } = useParams();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [campagin, setCampaign] = useState({});
-  const [campaginState, setCampaignState] = useState({});
+  const [campaignState, setCampaignState] = useState({});
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
     setCampaignState((prev) => ({ ...prev, [name]: value }));
   };
-  const currentUser = useSelector((state) => state.user.currentUser);
+
   const [isEditComponent, setEditComponent] = useState(true);
-  const queryClient = useQueryClient();
-  const dataCampaign = queryClient.getQueryData(['getCampaignById']);
+  const campaign = useSelector((state) => state.userCampaign.campaign);
   useEffect(() => {
-    if (dataCampaign) {
+    if (campaign) {
       let infoBasic = {
-        goal: dataCampaign.goal || '',
-        bankAccountNumber: dataCampaign.bankAccountNumber || '',
-        bankName: dataCampaign.bankName || '',
-        bankUsername: dataCampaign.bankUsername || '',
+        goal: campaign.goal || '',
+        bankAccountNumber: campaign.bankAccountNumber || '',
+        bankName: campaign.bankName || '',
+        bankUsername: campaign.bankUsername || '',
       };
-      setCampaign({ ...infoBasic });
+
       setCampaignState({ ...infoBasic });
 
-      if (dataCampaign.data.status === 'Đang gây quỹ') {
+      if (campaign.status === 'Đang gây quỹ') {
         setEditComponent(false);
       }
     }
-  }, [dataCampaign]);
+  }, [campaign]);
 
   const handleClickVerifyUser = async () => {
-    navigate('/givefun/verify');
+    window.location.href = '/givefun/verify';
   };
 
   const [textValidateGoal, setTextValidateGoal] = useState('');
@@ -116,9 +114,7 @@ function FundingCampaign() {
   const editCampaignByIdMutation = useEditCampaignByIdMutation();
 
   const handleClickSaveContinue = async () => {
-    const body = { ...campaginState };
-    const id = body.id;
-    delete body.id;
+    const body = { ...campaignState };
 
     let flagGoal = validateGoal(body.goal);
     let flagBankAccountNumber = validateBankAccountNumber(body.bankAccountNumber);
@@ -129,8 +125,8 @@ function FundingCampaign() {
       dispatch(setLoading(true));
       editCampaignByIdMutation.mutate(
         {
-          id,
-          body,
+          id: id,
+          data: body,
         },
         {
           onSuccess(data) {
@@ -171,7 +167,7 @@ function FundingCampaign() {
               type="number"
               maxlength="50"
               className={cx('itext-field', 'inputCurrencyField-input')}
-              value={campaginState.goal}
+              value={campaignState.goal}
               onChange={handleChangeInputText}
               name="goal"
               disabled={!isEditComponent}
@@ -192,7 +188,7 @@ function FundingCampaign() {
         </div>
 
         <div className={cx('entreField')}>
-          {campagin.owner?.verifyStatus !== 'Đã xác thực' ? (
+          {campaign.owner?.verifyStatus !== 'Đã xác thực' ? (
             <span onClick={handleClickVerifyUser} className={cx('btn-ok')} style={{ marginLeft: '0' }}>
               XÁC MINH ID
             </span>
@@ -229,7 +225,7 @@ function FundingCampaign() {
             type="number"
             className={cx('itext-field', 'account-number-input')}
             placeholder="000000000000"
-            value={campaginState.bankAccountNumber}
+            value={campaignState.bankAccountNumber}
             onChange={handleChangeInputText}
             name="bankAccountNumber"
             disabled={!isEditComponent}
@@ -245,7 +241,7 @@ function FundingCampaign() {
             type="text"
             className={cx('itext-field', 'mt-[10px]')}
             placeholder="Vietcombank"
-            value={campaginState.bankName}
+            value={campaignState.bankName}
             onChange={handleChangeInputText}
             name="bankName"
             disabled={!isEditComponent}
@@ -262,7 +258,7 @@ function FundingCampaign() {
             type="text"
             className={cx('itext-field', 'mt-[10px]')}
             placeholder="Nguyễn Văn A"
-            value={campaginState.bankUsername}
+            value={campaignState.bankUsername}
             onChange={handleChangeInputText}
             name="bankUsername"
             disabled={!isEditComponent}

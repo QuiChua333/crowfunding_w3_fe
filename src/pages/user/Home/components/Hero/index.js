@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import React, { useEffect, useRef } from 'react';
 import styles from './Hero.module.scss';
 import ScrollReveal from 'scrollreveal';
+import { logoCrowdfunding } from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
@@ -43,7 +44,8 @@ function Section() {
 
         <div ref={box2Ref} className={cx('image-wrapper')}>
           <img
-            src="https://purepng.com/public/uploads/thumbnail//purepng.com-paper-planepaper-planeaeroplanepaper-gliderpaper-dartaircraftfolded-paperpaperboardclipart-1421526589499uaw0v.png"
+            // src="https://purepng.com/public/uploads/thumbnail//purepng.com-paper-planepaper-planeaeroplanepaper-gliderpaper-dartaircraftfolded-paperpaperboardclipart-1421526589499uaw0v.png"
+            src={logoCrowdfunding}
             className={cx('image-section')}
             alt="Section Image"
           />

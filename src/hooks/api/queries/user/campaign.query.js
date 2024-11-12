@@ -3,9 +3,11 @@ import {
   getCampaignById,
   getCampaignsOfOwner,
   getCampaignsOfUser,
+  getCampainsExplore,
   getPopulateCampaigns,
   getQuantityCampaignsOfOwner,
   getQuantityCampaignsOfUser,
+  getQuantitySuccessCampaignByCampaignId,
 } from '~/api/user/campaign.api';
 
 // handleAPI
@@ -15,6 +17,14 @@ export const useGetCampaignByIdQuery = (id) => {
     queryFn: () => getCampaignById(id),
     refetchOnWindowFocus: false,
     staleTime: Infinity,
+  });
+};
+
+export const useGetQuantitySuccessCampaignByCampaignId = (id) => {
+  return useQuery({
+    queryKey: [`useGetQuantitySuccessCampaignByCampaignId`, id],
+    queryFn: () => getQuantitySuccessCampaignByCampaignId(id),
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -51,6 +61,14 @@ export const useGetQuantityCampaignOfUserQuery = (id) => {
     queryKey: [`getQuantityCampaignOfUser`],
     queryFn: () => getQuantityCampaignsOfUser(id),
     refetchOnWindowFocus: false,
+  });
+};
+
+// handleAPI
+export const useUserGetAllCampaignQuery = ({ page, status, searchString, criteria, field, fieldGroup }) => {
+  return useQuery({
+    queryKey: ['useUserGetAllCampaignQuery', page, status, searchString, criteria, field, fieldGroup],
+    queryFn: () => getCampainsExplore({ page, status, searchString, criteria, field, fieldGroup }),
   });
 };
 

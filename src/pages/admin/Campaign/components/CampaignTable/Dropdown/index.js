@@ -34,8 +34,8 @@ function DropDown({ menu, onClickItem, index, campaign, getAllCampaigns }) {
     );
   };
   const handleAdminStop = () => {
-    setStatus('Đang tạm ngưng');
-    setContentToast('Dự án đã tạm ngưng!');
+    setStatus('Tạm dừng');
+    setContentToast('Dự án đã tạm dừng!');
     dispatch(
       setMessageBox({
         title: 'Tạm ngưng dự án?',
@@ -143,7 +143,7 @@ function DropDown({ menu, onClickItem, index, campaign, getAllCampaigns }) {
           Tạm ngưng dự án
         </div>
       )}
-      {campaign.status === 'Đang tạm ngưng' && (
+      {campaign.status === 'Tạm dừng' && (
         <div className={cx('action')} onClick={handleAdminActive}>
           Kích hoạt dự án
         </div>

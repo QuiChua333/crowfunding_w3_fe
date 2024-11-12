@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './ModalTeamMembersDetail.module.scss';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
+import { defaultAvt } from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
-function ModalTeamMembersDetail({ setIsOpenModalMember, members }) {
+function ModalTeamMembersDetail({ setIsOpenModalMember }) {
+  const { id } = useParams();
   const handleClose = () => {
     setIsOpenModalMember(false);
   };
+  const [members, setMembers] = useState([]);
+  const { data: response, refetch } = useGetTeamMemberByCampaignId(id);
+  useEffect(() => {
+    if (response) {
+      setMembers(response);
+    }
+  }, [response]);
   return (
     <div onClick={handleClose} className={cx('wrapper')}>
       <div onClick={(e) => e.stopPropagation()} className={cx('modal')}>
@@ -22,17 +32,17 @@ function ModalTeamMembersDetail({ setIsOpenModalMember, members }) {
         <div className={cx('separate')}></div>
         <div className={cx('content-modal')}>
           {members?.map((item) => {
-            if (item.isAccepted || item.isOwner === true) {
+            if (item.confirmStatus === 'Đã xác nhận' || item.isOwner === true) {
               return (
                 <div className={cx('item-members')}>
                   <div className={cx('info-members')}>
-                    <img src={item.user.avatar.url} alt="avt" />
+                    <img src={item.avatar || defaultAvt} alt="avt" />
                     <div className={cx('info')}>
-                      <Link to={`/individuals/${item.user._id}/profile`} className={cx('name')}>
-                        {item.user.fullName}
+                      <Link to={`/individuals/${item.userId}/profile`} className={cx('name')}>
+                        {item.name}
                       </Link>
-                      <Link to={`mailto:${item.user?.email}`} className={cx('email')}>
-                        {item.user.email}
+                      <Link to={`mailto:${item.email}`} className={cx('email')}>
+                        {item.email}
                       </Link>
                     </div>
                   </div>

@@ -27,16 +27,36 @@ function DetailPerk() {
   const { data } = useGetPerksHasListItemsByCampaignIdQuery(id);
   useEffect(() => {
     if (data) {
-      setListPerkByCampaignId([...data?.data]);
-      let arr = [...data.data].map((item) => {
-        if (item._id === itemPerkSelectedFirst._id) {
+      let newData = data.map((perk) => {
+        return {
+          ...perk,
+          detailPerks: perk.detailPerks?.map((item) => ({
+            ...item,
+            item: {
+              ...item.item,
+              ...(item.item.isHasOption
+                ? {
+                    options: item.item.options.map((option) => ({
+                      ...option,
+                      values: option.values?.split('|') ?? [],
+                    })),
+                  }
+                : {}),
+            },
+          })),
+        };
+      });
+
+      let arr = newData.map((item) => {
+        if (item.id === itemPerkSelectedFirst.id) {
           return {
             ...item,
             isSelected: true,
-            items: item.items.map((itemInclude) => {
+            detailPerks: item.detailPerks?.map((itemInclude) => {
               if (itemInclude.item.isHasOption && itemInclude.item.options.length > 0) {
-                const optionSelected = itemPerkSelectedFirst.items.find((x) => x.item.name === itemInclude.item.name)
-                  .optionsSelected.optionsSelected;
+                const optionSelected = itemPerkSelectedFirst.detailPerks.find(
+                  (x) => x.item.name === itemInclude.item.name,
+                ).optionsSelected.optionsSelected;
                 return {
                   ...itemInclude,
                   optionsSelected: optionSelected,
@@ -50,7 +70,7 @@ function DetailPerk() {
           return {
             ...item,
             isSelected: false,
-            items: item.items.map((itemInclude) => {
+            detailPerks: item.detailPerks?.map((itemInclude) => {
               if (itemInclude.item.isHasOption && itemInclude.item.options.length > 0) {
                 return {
                   ...itemInclude,
@@ -68,9 +88,10 @@ function DetailPerk() {
           };
         }
       });
+
       setListPerkByCampaignId(arr);
     }
-  }, []);
+  }, [data]);
 
   const handleSelectedItem = (index, newItem) => {
     setListPerkByCampaignId((prev) => {
@@ -144,19 +165,20 @@ function DetailPerk() {
   const handleClickPayment = () => {
     const listPayment = listSelected.map((item) => {
       return {
-        perkId: item._id,
-        listShippingFee: item.listShippingFee || [],
-        perkImage: item.image.url,
-        perkTitle: item.title,
+        id: item.id,
+        shippingFees: item.shippingFees || [],
+        image: item.image,
+        name: item.name,
         quantity: item.quantityOrder,
         price: item.price,
-        options: item.items.reduce((acc, cur) => {
+        options: item.detailPerks.reduce((acc, cur) => {
           if (cur.optionsSelected && cur.optionsSelected.length > 0) {
             return [
               ...acc,
               {
                 name: cur.item.name,
-                optionsString: cur.optionsSelected.map((i) => i.value).join('/'),
+                quantity: cur.quantity,
+                optionsString: cur.optionsSelected.map((i) => i.value).join('|'),
               },
             ];
           } else {
@@ -164,6 +186,7 @@ function DetailPerk() {
               ...acc,
               {
                 name: cur.item.name,
+                quantity: cur.quantity,
                 optionsString: '',
               },
             ];
@@ -171,12 +194,12 @@ function DetailPerk() {
         }, []),
       };
     });
-    let estDelivery = null;
+    let estDeliveryDate = null;
     listSelected.forEach((item) => {
-      if (!estDelivery) {
-        estDelivery = item.estDelivery;
+      if (!estDeliveryDate) {
+        estDeliveryDate = item.estDeliveryDate;
       }
-      estDelivery = item.estDelivery > estDelivery ? item.estDelivery : estDelivery;
+      estDeliveryDate = item.estDeliveryDate > estDeliveryDate ? item.estDeliveryDate : estDeliveryDate;
     });
     dispatch(
       setPayment({
@@ -187,7 +210,7 @@ function DetailPerk() {
     const state = {
       total: total,
       listPerkPayment: listPayment,
-      estDelivery,
+      estDeliveryDate,
     };
     navigate(`/project/${id}/payments/new/checkout`, {
       state: {
@@ -198,7 +221,7 @@ function DetailPerk() {
   };
   const handleClickRemoveItem = (index) => {
     for (let i = 0; i < listPerkByCampaignId.length; i++) {
-      if (listPerkByCampaignId[i]._id === listSelected[index]._id) {
+      if (listPerkByCampaignId[i].id === listSelected[index].id) {
         listPerkByCampaignId[i].isSelected = false;
       }
     }

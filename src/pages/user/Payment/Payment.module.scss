@@ -1,205 +1,199 @@
 .wrapper {
+  font-size: 14px;
+  .header {
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .logo {
+      font-size: 26px;
+      font-weight: 900;
+      color: #e51075;
+    }
+  }
+  .inner {
+    display: flex;
+    // width: 100%;
+    margin: 32px 200px 160px 260px;
+    gap: 72px;
+  }
+  .payment-info {
+    width: 800px;
+  }
+  .payment-summary {
+  }
+  .payment-backIcon {
+    display: flex;
+    font-weight: 500;
+    &:hover {
+      color: #e51075;
+      cursor: pointer;
+    }
+    padding-bottom: 16px;
+  }
+
+  .user-info {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    font-size: 16px;
+    border-bottom: 1px solid #c8c8c8;
+    padding-bottom: 24px;
+  }
+
+  .user-img {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .user-name {
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  .user-detail {
+  }
+
+  .my-user-info {
+    font-size: 16px;
+    gap: 16px;
+    display: flex;
+    margin-top: 12px;
+    .my-user-logout {
+      background-color: transparent;
+      border: 0;
+      color: #1e76d5;
+      cursor: pointer;
+      font-size: inherit;
+      letter-spacing: normal;
+      line-height: normal;
+      padding: 0;
+      text-decoration: none;
+      text-transform: none;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+  }
+
+  .shipping-address {
+    margin-top: 32px;
+    .title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
+
+  .entreField {
+    margin-top: 20px;
+  }
+
+  .entreField-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .entreField-subLabel {
     font-size: 14px;
-    .header {
-        width: 100%;
-        height: 50px;
-        background-color: #fff;
-        padding: 15px 0;
-        border-bottom: 1px solid #ddd;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    font-weight: 400;
+    line-height: 21px;
+    color: #6a6a6a;
+    margin-bottom: 10px;
+  }
 
-        .logo {
-            font-size: 26px;
-            font-weight: 900;
-            color: #e51075;
-        }
+  .itext-field {
+    font-size: 14px;
+    line-height: 21px;
+    display: block;
+    width: 100%;
+    height: 50px;
+    padding: 5px 15px;
+    background-color: #ffffff;
+    border: 1px solid #c8c8c8;
+    outline: none;
+    &:focus {
+      border: 1px solid #333232;
     }
-    .inner {
-        display: flex;
-        // width: 100%;
-        margin: 32px 200px 160px 260px;
-        gap: 72px;
-    }
-    .payment-info {
-        width: 800px;
+  }
+  .entreField-required {
+    color: #ff324b;
+  }
+  .entreField-select {
+    width: 100%;
+    position: relative;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
 
-        
+  .entreDropdown-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    .icon {
+      font-size: 16px;
     }
-    .payment-summary {
+  }
+  .dropdown-outer {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 4px);
+    z-index: 10;
+    width: 100%;
+  }
+  .separate {
+    height: 1px;
+    width: 100%;
+    background: #ddd;
+    margin: 24px 0;
+  }
 
+  .btn-payment {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #e51075;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    cursor: pointer;
+    letter-spacing: 1px;
+    &:hover {
+      background-color: #cf0c67;
+      opacity: 0.9;
     }
-    .payment-backIcon {
-        font-weight: 500;
-        &:hover {
-            color: #e51075;
-            cursor: pointer;
-        }
-        padding-bottom: 16px;
-    }
-
-    .user-info {
-        display: flex;
-        gap: 16px;
-        margin-top: 16px;
-        font-size: 16px;
-        border-bottom: 1px solid #c8c8c8;
-        padding-bottom: 24px;
-    }
-
-    .user-img {
-        width: 52px;
-        height: 52px;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-
-    .user-name {
-        font-weight: 600;
-        display: inline-block;
-    }
-
-    .user-detail {
-    }
-
-    .my-user-info {
-        font-size: 16px;
-        padding-top: 24px;
-        display: flex;
-        justify-content: space-between;
-
-        .my-user-logout {
-            background-color: transparent;
-            border: 0;
-            color: #1e76d5;
-            cursor: pointer;
-            font-size: inherit;
-            letter-spacing: normal;
-            line-height: normal;
-            padding: 0;
-            text-decoration: none;
-            text-transform: none;
-            white-space: nowrap;
-            font-weight: 600;
-        }
-    }
-    
-    .shipping-address {
-        margin-top: 32px;
-        .title {
-            font-size: 20px;
-            font-weight: 600;
-        }
-    }
-
-    .entreField {
-        margin-top: 20px;
-    }
-    
-    .entreField-label {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
-    
-    .entreField-subLabel {
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 21px;
-        color: #6a6a6a;
-        margin-bottom: 10px;
-    
-    }
-    
-    .itext-field {
-        font-size: 14px;
-        line-height: 21px;
-        display: block;
-        width: 100%;
-        height: 50px;
-        padding: 5px 15px;
-        background-color: #ffffff;
-        border: 1px solid #C8C8C8;
-        outline: none;
-        &:focus {
-            border: 1px solid #333232;
-        }
-    }
-    .entreField-required {
-        color: #FF324B;
-    }
-    .entreField-select {
-        width: 100%;
-        position: relative;
-     -webkit-user-select: none; /* Safari */
-     -ms-user-select: none; /* IE 10 and IE 11 */
-         user-select: none; /* Standard syntax */
-     }
- 
-     .entreDropdown-select {
-         display: flex;
-         align-items: center;
-         justify-content: space-between;
-         cursor: pointer;
-         .icon {
-             font-size: 16px;
-         }
-    
-     }
-     .dropdown-outer {
-        position: absolute;
-        left: 0;
-        top: calc(100% + 4px);
-        z-index: 10;
-        width: 100%;
-    }
-    .separate {
-        height: 1px;
-        width: 100%;
-        background:  #ddd;
-        margin: 24px 0;
-    }
-
-    .btn-payment {
-        font-size: 16px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: #fff;
-        background-color: #e51075;
-        padding: 12px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        align-self: center;
-        cursor: pointer;
-        letter-spacing: 1px;
-        &:hover {
-            background-color: #cf0c67;
-            opacity: 0.9;
-        }
-    }
-    .btn-payment-dis {
-        font-size: 16px;
-        font-weight: 700;
-        text-transform: uppercase;
-        color: #fff;
-        background-color: #e51075;
-        padding: 12px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        align-self: center;
-        letter-spacing: 1px;
-        opacity: 0.5;
-    }
-   
+  }
+  .btn-payment-dis {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #e51075;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    letter-spacing: 1px;
+    opacity: 0.5;
+  }
 }
 
 .entreField-error {
-    font-size: 12px;
-    font-weight: 300;
-    line-height: 21px;
-    color: #ff001e;
-    margin-top: 5px;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 21px;
+  color: #ff001e;
+  margin-top: 5px;
 }

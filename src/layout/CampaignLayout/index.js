@@ -42,30 +42,32 @@ function CampaignLayout({ children, item = false }) {
   const isEditAll = useSelector((state) => state.userCampaign.isEditAll);
 
   useEffect(() => {
-    if (JSON.stringify(campaign) !== '{}') {
+    if (JSON.stringify(campaign) !== '{}' && currentUser.id) {
       let edit = false;
       if (currentUser.isAdmin) edit = true;
-      else {
-        if (campaign.ownerId === currentUser.id) edit = true;
-
-        if (
-          campaign.teamMembers?.some((x) => {
-            return x.email === currentUser.email && x.confirmStatus === 'Đã xác nhận' && x.isEdit === true;
-          })
-        ) {
-          edit = true;
-        }
+      if (campaign.ownerId === currentUser.id) {
+        edit = true;
       }
-      if (edit === true) {
-        dispatch(setShowErrorDelete(false));
-      } else {
-        dispatch(setContentError('Bạn không có quyền chỉnh sửa lúc này!'));
-        dispatch(setShowErrorDelete(true));
+
+      if (
+        campaign.teamMembers?.some((x) => {
+          return x.email === currentUser.email && x.confirmStatus === 'Đã xác nhận' && x.isEdit === true;
+        })
+      ) {
+        edit = true;
       }
 
       dispatch(setEditAll(edit));
     }
   }, [campaign, currentUser]);
+
+  useEffect(() => {
+    if (!isEditAll) {
+      dispatch(setShowErrorDelete(true));
+      dispatch(setContentError('Bạn không có quyền chỉnh sửa chiến dịch'));
+    }
+  }, [isEditAll]);
+
   return (
     <div className={cx('wrapper')}>
       <SidebarCampaign status={campaign?.status} title={campaign?.title} cardImage={campaign?.cardImage} id={id} />

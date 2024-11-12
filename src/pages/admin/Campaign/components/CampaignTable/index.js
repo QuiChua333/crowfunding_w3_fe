@@ -15,15 +15,15 @@ function CampaignTable({ campaigns, onCampaignTableChange, getAllCampaigns }) {
       const state = [...campaigns].map((item) => {
         let dateString = '';
         let endDateString = '';
-        if (item.startDate) {
-          dateString = convertDateFromString(item.startDate);
-          let endDate = new Date(item.startDate);
+        if (item.publishedAt) {
+          dateString = convertDateFromString(item.publishedAt);
+          let endDate = new Date(item.publishedAt);
           endDate.setDate(endDate.getDate() + item.duration);
           endDateString = convertDateFromString(endDate);
         }
 
         return {
-          id: item._id,
+          id: item.id,
           title: item.title,
           goal: (item.goal / 1000000).toFixed(2) + ' triệu',
           status: item.status,
@@ -31,7 +31,7 @@ function CampaignTable({ campaigns, onCampaignTableChange, getAllCampaigns }) {
           endDate: endDateString,
           ownerName: item.owner.fullName,
           isChecked: false,
-          currentMoney: (item.currentMoney / 1000000).toFixed(2) + ' triệu',
+          currentMoney: ((item.currentMoney || 0) / 1000000).toFixed(2) + ' triệu',
         };
       });
       return state;

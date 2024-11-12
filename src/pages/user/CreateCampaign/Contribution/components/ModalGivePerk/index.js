@@ -55,18 +55,18 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
     setListPerksSelected((prev) => {
       const state = [...prev];
       state.push({
-        perkId: item._id,
-        perkImage: item.image.url,
-        perkTitle: item.title,
+        id: item.id,
+        image: item.image,
+        name: item.name,
         quantity: 1,
         price: item.price,
-        options: item.items.reduce((acc, cur) => {
+        options: item.detailPerks.reduce((acc, cur) => {
           if (cur.optionsSelected && cur.optionsSelected.length > 0) {
             return [
               ...acc,
               {
                 name: cur.item.name,
-                optionsString: cur.optionsSelected.map((i) => i.value).join('/'),
+                optionsString: cur.optionsSelected.map((i) => i.value).join('|'),
               },
             ];
           } else {
@@ -84,7 +84,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
     });
     setListPerks((prev) =>
       [...prev].map((item2) => {
-        if (item2._id === item._id) {
+        if (item2.id === item.id) {
           return {
             ...item2,
             isSelected: true,
@@ -110,7 +110,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
     setListPerksSelected((prev) =>
       [...prev].map((item) => {
         if (item.perkId === id) {
-          const quantityAvailable = listPerks.find((i) => i._id === id).quantity;
+          const quantityAvailable = listPerks.find((i) => i.id === id).quantity;
           return {
             ...item,
             quantity: item.quantity === quantityAvailable ? item.quantity : item.quantity + 1,
@@ -124,8 +124,8 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
     console.log('id', id);
     setListPerks((prev) =>
       [...prev].map((item2) => {
-        console.log('item2', item2._id);
-        if (item2._id === id) {
+        console.log('item2', item2.id);
+        if (item2.id === id) {
           return {
             ...item2,
             isSelected: false,
@@ -159,7 +159,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
     let year = parseInt(dateArray[1], 10);
     let dateObject = new Date(year, month - 1, 1);
     const gift = {
-      user: userContributionGivePerk._id,
+      user: userContributionGivePerk.id,
       campaign: id,
       shippingInfo: { ...address, estDelivery: dateObject },
       perks: [...listPerksSelected],

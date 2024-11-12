@@ -118,8 +118,8 @@ function ViewCampaigns() {
 
             {campaignsOfUser.map((item, index) => {
               if (
-                item.team?.some((x) => {
-                  return x.user === id && x.isAccepted === true;
+                item.teamMembers?.some((x) => {
+                  return x.user.id === id && x.isAccepted === true;
                 }) &&
                 (item.status === 'Đang gây quỹ' ||
                   item.status === 'Đã kết thúc' ||

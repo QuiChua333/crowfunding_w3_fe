@@ -6,14 +6,17 @@ import PerkItem from '~/components/PerkItem';
 const cx = classNames.bind(styles);
 
 function ModalDetailPerk({ itemPerk, setIsOpenModal, handleSelectedItem, isOpenModalUpdate, handleEditListSelected }) {
+  console.log('ModalDetailPerk');
+
   const [optionsSelectedItems, setOptionsSelectedItems] = useState(() => {
-    let arrItemHasOption = itemPerk.items.filter((itemA) => {
+    let arrItemHasOption = itemPerk.detailPerks.filter((itemA) => {
       return itemA.item.isHasOption && itemA.item.options.length > 0;
     });
 
     let result = arrItemHasOption.map((itemB) => {
       return {
         name: itemB.item.name,
+        quantity: itemB.quantity,
         optionsSelected: itemB.item.options.map((i) => {
           return {
             name: i.name,
@@ -53,7 +56,7 @@ function ModalDetailPerk({ itemPerk, setIsOpenModal, handleSelectedItem, isOpenM
   const handleOnclickAccept = () => {
     const newItem = {
       ...itemPerk,
-      items: [...itemPerk.items].map((itemA) => {
+      detailPerks: [...itemPerk.detailPerks].map((itemA) => {
         if (itemA.item.isHasOption && itemA.item.options.length > 0) {
           return {
             ...itemA,
@@ -66,6 +69,7 @@ function ModalDetailPerk({ itemPerk, setIsOpenModal, handleSelectedItem, isOpenM
         }
       }),
     };
+    console.log(newItem);
     if (!isOpenModalUpdate) {
       handleSelectedItem(itemPerk.index, newItem);
       setIsOpenModal(false);
@@ -101,7 +105,7 @@ function ModalDetailPerk({ itemPerk, setIsOpenModal, handleSelectedItem, isOpenM
 
           <div style={{ width: '50%' }}>
             <p>Chọn quà của bạn</p>
-            {itemPerk.items.map((itemA, indexA) => {
+            {itemPerk.detailPerks.map((itemA, indexA) => {
               return (
                 <div className={cx('container-list-perk')} key={indexA}>
                   <p>{itemA.item.name}</p>

@@ -14,6 +14,12 @@ export const getCampaignById = async (id) => {
 };
 
 // handleAPI
+export const getQuantitySuccessCampaignByCampaignId = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/campaign/quantity-success/${id}`);
+  return response.data;
+};
+
+// handleAPI
 export const checkCampaignOfUser = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/campaign/${id}/checkOwner`);
   return response.data;
@@ -68,6 +74,21 @@ export const getCampaignsOfUser = async (userId) => {
 // handleAPI
 export const getQuantityCampaignsOfUser = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/campaign/quantity/user/${id}`);
+  return response.data;
+};
+
+// handleAPI
+export const getCampainsExplore = async ({ page, status, searchString, criteria, field, fieldGroup }) => {
+  const queryParams = {
+    page,
+    status,
+    searchString,
+    criteria,
+    field,
+    fieldGroup,
+  };
+  const queryString = new URLSearchParams(queryParams).toString();
+  const response = await CustomAxios.get(`${baseUrl}/campaign/explore?${queryString}`);
   return response.data;
 };
 

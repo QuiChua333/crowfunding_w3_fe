@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Login.module.scss';
+import ClipLoader from 'react-spinners/ClipLoader';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { logoTrangNho } from '~/assets/images';
+import { logoCrowdfunding, logoTrangNho } from '~/assets/images';
 import {
   useLoginGoogleMutation,
   useLogOutMutation,
@@ -19,6 +20,9 @@ const cx = classNames.bind(styles);
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isShowResend, setShowResend] = useState(false);
+  const [isLoadingResend, setLoadingResend] = useState(false);
+  const [hasResend, setHasResend] = useState(false);
   const prevLink = useSelector((state) => state.globalApp.previousLink);
   const [email, setEmail] = useState('');
   const [textValidateEmail, setTextValidateEmail] = useState('');
@@ -28,6 +32,8 @@ function Login() {
   const handleShowAndHidePass = () => {
     setShowPass(!showPass);
   };
+
+  const handleClickResend = () => {};
 
   const [error, setError] = useState('');
 
@@ -84,17 +90,12 @@ function Login() {
           if (response.isAdmin) {
             navigate('/admin');
           } else {
-            if (prevLink.includes('@report')) {
-              console.log(prevLink.substring(7));
-              navigate(prevLink.substring(7));
-            } else {
-              window.location.href = '/';
-              navigate('/');
-            }
+            window.location.href = '/';
           }
         },
         onError: (error) => {
-          setError(error.response.data.message);
+          const message = error.response?.data?.message || '';
+          setError(message);
         },
         onSettled: () => {
           dispatch(setLoading(false));
@@ -146,6 +147,7 @@ function Login() {
               </div>
 
               {error && <div className={cx('error_msg')}>{error}</div>}
+
               <button type="submit" className={cx('green_btn')}>
                 Đăng nhập
               </button>
@@ -156,14 +158,17 @@ function Login() {
               >
                 <FcGoogle className="text-[30px]" />
               </div>
-              <Link to="/forgot">
+              <Link to="/forgot" className="mb-5">
                 <span className={cx('text-forgot')}>Quên mật khẩu ?</span>
               </Link>
             </form>
           </div>
           <div className={cx('right')}>
-            <img style={{ width: '120px', height: '120px' }} src={logoTrangNho} alt="logo" />
-            <span>Bạn chưa có tài khoản?</span>
+            <div className={cx('logo-wrapper')}>
+              <img style={{ width: '120px', height: '120px' }} src={logoCrowdfunding} alt="logo" />
+              <span className="text-[#4dd0d0]">Give Fun</span>
+            </div>
+            <span className="mt-[60px] text-white">Bạn chưa có tài khoản?</span>
             <Link to="/sign-up">
               <button type="button" className={cx('white_btn')}>
                 Đăng ký

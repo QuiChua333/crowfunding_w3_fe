@@ -36,22 +36,22 @@ function HeaderDropdown({ active, activeHeader, listFieldGrouByCategory, style }
           </div>
         </div>
         <div className={cx('categories')}>
-          {listFieldGrouByCategory.map((item, index) => {
+          {listFieldGrouByCategory?.map((item, index) => {
             return (
               <div
                 key={index}
                 className={cx('category', { third: index === 2, second: index === 1, first: index === 0 })}
               >
                 <a onClick={() => handleClickCategory(item.category)} className={cx('label')}>
-                  {item.category}
+                  {item.name}
                 </a>
 
                 <div className={cx('list-field', { first: index === 0 })}>
-                  {item.listFields.map((item2, index2) => {
+                  {item.fields.map((item2, index2) => {
                     return (
                       <div onClick={() => handleClickField(item2)} key={index2} className={cx('field-item')}>
                         <span>
-                          <a>{item2}</a>
+                          <a>{item2.name}</a>
                         </span>
                       </div>
                     );

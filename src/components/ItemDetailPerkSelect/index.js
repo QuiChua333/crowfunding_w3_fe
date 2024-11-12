@@ -34,19 +34,21 @@ function ItemDetailPerkSelect({
   };
   useEffect(() => {
     setOptions((prev) => {
-      const res = item.items.reduce((acc, cur) => {
+      const res = item.detailPerks.reduce((acc, cur) => {
         if (cur.optionsSelected && cur.optionsSelected.length > 0) {
           return [
             ...acc,
             {
+              quantity: cur.quantity,
               name: cur.item.name,
-              optionsString: cur.optionsSelected.map((i) => i.value).join('/'),
+              optionsString: cur.optionsSelected.map((i) => i.value).join('|'),
             },
           ];
         } else {
           return [
             ...acc,
             {
+              quantity: cur.quantity,
               name: cur.item.name,
               optionsString: '',
             },
@@ -61,14 +63,17 @@ function ItemDetailPerkSelect({
     <div className={cx('wrapper')}>
       <div className={cx('container-body')}>
         <div className={cx('container-1')}>
-          <img src={item.image.url} alt="img" />
+          <div>
+            <span>{item.name}</span>
+            <img src={item.image} alt="img" />
+          </div>
           <div className={cx('content')}>
             <span className={cx('title')}>{item.title}</span>
             <div style={{ display: 'flex', flexDirection: 'column', fontSize: '14px' }}>
               {options?.map((option, index) => {
                 return (
                   <span key={index}>
-                    {option.name}
+                    {`${option.quantity} ${option.name}`}
                     {option.optionsString && ':'} {option.optionsString}
                   </span>
                 );

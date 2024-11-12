@@ -10,10 +10,26 @@ export const useGetInfoVerifyUserQuery = () => {
     localStorage.removeItem('refreshToken');
     window.location.href = '/not-found';
   }
-  const { id } = jwtDecode(token);
+  const { id, email } = jwtDecode(token);
   return useQuery({
     queryKey: [`getInfoUser`],
-    queryFn: () => getInfoVerifyUser(id),
+    queryFn: () => getInfoVerifyUser(id, email),
+    refetchOnWindowFocus: false,
+    enabled: !!token,
+  });
+};
+
+export const useGetInfoVerifyUserByIdQuery = (userId) => {
+  const token = localStorage.getItem('accessToken') || false;
+  if (!token) {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    window.location.href = '/not-found';
+  }
+
+  return useQuery({
+    queryKey: [`getInfoUserById`],
+    queryFn: () => getInfoVerifyUser(userId, ''),
     refetchOnWindowFocus: false,
     enabled: !!token,
   });

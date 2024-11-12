@@ -33,7 +33,7 @@ function PerkItem({
     if (!isInModal) {
       setPerkInModal(false);
     }
-    if (item.items.some((i) => i.item.options && i.item.options.length > 0)) {
+    if (item.detailPerks.some((i) => i.item.options && i.item.options.length > 0)) {
       setItemPerkSelected(item);
       setIsOpenModalOption(true);
     } else {
@@ -47,9 +47,9 @@ function PerkItem({
   return (
     <div className={cx('container-item')} onClick={handleClickItem}>
       {item.isFeatured && <span className={cx('featured')}>NỔI BẬT</span>}
-      <img src={item.image.url} alt="img" />
+      <img src={item.image} alt="img" />
       <div className={cx('container-body')}>
-        <h2 style={{ fontSize: '24px' }}>{item.title}</h2>
+        <h2 style={{ fontSize: '24px' }}>{item.name}</h2>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <b className={cx('price')}>{formatMoney(item.price)}</b>
           <span style={{ fontWeight: '50', color: '#7D7D7D', fontSize: '22px' }}>VND</span>
@@ -61,14 +61,14 @@ function PerkItem({
             <p>
               <b className={cx('text-title')}>Bao gồm: </b>
               <ul className={cx('items')}>
-                {item.items.map((itemA, indexA) => {
-                  return <li key={indexA}>{itemA.item.name}</li>;
+                {item.detailPerks.map((itemA, indexA) => {
+                  return <li key={indexA}>{`${item.quantity} ${itemA.item.name}`}</li>;
                 })}
               </ul>
             </p>
             <p className={cx('text-title')}>Ngày giao dự kiến</p>
-            <p className={cx('des')}>{convertDateFromString(item.estDelivery)}</p>
-            <p className={cx('des')}>Giao toàn lành thổ.</p>
+            <p className={cx('des')}>{convertDateFromString(item.estDeliveryDate)}</p>
+            <p className={cx('des')}>Giao toàn quốc.</p>
 
             {isShowButton &&
               (item.quantity !== item.claimed ? (

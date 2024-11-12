@@ -10,14 +10,18 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import formatMoney from '~/utils/formatMoney';
 import axios from 'axios';
 import { PaymentModal, ItemPayment } from './components';
-import { useGetCampaignByIdQuery, useGetQuantityCampaignOfUserQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useGetCampaignByIdQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
-import { usePaymentMomoMutation } from '~/hooks/api/mutations/user/contribution.mutation';
+import { usePaymentMomoMutation, usePaymentStripeMutation } from '~/hooks/api/mutations/user/contribution.mutation';
+import { defaultAvt } from '~/assets/images';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '~/redux/slides/GlobalApp';
 
 const cx = classNames.bind(styles);
 
 function Payment() {
   const [currentUser, setCurrentUser] = useState({});
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const lct = useLocation();
   let payment = null;
@@ -34,27 +38,31 @@ function Payment() {
   const [isAcceptRule, setAcceptRule] = useState(false);
   const element = useRef(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [quantityCampaignOfUser, setQuantityCampaignOfUser] = useState(0);
-  const [contribution, setContribution] = useState({
-    shippingInfo: {
-      estDelivery: payment?.estDelivery,
-    },
-    bankAccount: {},
-    campaign: id,
-    perks: payment?.listPerkPayment.map((item) => {
-      const newItem = { ...item };
-      delete newItem.listShippingFee;
-      return newItem;
-    }),
-  });
-  const { data: responseQuantity } = useGetQuantityCampaignOfUserQuery(id);
-  useEffect(() => {
-    if (responseQuantity) {
-      console.log({ responseQuantity });
-      setQuantityCampaignOfUser(responseQuantity.data);
-    }
-  }, [responseQuantity]);
 
+  const [contribution, setContribution] = useState(() => {
+    return {
+      shippingInfo: {
+        estDeliveryDate: payment?.estDeliveryDate,
+      },
+      email: '',
+      bankName: '',
+      bankAccountNumber: '',
+      bankUsername: '',
+      campaignId: id,
+      money: payment ? payment.total : money,
+      perks: payment?.listPerkPayment.map((item) => {
+        const newItem = { ...item };
+        delete newItem.shippingFees;
+        return {
+          ...newItem,
+          price: Number(newItem.price),
+        };
+      }),
+    };
+  });
+  useEffect(() => {
+    console.log(contribution);
+  }, [contribution]);
   const [moneyState, setMoneyState] = useState('');
   useEffect(() => {
     setMoneyState(money);
@@ -74,13 +82,13 @@ function Payment() {
   const { data: responseUser } = useGetCurrentUserQuery();
   useEffect(() => {
     if (responseUser) {
-      setCurrentUser(responseUser.data);
+      setCurrentUser(responseUser);
     }
   }, [responseUser]);
   const { data: dataCampaign } = useGetCampaignByIdQuery(id);
   useEffect(() => {
     if (dataCampaign) {
-      setCampaign(dataCampaign.data);
+      setCampaign(dataCampaign);
     }
   }, [dataCampaign]);
 
@@ -97,14 +105,17 @@ function Payment() {
     if (!payment) return;
     let max = 0;
     if (location) {
+      console.log(location);
       for (let i = 0; i < payment.listPerkPayment.length; i++) {
         const perk = payment.listPerkPayment[i];
-        let fee = perk.listShippingFee.find((x) => x.location === location)?.fee || 0;
+
+        let fee = perk.shippingFees.find((x) => x.location === location)?.fee || 0;
         if (!fee) {
-          fee = perk.listShippingFee.find(
+          fee = perk.shippingFees.find(
             (x) => x.location === 'Các tỉnh thành còn lại' || x.location === 'Tất cả các tỉnh thành',
           )?.fee;
         }
+        fee = Number(fee);
         max = fee > max ? fee : max;
       }
       setShipFee(max);
@@ -119,8 +130,9 @@ function Payment() {
   }, [location]);
   useEffect(() => {
     if (!payment) return;
-    setContribution((prev) => ({ ...prev, money: payment.total + shipFee }));
+    setContribution((prev) => ({ ...prev, money: prev.money + shipFee }));
   }, [shipFee]);
+
   const handleChangeInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -137,24 +149,55 @@ function Payment() {
     const value = e.target.value;
     setContribution((prev) => ({
       ...prev,
-      bankAccount: {
-        ...prev.bankAccount,
-        [name]: value,
-      },
+      [name]: value,
     }));
   };
 
   const handlePaymentMethod = (method) => {
-    if (method === 'momo') {
+    if (method === 'stripe') {
+      stripeMethod();
+    } else if (method === 'momo') {
       momoMethod();
     }
   };
+  const paymentStripeMutation = usePaymentStripeMutation();
+  const stripeMethod = async () => {
+    contribution.userId = currentUser.id ?? '';
+    contribution.shippingFee = shipFee;
+    if (currentUser.id) contribution.email = currentUser.email;
+    console.log(JSON.stringify(contribution));
+
+    dispatch(setLoading(true));
+    paymentStripeMutation.mutate(contribution, {
+      onSuccess(data) {
+        window.location.href = data.url;
+      },
+      onError(error) {
+        console.log(error);
+      },
+      onSettled() {
+        dispatch(setLoading(false));
+      },
+    });
+  };
+
   const paymentMomoMutation = usePaymentMomoMutation();
   const momoMethod = async () => {
-    contribution.user = currentUser._id;
+    contribution.userId = currentUser.id ?? '';
+    contribution.shippingFee = shipFee;
+    if (currentUser.id) contribution.email = currentUser.email;
+    console.log(JSON.stringify(contribution));
+
+    dispatch(setLoading(true));
     paymentMomoMutation.mutate(contribution, {
       onSuccess(data) {
-        navigate(data.data);
+        window.location.href = data.payUrl;
+      },
+      onError(error) {
+        console.log(error);
+      },
+      onSettled() {
+        dispatch(setLoading(false));
       },
     });
   };
@@ -162,13 +205,32 @@ function Payment() {
   const [textValidateFullname, setTextValidateFullname] = useState('');
   const validateFullname = (value) => {
     if (!value || value?.trim().length === 0 || value?.trim() === '') {
-      setTextValidateFullname('* Vui lòng đầy đủ thông tin họ tên');
+      setTextValidateFullname('* Vui lòng nhập đầy đủ thông tin họ tên');
       return false;
     } else {
       setTextValidateFullname('');
       return true;
     }
   };
+
+  const [textValidateEmail, setTextValidateEmail] = useState('');
+  const validateEmail = (value) => {
+    if (!value || value?.trim().length === 0 || value?.trim() === '') {
+      setTextValidateEmail('* Vui lòng nhập email');
+      return false;
+    }
+    if (
+      !value.match(
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      )
+    ) {
+      setTextValidateEmail('* Định dạng email không hợp lệ');
+      return false;
+    }
+    setTextValidateEmail('');
+    return true;
+  };
+
   const [textValidateProvince, setTextValidateProvince] = useState('');
   const validateProvince = (value) => {
     if (!value || value?.trim().length === 0 || value?.trim() === '') {
@@ -226,6 +288,39 @@ function Payment() {
     }
   };
 
+  const [textValidateBankName, setTextValidateBankName] = useState('');
+  const validateBankName = (value) => {
+    if (!value || value?.trim().length === 0 || value?.trim() === '') {
+      setTextValidateBankName('* Vui lòng nhập tên ngân hàng');
+      return false;
+    } else {
+      setTextValidateBankName('');
+      return true;
+    }
+  };
+
+  const [textValidateBankAccountNumber, setTextValidateBankAccountNumber] = useState('');
+  const validateBankAccountNumber = (value) => {
+    if (!value || value?.trim().length === 0 || value?.trim() === '') {
+      setTextValidateBankAccountNumber('* Vui lòng nhập số tài khoản ngân hàng');
+      return false;
+    } else {
+      setTextValidateBankAccountNumber('');
+      return true;
+    }
+  };
+
+  const [textValidateBankUsername, setTextValidateBankUsername] = useState('');
+  const validateBankUsername = (value) => {
+    if (!value || value?.trim().length === 0 || value?.trim() === '') {
+      setTextValidateBankUsername('* Vui lòng nhập tên tài khoản ngân hàng');
+      return false;
+    } else {
+      setTextValidateBankUsername('');
+      return true;
+    }
+  };
+
   const handlePayment = () => {
     // validate
     if (payment) {
@@ -236,13 +331,18 @@ function Payment() {
       let flagAddressDetail = validateDetailAddress(contribution.shippingInfo?.detail);
       let flagSDT = validateSDT(contribution.shippingInfo?.phoneNumber);
 
-      if (flagFullname && flagProvince && flagDistrict && flagCommune && flagAddressDetail && flagSDT) {
-        setShowPaymentModal(true);
+      if (!(flagFullname && flagProvince && flagDistrict && flagCommune && flagAddressDetail && flagSDT)) {
+        return;
       }
-    } else {
-      setContribution((prev) => ({ ...prev, money: Number(moneyState), isFinish: true }));
-      setShowPaymentModal(true);
     }
+    if (!currentUser.id) {
+      if (!validateEmail(contribution.email)) return;
+    }
+    const flagBankName = validateBankName(contribution.bankName);
+    const flagBankAccountNumber = validateBankAccountNumber(contribution.bankAccountNumber);
+    const flagBankUserName = validateBankUsername(contribution.bankUsername);
+    if (!(flagBankName && flagBankAccountNumber && flagBankUserName)) return;
+    setShowPaymentModal(true);
   };
   return (
     <div className={cx('wrapper')}>
@@ -256,9 +356,9 @@ function Payment() {
         <div className={cx('payment-info')}>
           <div className={cx('payment-backIcon')} onClick={() => navigate(-1)}>
             <span>
-              <IoChevronBack style={{ fontSize: '24px', fontWeight: 'bold' }} />{' '}
-            </span>{' '}
-            Back
+              <IoChevronBack style={{ fontSize: '24px', fontWeight: 'bold' }} />
+            </span>
+            <span>Back</span>
           </div>
           <div
             style={{
@@ -273,25 +373,54 @@ function Payment() {
           </div>
           <div style={{ fontSize: '24px', fontWeight: '600' }}>{campaign.title}</div>
 
+          <div className="mt-[20px]">
+            <span className="text-[#e51075] font-semibold">Chủ sở hữu</span>
+          </div>
           <div className={cx('user-info')}>
-            <img className={cx('user-img')} src={campaign.owner?.avatar?.url}></img>
+            <img className={cx('user-img')} src={campaign.owner?.avatar || defaultAvt}></img>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div className={cx('user-name')}>{campaign.owner?.fullName}</div>
               <span className={cx('user-detail')}>
-                {quantityCampaignOfUser} chiến dịch |{' '}
-                <span style={{ textTransform: 'uppercase' }}>{campaign.owner?.address?.province}</span>
-                {campaign.owner?.address?.district && ', ' + campaign.owner?.address?.district}
+                <span>{campaign.owner?.email}</span>
               </span>
             </div>
           </div>
 
-          <div className={cx('my-user-info')}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'inline-block', fontWeight: '700' }}>{currentUser.fullName}</div>
-              <div style={{ display: 'inline-block' }}>{currentUser.email}</div>
-            </div>
-          </div>
+          {currentUser.id && (
+            <>
+              <div className="mt-[28px]">
+                <span className="text-[#e51075] font-semibold">Người dùng đóng góp</span>
+              </div>
+              <div className={cx('my-user-info')}>
+                <img className={cx('user-img')} src={currentUser.avatar || defaultAvt}></img>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'inline-block', fontWeight: '700' }}>{currentUser.fullName}</div>
+                  <div style={{ display: 'inline-block' }}>{currentUser.email}</div>
+                </div>
+              </div>
+            </>
+          )}
 
+          {!currentUser.id && !payment && (
+            <div className={cx('shipping-address')}>
+              <div className={cx('title')}>Thông tin liên hệ</div>
+
+              <div className={cx('entreField')}>
+                <label className={cx('entreField-label')}>
+                  Email <span className={cx('entreField-required')}>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  className={cx('itext-field')}
+                  name="email"
+                  value={contribution.email}
+                  onChange={handleChangeInputBank}
+                />
+                <span className={cx('entreField-error')}>{textValidateEmail}</span>
+              </div>
+            </div>
+          )}
           {payment && (
             <div className={cx('shipping-address')}>
               <div className={cx('title')}>Thông tin giao nhận</div>
@@ -309,6 +438,22 @@ function Payment() {
                 />
                 <span className={cx('entreField-error')}>{textValidateFullname}</span>
               </div>
+              {!currentUser.id && (
+                <div className={cx('entreField')}>
+                  <label className={cx('entreField-label')}>
+                    Email <span className={cx('entreField-required')}>*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    className={cx('itext-field')}
+                    name="email"
+                    value={contribution.email}
+                    onChange={handleChangeInputBank}
+                  />
+                  <span className={cx('entreField-error')}>{textValidateEmail}</span>
+                </div>
+              )}
 
               <div className={cx('entreField')}>
                 <label className={cx('entreField-label')}>
@@ -422,11 +567,11 @@ function Payment() {
                     type="text"
                     maxLength="50"
                     className={cx('itext-field')}
-                    name="bank"
-                    value={contribution.bankAccount?.bank}
+                    name="bankName"
+                    value={contribution.bankName}
                     onChange={handleChangeInputBank}
                   />
-                  <span className={cx('entreField-error')}>{textValidateDistrict}</span>
+                  <span className={cx('entreField-error')}>{textValidateBankName}</span>
                 </div>
                 <div style={{ flex: '1' }}>
                   <label className={cx('entreField-label')}>
@@ -436,12 +581,29 @@ function Payment() {
                     type="text"
                     maxLength="50"
                     className={cx('itext-field')}
-                    name="numberAccount"
-                    value={contribution.bankAccount?.numberAccount}
+                    name="bankAccountNumber"
+                    value={contribution.bankAccountNumber}
                     onChange={handleChangeInputBank}
                   />
-                  <span className={cx('entreField-error')}>{textValidateCommune}</span>
+                  <span className={cx('entreField-error')}>{textValidateBankAccountNumber}</span>
                 </div>
+              </div>
+              <div style={{ display: 'flex', gap: '16px', marginTop: '12px' }}>
+                <div style={{ flex: '1' }}>
+                  <label className={cx('entreField-label')}>
+                    Tên tài khoản ngân hàng<span className={cx('entreField-required')}> *</span>
+                  </label>
+                  <input
+                    type="text"
+                    maxLength="50"
+                    className={cx('itext-field')}
+                    name="bankUsername"
+                    value={contribution.bankUsername}
+                    onChange={handleChangeInputBank}
+                  />
+                  <span className={cx('entreField-error')}>{textValidateBankUsername}</span>
+                </div>
+                <div style={{ flex: '1' }}></div>
               </div>
             </div>
           </div>

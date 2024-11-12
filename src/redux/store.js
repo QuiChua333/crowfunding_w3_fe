@@ -1,9 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
-import globalAppReducer from './slides/GlobalApp'
-import userCampaignReducer from './slides/UserCampaign'
-import userReducer from './slides/User'
-import paymentReducer from './slides/Payment'
-import commentReducer from './slides/Comment'
+import { configureStore } from '@reduxjs/toolkit';
+import globalAppReducer from './slides/GlobalApp';
+import userCampaignReducer from './slides/UserCampaign';
+import userReducer from './slides/User';
+import paymentReducer from './slides/Payment';
+import commentReducer from './slides/Comment';
+import adminReducer from './slides/Admin';
 
 const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
     userCampaign: userCampaignReducer,
     user: userReducer,
     payment: paymentReducer,
-    comment: commentReducer
+    comment: commentReducer,
+    admin: adminReducer,
   },
-})
-export default store
+});
+export default store;

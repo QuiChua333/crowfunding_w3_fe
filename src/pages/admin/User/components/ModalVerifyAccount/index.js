@@ -7,28 +7,28 @@ import { setLoading } from '~/redux/slides/GlobalApp';
 import { convertDateFromString } from '~/utils';
 import { useVerifyInfoUserMutation } from '~/hooks/api/mutations/admin/admin.user.mutation';
 import { toast } from 'react-toastify';
+import { useGetInfoVerifyUserByIdQuery, useGetInfoVerifyUserQuery } from '~/hooks/api/queries/user/user-verify.query';
 
 const cx = classNames.bind(styles);
 
-function ModalVerifyAccount({ setIsOpenModalVerify, user, getAllUsers }) {
+function ModalVerifyAccount({ setIsOpenModalVerify, userId, getAllUsers }) {
   const dispatch = useDispatch();
 
   const handleCloseModal = () => {
     setIsOpenModalVerify(false);
   };
-
+  const { data: infoVerify } = useGetInfoVerifyUserByIdQuery(userId);
   const verifyInfoUser = useVerifyInfoUserMutation();
   const handleConfirmInfo = async () => {
     dispatch(setLoading(true));
-    const id = user._id;
-    verifyInfoUser.mutate(id, {
+    verifyInfoUser.mutate(userId, {
       onSuccess: () => {
         getAllUsers();
         toast.success('Xác minh thông tin người dùng thành công');
       },
       onError: (error) => {
         toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
-        console.log(error);
+        console.log(error.response.data.message);
       },
       onSettled: () => {
         dispatch(setLoading(false));
@@ -49,22 +49,22 @@ function ModalVerifyAccount({ setIsOpenModalVerify, user, getAllUsers }) {
 
         <div className={cx('separate')}></div>
 
-        {user.infoVerify ? (
+        {infoVerify ? (
           <div className={cx('content-modal')}>
             <div className={cx('content-left')}>
               <div className={cx('container-input')}>
                 <span className={cx('title')}>Họ tên</span>
-                <input type="text" placeholder="Họ và Tên" value={user.infoVerify?.fullName} />
+                <input type="text" placeholder="Họ và Tên" value={infoVerify?.fullName} />
               </div>
 
               <div className={cx('container-input')}>
                 <span className={cx('title')}>Số điện thoại</span>
-                <input type="text" placeholder="Số điện thoại" value={user.infoVerify?.phoneNumber} />
+                <input type="text" placeholder="Số điện thoại" value={infoVerify?.phoneNumber} />
               </div>
 
               <div className={cx('container-input')}>
                 <span className={cx('title')}>Ngày sinh</span>
-                <input type="text" value={convertDateFromString(user.infoVerify?.birthday)} />
+                <input type="text" value={convertDateFromString(infoVerify?.bod)} />
               </div>
 
               <div className={cx('container-input')}>
@@ -72,20 +72,27 @@ function ModalVerifyAccount({ setIsOpenModalVerify, user, getAllUsers }) {
                 <TextAreaAutoSize
                   className={cx('input-autosize')}
                   placeholder="Thông tin quê quán"
-                  value={user.infoVerify?.detailAddress}
+                  value={infoVerify?.address}
                 />
               </div>
             </div>
             <div className={cx('content-right')}>
               <div className={cx('container-input')}>
                 <span className={cx('title')}>Số CCCD/ID Card</span>
-                <input type="text" placeholder="CCCD / ID Card" value={user.infoVerify?.identifyCode} />
+                <input type="text" placeholder="CCCD / ID Card" value={infoVerify?.identifyNumber} />
               </div>
 
               <div className={cx('container-img')}>
                 <span className={cx('title')}>Ảnh mặt trước căn cước công dân</span>
                 <div className={cx('frame-img')}>
-                  <img src={user.infoVerify?.identifyCardImage.url} alt="img" />
+                  <img src={infoVerify?.identifyCardImageFront} alt="img" />
+                </div>
+              </div>
+
+              <div className={cx('container-img')}>
+                <span className={cx('title')}>Ảnh mặt sau căn cước công dân</span>
+                <div className={cx('frame-img')}>
+                  <img src={infoVerify?.identifyCardImageBack} alt="img" />
                 </div>
               </div>
             </div>
@@ -95,8 +102,7 @@ function ModalVerifyAccount({ setIsOpenModalVerify, user, getAllUsers }) {
         )}
 
         <div className={cx('footer')}>
-          <div>{user.infoVerify && <span>Số lần xác minh ({user.infoVerify?.times})</span>}</div>
-          {user.infoVerify ? (
+          {infoVerify ? (
             <div className={cx('btn-confirm')} onClick={handleConfirmInfo}>
               XÁC NHẬN
             </div>

@@ -31,8 +31,15 @@ export const getQuantityContributeOfUser = async (id) => {
   return response;
 };
 
+// handleAPI
+export const paymentStripe = async (body) => {
+  const response = await CustomAxios.post(`${baseUrl}/contribution/payment/stripe`, body);
+  return response.data;
+};
+
+// handleAPI
 export const paymentMomo = async (body) => {
-  const response = await CustomAxios.post(`${baseUrl}/contribution/paymentMomo/handle`, body);
+  const response = await CustomAxios.post(`${baseUrl}/contribution/payment/momo`, body);
   return response.data;
 };
 

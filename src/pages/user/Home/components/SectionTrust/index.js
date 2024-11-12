@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import { useRef, useEffect, useState } from 'react';
 
 import styles from './SectionTrust.module.scss';
-import { logoTrangNho } from '~/assets/images';
+import { logoCrowdfunding, logoTrangNho } from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
@@ -47,7 +47,9 @@ function SectionTrust() {
   return (
     <div className={cx('wrapper', 'relative', { active: active })} ref={element}>
       <div className={cx('content')}>
-        <img src={logoTrangNho} alt="img"></img>
+        <div className="flex items-center  p-6 bg-white rounded-[36px] mb-6">
+          <img src={logoCrowdfunding} alt="img" className="mr-2"></img>
+        </div>
         <h1 style={{ opacity: `${opacityH2}`, transition: 'all 0.2s ease', alignItems: 'center' }}>
           Tin cậy & An toàn
         </h1>

@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllUsers } from '~/api/admin/admin.users.api';
 
-export const useGetAllUsersQuery = (url) => {
+// handleAPI
+export const useGetAllUsersQuery = ({ page, userVerifyStatus, searchString, userStatus }) => {
   return useQuery({
-    queryKey: ['getAllUsers', url],
-    queryFn: () => getAllUsers(url),
+    queryKey: ['useGetAllUsersQuery', page, userVerifyStatus, searchString, userStatus],
+    queryFn: () => getAllUsers({ page, userVerifyStatus, searchString, userStatus }),
   });
 };
-
-export default useGetAllUsersQuery;

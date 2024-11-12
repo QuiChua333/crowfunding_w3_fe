@@ -7,15 +7,16 @@ import { IoCloseSharp } from 'react-icons/io5';
 const cx = classNames.bind(styles);
 
 function ModalPerkOption({ perk, setShowModalOption, handleAddPerk }) {
-  console.log(perk);
+  console.log('ModalPerkOption');
   const [optionsSelectedItems, setOptionsSelectedItems] = useState(() => {
-    let arrItemHasOption = perk.items.filter((itemA) => {
+    let arrItemHasOption = perk.detailPerks.filter((itemA) => {
       return itemA.item.isHasOption && itemA.item.options.length > 0;
     });
 
     let result = arrItemHasOption.map((itemB) => {
       return {
         name: itemB.item.name,
+        quantity: itemB.quantity,
         optionsSelected: itemB.item.options.map((i) => {
           return {
             name: i.name,
@@ -55,7 +56,7 @@ function ModalPerkOption({ perk, setShowModalOption, handleAddPerk }) {
   const handleOnclickAccept = () => {
     const newItem = {
       ...perk,
-      items: [...perk.items].map((itemA) => {
+      detailPerks: [...perk.detailPerks].map((itemA) => {
         if (itemA.item.isHasOption && itemA.item.options.length > 0) {
           return {
             ...itemA,
@@ -90,7 +91,7 @@ function ModalPerkOption({ perk, setShowModalOption, handleAddPerk }) {
 
           <div style={{ width: '50%' }}>
             <p style={{ fontSize: '20px', margin: '24px' }}>Chọn vật phẩm</p>
-            {perk.items.map((itemA, indexA) => {
+            {perk.detailPerks.map((itemA, indexA) => {
               return (
                 <div className={cx('container-list-perk')} key={indexA}>
                   <p style={{ fontSize: '18px', fontWeight: '600' }}>{itemA.item.name}</p>

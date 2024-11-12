@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllReports } from '~/api/admin/admin.complaints.api';
 
-export const useGetAllReportsQuery = (url) => {
+// handleAPI
+export const useGetAllReportsQuery = ({ page, status, searchString }) => {
   return useQuery({
-    queryKey: ['getAllReports', url],
-    queryFn: () => getAllReports(url),
+    queryKey: ['getAllReports', page, status, searchString],
+    queryFn: () => getAllReports({ page, status, searchString }),
   });
 };
-
-export default useGetAllReportsQuery;

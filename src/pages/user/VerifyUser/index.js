@@ -9,9 +9,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TiTick } from 'react-icons/ti';
 import { toast } from 'react-toastify';
 import { logoTrangNho } from '~/assets/images';
-import { PageNotFound } from '~/pages/common';
 import { useGetInfoVerifyUserQuery } from '~/hooks/api/queries/user/user-verify.query';
-import { useRequestVerifyUserUserMutation } from '~/hooks/api/mutations/user/user-verify.muatation';
+import {
+  useRequestVerifyUserUserMutation,
+  useUpdateVerifyUserUserMutation,
+} from '~/hooks/api/mutations/user/user-verify.muatation';
 
 const cx = classNames.bind(styles);
 
@@ -19,34 +21,29 @@ function VerifyUser() {
   const previousLink = useSelector((state) => state.globalApp.previousLink);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const inputElement = useRef(null);
+  const inputElementFront = useRef(null);
+  const inputElementBack = useRef(null);
+  const [fileIdentifyCardImageFront, setFileIdentifyCardImageFront] = useState();
+  const [fileIdentifyCardImageBack, setFileIdentifyCardImageBack] = useState();
+
   const { id } = useParams();
   const [user, setUser] = useState({});
   const handleClickBack = () => {
-    if (previousLink.startsWith('@campaignFund')) {
-      const link = previousLink.substring(13);
-      navigate(link);
-    } else if (previousLink.startsWith('@settingInfo')) {
-      const link = previousLink.substring(12);
-      navigate(link);
-    } else {
-      navigate('/');
-    }
+    window.history.back();
   };
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    console.log(value);
     setUser((prev) => ({
       ...prev,
-      infoVerify: {
-        ...prev.infoVerify,
-        [name]: value,
-      },
+      [name]: value,
     }));
   };
-  const handleChangImage = (e) => {
+  const handleChangImageFront = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
+      setFileIdentifyCardImageFront(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
@@ -54,13 +51,25 @@ function VerifyUser() {
         setUser((prev) => {
           return {
             ...prev,
-            infoVerify: {
-              ...prev.infoVerify,
-              identifyCardImage: {
-                ...prev.infoVerify?.identifyCardImage,
-                url: res,
-              },
-            },
+            identifyCardImageFront: res,
+          };
+        });
+      };
+    }
+  };
+
+  const handleChangImageBack = (e) => {
+    if (e.target.files[0]) {
+      const file = e.target.files[0];
+      setFileIdentifyCardImageBack(file);
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        let res = reader.result;
+        setUser((prev) => {
+          return {
+            ...prev,
+            identifyCardImageBack: res,
           };
         });
       };
@@ -86,7 +95,7 @@ function VerifyUser() {
     } else {
       var vnf_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
       if (vnf_regex.test(value?.trim()) === false) {
-        setTextValidateSDT('* Số điện thoại của bạn kậthông hợp lệ ');
+        setTextValidateSDT('* Số điện thoại của bạn không hợp lệ ');
         return false;
       } else {
         setTextValidateSDT('');
@@ -134,36 +143,75 @@ function VerifyUser() {
     }
   };
 
-  const [textValidateImageUrl, setTextValidateImageUrl] = useState('');
-  const validateImageUrl = (value) => {
+  const [textValidateImageUrlFront, setTextValidateImageUrlFront] = useState('');
+  const validateImageUrlFront = (value) => {
     if (!value || value?.trim().length === 0 || value?.trim() === '') {
-      setTextValidateImageUrl('* Vui lòng chọn ảnh căn cước công dân');
+      setTextValidateImageUrlFront('* Vui lòng chọn ảnh căn cước công dân');
       return false;
     } else {
-      setTextValidateImageUrl('');
+      setTextValidateImageUrlFront('');
       return true;
     }
   };
 
+  const [textValidateImageUrlBack, setTextValidateImageUrlBack] = useState('');
+  const validateImageUrlBack = (value) => {
+    if (!value || value?.trim().length === 0 || value?.trim() === '') {
+      setTextValidateImageUrlBack('* Vui lòng chọn ảnh căn cước công dân');
+      return false;
+    } else {
+      setTextValidateImageUrlBack('');
+      return true;
+    }
+  };
   const requestVerifyInfoUser = useRequestVerifyUserUserMutation();
   const handleClickVerify = async () => {
-    dispatch(setLoading(true));
-    const infoVerify = { ...user.infoVerify };
+    const infoVerify = { ...user };
     let flagFullname = validateFullname(infoVerify.fullName);
     let flagSDT = validateSDT(infoVerify.phoneNumber);
-    let flagBirthday = validateBirthday(infoVerify.birthday);
-    let flagLocation = validateLocation(infoVerify.detailAddress);
-    let flagCCCD = validateCCCD(infoVerify.identifyCode);
-    let flagImageUrl = validateImageUrl(infoVerify.identifyCardImage?.url || '');
-    if (flagFullname && flagSDT && flagBirthday && flagLocation && flagCCCD && flagImageUrl) {
-      requestVerifyInfoUser.mutate(infoVerify, {
-        onSuccess: (res) => {
+    let flagBirthday = validateBirthday(infoVerify.bod);
+    let flagLocation = validateLocation(infoVerify.address);
+    let flagCCCD = validateCCCD(infoVerify.identifyNumber);
+    let flagImageUrlFront = validateImageUrlFront(infoVerify.identifyCardImageFront || '');
+    let flagImageUrlBack = validateImageUrlBack(infoVerify.identifyCardImageBack || '');
+
+    if (flagFullname && flagSDT && flagBirthday && flagLocation && flagCCCD && flagImageUrlFront && flagImageUrlBack) {
+      delete infoVerify.verifyStatus;
+      delete infoVerify.email;
+      delete infoVerify.verifyStatus;
+      delete infoVerify.identifyCardImageFront;
+      delete infoVerify.identifyCardImageBack;
+      const formData = new FormData();
+      formData.append('files', fileIdentifyCardImageFront);
+      formData.append('files', fileIdentifyCardImageBack);
+
+      Object.entries(infoVerify).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      dispatch(setLoading(true));
+
+      requestVerifyInfoUser.mutate(formData, {
+        onSuccess: (data) => {
+          setTextValidateBirthday('');
+          setTextValidateCCCD('');
+          setTextValidateFullname('');
+          setTextValidateImageUrlFront('');
+          setTextValidateImageUrlBack('');
+          setTextValidateLocation('');
+          setTextValidateSDT('');
+
           toast.success('Gửi thông tin xác minh thành công');
-          setUser(res.data.data);
+          setUser({
+            ...data,
+            bod:
+              (data.bod && new Date(data.bod).toISOString().substring(0, 10)) ||
+              new Date().toISOString().substring(0, 10),
+          });
+          // setUser(data);
         },
         onError: (error) => {
-          toast.error('Có lỗi trong quá trình gửi thông tin');
-          console.log(error);
+          toast.error(error.response.data.message);
+          console.log(error.response.data.message);
         },
         onSettled: () => {
           dispatch(setLoading(false));
@@ -172,15 +220,83 @@ function VerifyUser() {
     }
   };
 
-  const { data, isError } = useGetInfoVerifyUserQuery(id);
+  const updateVerifyInfoUser = useUpdateVerifyUserUserMutation();
+  const handleClickUpdateVerify = async () => {
+    const infoVerify = { ...user };
+    let flagFullname = validateFullname(infoVerify.fullName);
+    let flagSDT = validateSDT(infoVerify.phoneNumber);
+    let flagBirthday = validateBirthday(infoVerify.bod);
+    let flagLocation = validateLocation(infoVerify.address);
+    let flagCCCD = validateCCCD(infoVerify.identifyNumber);
+    let flagImageUrlFront = validateImageUrlFront(infoVerify.identifyCardImageFront || '');
+    let flagImageUrlBack = validateImageUrlBack(infoVerify.identifyCardImageBack || '');
+
+    if (flagFullname && flagSDT && flagBirthday && flagLocation && flagCCCD && flagImageUrlFront && flagImageUrlBack) {
+      delete infoVerify.verifyStatus;
+      delete infoVerify.email;
+      delete infoVerify.verifyStatus;
+      delete infoVerify.identifyCardImageFront;
+      delete infoVerify.identifyCardImageBack;
+      const formData = new FormData();
+
+      if (fileIdentifyCardImageFront && fileIdentifyCardImageBack) {
+        formData.append('files', fileIdentifyCardImageFront);
+        formData.append('files', fileIdentifyCardImageBack);
+        formData.append('filePresence', 'front');
+        formData.append('filePresence', 'back');
+      } else if (fileIdentifyCardImageFront) {
+        formData.append('files', fileIdentifyCardImageFront);
+        formData.append('filePresence', 'front');
+      } else if (fileIdentifyCardImageBack) {
+        formData.append('filePresence', 'back');
+        formData.append('files', fileIdentifyCardImageBack);
+      }
+
+      Object.entries(infoVerify).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      dispatch(setLoading(true));
+      updateVerifyInfoUser.mutate(formData, {
+        onSuccess: (data) => {
+          setTextValidateBirthday('');
+          setTextValidateCCCD('');
+          setTextValidateFullname('');
+          setTextValidateImageUrlFront('');
+          setTextValidateImageUrlBack('');
+          setTextValidateLocation('');
+          setTextValidateSDT('');
+
+          toast.success('Cập nhật thông tin xác minh thành công');
+          setUser({
+            ...data,
+            bod:
+              (data.bod && new Date(data.bod).toISOString().substring(0, 10)) ||
+              new Date().toISOString().substring(0, 10),
+          });
+          // setUser(data);
+        },
+        onError: (error) => {
+          toast.error(error.response.data.message);
+          console.log(error.response.data.message);
+        },
+        onSettled: () => {
+          dispatch(setLoading(false));
+        },
+      });
+    }
+  };
+
+  const { data } = useGetInfoVerifyUserQuery(id);
   useEffect(() => {
     if (data) {
-      setUser(data);
+      setUser({
+        ...data,
+        bod:
+          (data.bod && new Date(data.bod).toISOString().substring(0, 10)) || new Date().toISOString().substring(0, 10),
+      });
     }
   }, [data]);
-  if (isError) {
-    navigate('/not-found');
-  }
 
   return (
     <>
@@ -196,7 +312,7 @@ function VerifyUser() {
             </div>
 
             <div className={cx('return')} style={{ marginTop: '28px' }}>
-              <span onClick={handleClickBack} style={{ fontSize: '14px', fontWeight: '500' }}>
+              <span onClick={handleClickBack} style={{ fontSize: '14px', fontWeight: '500', display: 'flex' }}>
                 <IoArrowBackSharp style={{ fontSize: '18px', marginBottom: '4px' }} /> Quay về Give Fun
               </span>
             </div>
@@ -230,22 +346,15 @@ function VerifyUser() {
                 Thông tin này được thu thập để xác minh danh tính của bạn và giữ an toàn cho tài khoản của bạn.
               </p>
               <div className={cx('email')}>
-                <span style={{ fontWeight: '600', color: 'rgb(65, 69, 82)' }}>{user.fullName}</span>
-                <span>{user.email}</span>
+                <span>Email: {user.email}</span>
               </div>
-
               <div className={cx('info')}>
                 <h3 className={cx('section')}>Khai báo thông tin</h3>
-                <input
-                  placeholder="Họ và tên"
-                  value={user.infoVerify?.fullName}
-                  name="fullName"
-                  onChange={handleChangeInputText}
-                />
+                <input placeholder="Họ và tên" value={user.fullName} name="fullName" onChange={handleChangeInputText} />
                 <span className={cx('entreField-error')}>{textValidateFullname}</span>
                 <input
                   placeholder="Số điện thoại"
-                  value={user.infoVerify?.phoneNumber}
+                  value={user.phoneNumber}
                   name="phoneNumber"
                   onChange={handleChangeInputText}
                 />
@@ -253,55 +362,74 @@ function VerifyUser() {
                 <input
                   type="date"
                   placeholder="Ngày sinh"
-                  value={
-                    (user.infoVerify &&
-                      user.infoVerify.birthday &&
-                      new Date(user.infoVerify?.birthday).toISOString().substring(0, 10)) ||
-                    new Date().toISOString().substring(0, 10)
-                  }
-                  name="birthday"
+                  value={user.bod}
+                  name="bod"
                   onChange={handleChangeInputText}
                 />
                 <span className={cx('entreField-error')}>{textValidateBirthday}</span>
-                <input
-                  placeholder="Quê quán"
-                  value={user.infoVerify?.detailAddress}
-                  name="detailAddress"
-                  onChange={handleChangeInputText}
-                />
+                <input placeholder="Quê quán" value={user.address} name="address" onChange={handleChangeInputText} />
                 <span className={cx('entreField-error')}>{textValidateLocation}</span>
                 <input
                   placeholder="Số CCCD/ID Card"
-                  value={user.infoVerify?.identifyCode}
-                  name="identifyCode"
+                  value={user.identifyNumber}
+                  name="identifyNumber"
                   onChange={handleChangeInputText}
                 />
                 <span className={cx('entreField-error')}>{textValidateCCCD}</span>
               </div>
-
-              <div className={cx('info')}>
-                <h3 className={cx('section')}>Ảnh chụp thẻ công dân</h3>
+              <div className={cx('info', 'mt-[40px]')}>
+                <h3 className={cx('section')}>{`Ảnh chụp CCCD (mặt trước)`}</h3>
 
                 <div className={cx('img-wrapper')}>
-                  {!user.infoVerify?.identifyCardImage?.url && (
+                  {!user.identifyCardImageFront && (
                     <div className={cx('no-image')}>
                       <span>Tải ảnh lên</span>
                     </div>
                   )}
-                  <input type="file" ref={inputElement} accept="image/png, image/jpeg" onChange={handleChangImage} />
-                  {user.infoVerify?.identifyCardImage?.url && (
+                  <input
+                    type="file"
+                    ref={inputElementFront}
+                    accept="image/png, image/jpeg"
+                    onChange={handleChangImageFront}
+                  />
+                  {user.identifyCardImageFront && (
                     <>
-                      <img src={user.infoVerify?.identifyCardImage?.url} alt="CCCD của người dùng" />
-                      <span onClick={() => inputElement.current.click()} className={cx('icon-edit')}>
+                      <img src={user.identifyCardImageFront} alt="CCCD của người dùng" />
+                      <span onClick={() => inputElementFront.current.click()} className={cx('icon-edit')}>
                         <MdEdit style={{ color: '#7a69b3', fontSize: '18px' }} />
                       </span>
                     </>
                   )}
                 </div>
-                <span className={cx('entreField-error')}>{textValidateImageUrl}</span>
+                <span className={cx('entreField-error')}>{textValidateImageUrlFront}</span>
               </div>
+              <div className={cx('info')}>
+                <h3 className={cx('section')}>{`Ảnh chụp CCCD (mặt sau)`}</h3>
 
-              {user.isVerifiedUser ? (
+                <div className={cx('img-wrapper')}>
+                  {!user.identifyCardImageBack && (
+                    <div className={cx('no-image')}>
+                      <span>Tải ảnh lên</span>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    ref={inputElementBack}
+                    accept="image/png, image/jpeg"
+                    onChange={handleChangImageBack}
+                  />
+                  {user.identifyCardImageBack && (
+                    <>
+                      <img src={user.identifyCardImageBack} alt="CCCD của người dùng" />
+                      <span onClick={() => inputElementBack.current.click()} className={cx('icon-edit')}>
+                        <MdEdit style={{ color: '#7a69b3', fontSize: '18px' }} />
+                      </span>
+                    </>
+                  )}
+                </div>
+                <span className={cx('entreField-error')}>{textValidateImageUrlBack}</span>
+              </div>
+              {user.verifyStatus === 'Đã xác thực' && (
                 <>
                   <div style={{ marginTop: '48px' }}>
                     <span className={cx('verified')}>
@@ -309,31 +437,28 @@ function VerifyUser() {
                     </span>
                   </div>
                 </>
-              ) : (
-                <>
-                  {(!user.infoVerify || !user.infoVerify?.times || user.infoVerify?.times === 0) && (
-                    <div style={{ marginTop: '48px' }}>
-                      <div onClick={handleClickVerify} className={cx('btn-ok')}>
-                        Xác nhận
-                      </div>
-                    </div>
-                  )}
-                  {user.infoVerify && user.infoVerify.times > 0 && (
-                    <div
-                      style={{
-                        marginTop: '48px',
-                        gap: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <div onClick={handleClickVerify} className={cx('btn-ok')}>
-                        Gửi lại
-                      </div>
-                      <span className={cx('wait')}> Tài khoản đang chờ xác minh</span>
-                    </div>
-                  )}
-                </>
+              )}
+              {user.verifyStatus === 'Chờ xác thực' && (
+                <div
+                  style={{
+                    marginTop: '48px',
+                    gap: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div onClick={handleClickUpdateVerify} className={cx('btn-ok')}>
+                    Gửi lại
+                  </div>
+                  <span className={cx('wait')}> Tài khoản đang chờ xác minh</span>
+                </div>
+              )}
+              {user.verifyStatus === 'Chưa xác thực' && (
+                <div style={{ marginTop: '48px' }}>
+                  <div onClick={handleClickVerify} className={cx('btn-ok')}>
+                    Xác nhận
+                  </div>
+                </div>
               )}
             </div>
           </div>

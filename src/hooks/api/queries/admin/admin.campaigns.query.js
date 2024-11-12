@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getAllCampaigns } from '~/api/admin/admin.campaigns.api';
 
-export const useGetAllCampaignsQuery = (url) => {
+// handleAPI
+export const useGetAllCampaignsQuery = ({ page, status, searchString }) => {
   return useQuery({
-    queryKey: ['getAllCampaigns', url],
-    queryFn: () => getAllCampaigns(url),
+    queryKey: ['getAllCampaigns', page, status, searchString],
+    queryFn: () => getAllCampaigns({ page, status, searchString }),
   });
 };
-
-export default useGetAllCampaignsQuery;

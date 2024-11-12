@@ -7,18 +7,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk }) {
+  console.log('ModalOptionPerk');
   const navigate = useNavigate();
   const { id } = useParams();
   const [optionsSelectedItems, setOptionsSelectedItems] = useState(() => {
-    let arrItemHasOption = itemPerk.items.filter((i) => {
+    let arrItemHasOption = itemPerk.detailPerks.filter((i) => {
       return i.item.isHasOption && i.item.options.length > 0;
     });
 
     let result = arrItemHasOption.map((itemA) => {
       return {
         name: itemA.item.name,
+        quantity: itemA.quantity,
         optionsSelected: itemA.item.options.map((i) => {
-          console.log(i);
           return {
             name: i.name,
             value: i.values[0],
@@ -35,7 +36,7 @@ function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk }) {
   const handleClickPayment = () => {
     const state = {
       ...itemPerk,
-      items: [...itemPerk.items].map((i) => {
+      detailPerks: [...itemPerk.detailPerks].map((i) => {
         if (i.item.isHasOption && i.item.options.length > 0) {
           return {
             ...i,
@@ -109,7 +110,7 @@ function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk }) {
 
           <div className={cx('container')}>
             <p className={cx('text-title-topic')}>Chọn quà của bạn</p>
-            {itemPerk.items.map((itemA, indexA) => {
+            {itemPerk.detailPerks.map((itemA, indexA) => {
               return (
                 <div className={cx('container-content')} key={indexA}>
                   <p>{itemA.item.name}</p>

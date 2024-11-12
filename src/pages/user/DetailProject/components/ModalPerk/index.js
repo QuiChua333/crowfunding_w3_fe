@@ -43,7 +43,7 @@ function ModalPerk({ close, setIsOpenModalOption, setPerkInModal, listPerk, setI
                 Tiếp tục
               </button>
             </div>
-            <p className={cx('title-under-input')}>Đóng góp sẽ không liên quan tới quà</p>
+            <p className={cx('title-under-input')}>Đóng góp sẽ không liên quan tới đặc quyền</p>
           </div>
           <p className={cx('title-contribute')}>Chọn một quà</p>
 

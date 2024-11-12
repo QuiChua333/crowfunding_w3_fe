@@ -192,20 +192,22 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                     </div>
                   </div>
 
-                  <div
-                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': tab.number === 8,
-                    })}
-                  >
+                  {status !== 'Bản nháp' && status !== 'Chờ xác nhận' && (
                     <div
-                      onClick={() => {
-                        navigate(`/campaigns/${id}/edit/contribution`);
-                      }}
-                      className={cx('navItem-link')}
+                      className={cx('navItem--child', 'navItem', 'cursor-pointer', {
+                        'navItem--current': tab.number === 8,
+                      })}
                     >
-                      <div>8. ĐÓNG GÓP</div>
+                      <div
+                        onClick={() => {
+                          navigate(`/campaigns/${id}/edit/contribution`);
+                        }}
+                        className={cx('navItem-link')}
+                      >
+                        <div>8. ĐÓNG GÓP</div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>

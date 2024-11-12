@@ -8,32 +8,38 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import baseURL from '~/utils/baseURL';
 import { CustomAxios } from '~/config';
+import { defaultCardCampaign } from '~/assets/images';
+import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-campaign.mutation';
 
 const cx = classNames.bind(styles);
 
 function ProjectCardItem({ campaign, refreshCampaign }) {
   const currentUser = useSelector((state) => state.user.currentUser);
+  console.log(currentUser, campaign.id);
   const navigate = useNavigate();
   const [favourite, setFavourite] = useState(false);
   useEffect(() => {
-    if (currentUser.followedCampaigns?.includes(campaign._id)) {
+    if (currentUser.followCampaigns?.includes(campaign.id)) {
       setFavourite(true);
     } else setFavourite(false);
-  }, [campaign]);
+  }, [campaign, currentUser]);
   const handleClickCampaign = () => {
-    navigate(`/project/${campaign._id}/detail`);
+    navigate(`/project/${campaign.id}/detail`);
   };
+  const followCampaignMutation = useFollowCampaignMutation();
   const handleClickHeart = async (e) => {
     e.stopPropagation();
-    try {
-      const res = await CustomAxios.patch(`${baseURL}/user/handleFollowedCampaigns`, { campaignId: campaign._id });
-      setFavourite(res.data.data);
-    } catch (error) {}
+    followCampaignMutation.mutate(campaign.id, {
+      onSuccess() {
+        setFavourite(!favourite);
+      },
+      onError() {},
+    });
   };
   return (
     <div className={cx('wrapper')} onClick={handleClickCampaign}>
       <div className={cx('card-image')}>
-        <img src={campaign?.cardImage?.url} alt="project-image" />
+        <img src={campaign?.cardImage || defaultCardCampaign} alt="project-image" />
       </div>
 
       <div className={cx('card-info')}>
@@ -42,7 +48,7 @@ function ProjectCardItem({ campaign, refreshCampaign }) {
             <span
               className={cx('status', {
                 dangGayQuy: campaign?.status === 'Đang gây quỹ',
-                daKetThuc: campaign?.status === 'Đã kết thúc' || campaign?.status === 'Đang tạm ngưng',
+                daKetThuc: campaign?.status === 'Đã hoàn thành' || campaign?.status === 'Tạm dừng',
               })}
             >
               {campaign?.status}
@@ -55,7 +61,7 @@ function ProjectCardItem({ campaign, refreshCampaign }) {
 
           <h2 className={cx('card-title')}>{campaign.title}</h2>
           <p className={cx('card-description')}>{campaign.tagline}</p>
-          <p className={cx('card-category')}>{campaign.field}</p>
+          <p className={cx('card-category')}>{campaign.field?.name}</p>
         </div>
 
         <div className={cx('card-progress')}>
@@ -65,7 +71,7 @@ function ProjectCardItem({ campaign, refreshCampaign }) {
               <span className={cx('unit-money')}>VNĐ</span>
             </div>
             <span className={cx('percent')}>
-              {campaign.percentProgress % 100 === 0 ? campaign.percentProgress : campaign.percentProgress.toFixed(2)}%
+              {campaign.percentProgress % 100 === 0 ? campaign.percentProgress : campaign.percentProgress?.toFixed(2)}%
             </span>
           </div>
           <div className={cx('progressbar')}>

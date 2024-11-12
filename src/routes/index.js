@@ -50,7 +50,7 @@ const publicRoutes = [
   { path: '/individuals/:id/profile', component: ProfilePersonal, layout: NormalLayout },
   { path: '/start-a-campaign', component: PrefixCampaign, layout: NormalLayout },
   { path: '/campaigns/team/invitation/:tokenLinkInvitation', component: SuccessVerifyInvitation, layout: null },
-  { path: '/payment/thank', component: ThankPayment, layout: null },
+  { path: '/payment/thanks', component: ThankPayment, layout: null },
   { path: '/about-us', component: AboutUs, layout: NormalLayout },
   { path: '/givefun/verify', component: VerifyUser, layout: null },
 

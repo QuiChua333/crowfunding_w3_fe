@@ -40,7 +40,9 @@ function CampaignRow({ index, campaign, setChecked, getAllCampaigns }) {
           className={cx('campaign-status', {
             choXacNhan: campaign.status === 'Chờ xác nhận',
             dangGayQuy: campaign.status === 'Đang gây quỹ',
-            dangTamNgung: campaign.status === 'Đang tạm ngưng' || campaign.status === 'Đã kết thúc',
+            banNhap: campaign.status === 'Bản nháp',
+            dangTamNgung:
+              campaign.status === 'Tạm dừng' || campaign.status === 'Đã hoàn thành' || campaign.status === 'Thất bại',
           })}
         >
           {campaign.status}
