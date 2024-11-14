@@ -4,30 +4,29 @@ import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDeleteCommentMutation } from '~/hooks/api/mutations/user/comment.mutation';
 
-const Comments = ({ campaign, comments, setListComments, members }) => {
+const Comments = ({ campaign, comments, setComments, members }) => {
   const [commentsOrigin, setCommentsOrigin] = useState([]);
   const [showComments, setShowComments] = useState([]);
+  const [replyComments, setReplyComments] = useState([]);
   const [next, setNext] = useState(10);
   const dispatch = useDispatch();
-  const [replyComments, setReplyComments] = useState([]);
 
   useEffect(() => {
-    const newCm = comments.filter((cm) => !cm.reply);
+    const newCm = comments.filter((cm) => !cm.reply || !cm.reply.id);
     setCommentsOrigin(newCm);
     setShowComments(newCm.slice(0, next));
   }, [comments, next]);
-
   useEffect(() => {
-    const newRep = comments.filter((cm) => cm.reply);
+    const newRep = comments.filter((cm) => cm.reply?.id);
     setReplyComments(newRep);
   }, [comments]);
 
   const removeComment = useDeleteCommentMutation();
   const handleRemoveComment = async (comment) => {
     dispatch(setLoading(true));
-    const deleteArr = [...comments.filter((cm) => cm.reply === comment._id), comment];
+    const deleteArr = [...comments.filter((cm) => cm.reply.id === comment.id), comment];
     for (let i = 0; i < deleteArr.length; i++) {
-      removeComment.mutate(deleteArr[i]._id, {
+      removeComment.mutate(deleteArr[i].id, {
         onSuccess: () => {
           console.log('Xóa comment thành công');
         },
@@ -36,7 +35,7 @@ const Comments = ({ campaign, comments, setListComments, members }) => {
         },
       });
     }
-    setListComments((prev) => [...prev].filter((cm) => !deleteArr.find((da) => cm._id === da._id)));
+    setComments((prev) => [...prev].filter((cm) => !deleteArr.find((da) => cm.id === da.id)));
     dispatch(setLoading(false));
   };
   return (
@@ -46,10 +45,10 @@ const Comments = ({ campaign, comments, setListComments, members }) => {
           key={index}
           comment={comment}
           campaign={campaign}
-          setListComments={setListComments}
+          setComments={setComments}
           handleRemoveComment={handleRemoveComment}
           members={members}
-          replyCm={replyComments.filter((item) => item.reply === comment._id)}
+          replyCm={replyComments.filter((item) => item.reply.id === comment.id)}
         />
       ))}
 

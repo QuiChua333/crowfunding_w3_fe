@@ -47,7 +47,6 @@ function DetailProject() {
   const [itemPerkSelected, setItemPerkSelected] = useState({});
   const [openDropDown, setOpenDropDown] = useState(false);
   const docElement = useRef(null);
-  const [listComments, setListComments] = useState([]);
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
@@ -72,6 +71,13 @@ function DetailProject() {
   const { data: dataListPerksByCampaignId } = useGetPerksHasListItemsByCampaignIdQuery(id);
   const { data: dataProjectById } = useGetCampaignByIdQuery(id);
   const { data: quantitySuccessCampaign } = useGetQuantitySuccessCampaignByCampaignId(id);
+
+  const { data: dataMembers } = useGetTeamMemberByCampaignId(id);
+  useEffect(() => {
+    if (dataMembers) {
+      setMembers(dataMembers);
+    }
+  }, [dataMembers]);
 
   useEffect(() => {
     if (dataProjectById) {
@@ -377,14 +383,7 @@ function DetailProject() {
           <div>
             {indexTabHeader === 1 && <StorySection story={ItemProject.story} />}
             {indexTabHeader === 2 && <FAQSection faqs={ItemProject.faqs} />}
-            {indexTabHeader === 3 && (
-              <CommentSection
-                campaign={ItemProject}
-                comments={listComments}
-                setListComments={setListComments}
-                members={members}
-              />
-            )}
+            {indexTabHeader === 3 && <CommentSection campaign={ItemProject} members={members} />}
           </div>
         </div>
 
@@ -447,7 +446,7 @@ function DetailProject() {
           setPerkInModal={setPerkInModal}
         />
       )}
-      {isOpenModalMember && <ModalTeamMembersDetail setIsOpenModalMember={setIsOpenModalMember} />}
+      {isOpenModalMember && <ModalTeamMembersDetail setIsOpenModalMember={setIsOpenModalMember} members={members} />}
       {isOpenModalReport && <ModalReport setIsOpenModalReport={setIsOpenModalReport} />}
     </div>
   );

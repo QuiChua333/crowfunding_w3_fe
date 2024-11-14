@@ -16,3 +16,9 @@ export const deleteComment = async (id) => {
 export const updateComment = async ({ commentId, content }) => {
   await CustomAxios.patch(`${baseUrl}/comment/${commentId}`, { content });
 };
+
+//handleAPI
+export const getCommentsByCampaignId = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/comment/campaign/${id}`);
+  return response.data;
+};

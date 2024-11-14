@@ -1,139 +1,145 @@
 .wrapper {
-    height: 560px;
-    max-width: 320px;
-    min-width: 290px;
-    border-radius: 2px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 0.8, 0.45, 1);
-    background-color: #fff;
-    border: 1px solid #ddd;
+  height: 560px;
+  max-width: 320px;
+  min-width: 290px;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 0.8, 0.45, 1);
+  background-color: #fff;
+  border: 1px solid #ddd;
 
-    &:hover {
-        box-shadow: 0 2px 6px -4px rgba(0, 0, 0, 0.2), 0 8px 10px -4px rgba(0, 0, 0, 0.14),
-            0 8px 12px 4px rgba(0, 0, 0, 0.05);
-        transform: translateY(-2px);
-    }
+  &:hover {
+    box-shadow: 0 2px 6px -4px rgba(0, 0, 0, 0.2), 0 8px 10px -4px rgba(0, 0, 0, 0.14),
+      0 8px 12px 4px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
 }
 
 .card-info {
-    padding: 0 16px 16px 16px;
+  padding: 0 16px 16px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .card-status {
-    margin-top: 6px;
-    padding: 10px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .status {
-        font-weight: 700;
-        font-size: 1.4rem;
-        
-        &.dangGayQuy {
-            color: #088366;
-        }
+  margin-top: 6px;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .status {
+    font-weight: 700;
+    font-size: 1.4rem;
 
-        &.daKetThuc {
-             color: rgb(106, 106, 106);
-        }
+    &.dangGayQuy {
+      color: #088366;
     }
 
-    .heart {
-        font-size: 2.2rem;
-        color: #6a6a6a;
-        font-weight: normal;
+    &.daKetThuc {
+      color: rgb(106, 106, 106);
+    }
+  }
 
-        &:hover {
-            color: red;
-        }
+  .heart {
+    font-size: 2.2rem;
+    color: #6a6a6a;
+    font-weight: normal;
+
+    &:hover {
+      color: red;
     }
-    .heart-active {
-        font-size: 2.2rem;
-        color: red;
-    }
+  }
+  .heart-active {
+    font-size: 2.2rem;
+    color: red;
+  }
 }
 
 .card-title {
-    font-size: 1.8rem;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2; /* Số dòng cố định */
+  font-size: 1.8rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Số dòng cố định */
 }
 
 .card-category {
-    font-size: 1.3rem;
-    color: #6a6a6a;
+  font-size: 1.3rem;
+  color: #6a6a6a;
 }
 .card-description {
-    font-size: 1.3rem;
-    color: #6a6a6a;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3; /* Số dòng cố định */
+  font-size: 1.3rem;
+  color: #6a6a6a;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Số dòng cố định */
 }
 
 .card-description {
-    margin-top: 4px;
+  margin-top: 4px;
 }
 
 .card-category {
-    padding: 5px 0;
+  padding: 5px 0;
 }
 
 .card-image {
+  height: 285px;
+  img {
+    width: 100%;
+    height: 100%;
     height: 285px;
-    img {
-        width: 100%;
-        height: 100%;
-        height: 285px;
-        object-fit: cover;
-    }
+    object-fit: cover;
+  }
 }
 
 .money-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .current-money {
-    color: #6a6a6a;
-    font-weight: 600;
+  color: #6a6a6a;
+  font-weight: 600;
 }
 .unit-money {
-    color: #6a6a6a;
-    font-size: 1.2rem;
-    margin-left: 1px;
+  color: #6a6a6a;
+  font-size: 1.2rem;
+  margin-left: 1px;
 }
 
 .percent {
-    color: #6a6a6a;
-    font-weight: 600;
-    font-size: 1.3rem;
+  color: #6a6a6a;
+  font-weight: 600;
+  font-size: 1.3rem;
 }
 
 .progressbar {
-    height: 8px;
-    border-radius: 5px;
-    margin: -1px 0 5px 0;
-    background: #ddd;
+  height: 8px;
+  border-radius: 5px;
+  margin: -1px 0 5px 0;
+  background: #ddd;
 }
 
 .progressbar-value {
-    background: #34ca96;
-    height: 100%;
-    border-radius: 5px;
+  background: #34ca96;
+  height: 100%;
+  border-radius: 5px;
 }
 .days-left {
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    font-size: 1.4rem;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
 
-    span {
-        margin-left: 4px;
-        font-size: 1.2rem;
-    }
+  span {
+    margin-left: 4px;
+    font-size: 1.2rem;
+  }
 }

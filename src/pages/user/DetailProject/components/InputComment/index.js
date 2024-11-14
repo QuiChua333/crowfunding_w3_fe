@@ -8,7 +8,7 @@ import { setLoading } from '~/redux/slides/GlobalApp';
 import { useCreateCommentMutation } from '~/hooks/api/mutations/user/comment.mutation';
 
 const cx = classNames.bind(styles);
-const InputComment = ({ children, setListComments, onReply, setOnReply }) => {
+const InputComment = ({ children, setComments, onReply, setOnReply }) => {
   const { id } = useParams();
   const [content, setContent] = useState('');
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -21,22 +21,18 @@ const InputComment = ({ children, setListComments, onReply, setOnReply }) => {
       if (setOnReply) return setOnReply(false);
       return;
     }
-
     setContent('');
-
     const newComment = {
       content,
-      likes: [],
-      user: currentUser,
-      createdAt: new Date().toISOString(),
-      reply: onReply && onReply.commentId,
-      tag: onReply && onReply.user,
+      replyId: onReply && onReply.id,
+      tagId: onReply && onReply.author.id,
+      campaignId: id,
     };
-    const data = { ...newComment, campaignId: id, postUserId: currentUser._id };
+
     dispatch(setLoading(true));
-    submitComment.mutate(data, {
+    submitComment.mutate(newComment, {
       onSuccess(data) {
-        setListComments((prev) => [...prev, data?.data?.newComment]);
+        setComments((prev) => [...prev, data]);
         if (setOnReply) return setOnReply(false);
       },
       onError(error) {

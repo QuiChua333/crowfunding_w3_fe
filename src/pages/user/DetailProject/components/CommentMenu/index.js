@@ -8,7 +8,7 @@ const cx = classNames.bind(styles);
 const CommentMenu = ({ campaign, comment, setOnEdit, handleRemoveComment, members }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const handleRemove = () => {
-    if (campaign.owner._id === currentUser._id || comment.user._id === currentUser._id) {
+    if (campaign.owner.id === currentUser.id || comment.author?.id === currentUser.id) {
       handleRemoveComment(comment);
     }
   };
@@ -49,7 +49,7 @@ const CommentMenu = ({ campaign, comment, setOnEdit, handleRemoveComment, member
   const [isShowDropdown, setShowDropdown] = useState(false);
   return (
     <div className={cx('wrapper')}>
-      {(members.some((i) => i.user._id === currentUser._id) || comment.user._id === currentUser._id) && (
+      {(members.some((i) => i.userId === currentUser.id) || comment.author?.id === currentUser.id) && (
         <div style={{ position: 'relative' }} onClick={() => setShowDropdown((prev) => !prev)} ref={element}>
           <span className={cx('three-dot')}>
             <BsThreeDotsVertical style={{ color: '#888' }} />
@@ -57,11 +57,11 @@ const CommentMenu = ({ campaign, comment, setOnEdit, handleRemoveComment, member
 
           {isShowDropdown && (
             <div style={{ position: 'absolute', top: 'calc(100% + 6px)', left: '-20px', zIndex: '20' }}>
-              {members.some((i) => i.user._id === currentUser._id)
-                ? comment.user._id === currentUser._id
+              {members.some((i) => i.userId === currentUser.id)
+                ? comment.author?.id === currentUser.id
                   ? MenuItem()
                   : MenuItem2()
-                : comment.user._id === currentUser._id && MenuItem()}
+                : comment.author?.id === currentUser.id && MenuItem()}
             </div>
           )}
         </div>

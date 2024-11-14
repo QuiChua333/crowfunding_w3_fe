@@ -10,8 +10,9 @@ import styles from './CommenCard.module.scss';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useUpdateCommentMutation } from '~/hooks/api/mutations/user/comment.mutation';
 import { useLikeCommentMutation } from '~/hooks/api/mutations/user/comment-like.mutation';
+import { defaultAvt } from '~/assets/images';
 const cx = classNames.bind(styles);
-const CommentCard = ({ children, comment, campaign, commentId, setListComments, handleRemoveComment, members }) => {
+const CommentCard = ({ children, comment, campaign, setComments, handleRemoveComment, members, commentParentId }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const [content, setContent] = useState('');
@@ -27,10 +28,10 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
     setContent(comment.content);
     setIsLike(false);
     setOnReply(false);
-    if (comment.likes.find((like) => like._id === currentUser._id)) {
+    if (comment.commentLikes?.includes(currentUser.id)) {
       setIsLike(true);
     }
-  }, [comment, currentUser._id]);
+  }, [comment, currentUser.id]);
 
   const updateComment = useUpdateCommentMutation();
 
@@ -38,15 +39,15 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
     if (comment.content !== content) {
       dispatch(setLoading(true));
       const dataApi = {
-        commentId: comment._id,
+        commentId: comment.id,
         content,
       };
       updateComment.mutate(dataApi, {
         onSuccess: () => {
           console.log('Cập nhật bình luận thành công');
-          setListComments((prev) =>
+          setComments((prev) =>
             [...prev].map((item) => {
-              if (item._id === comment._id) {
+              if (item.id === comment.id) {
                 return {
                   ...item,
                   content,
@@ -70,15 +71,15 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
 
   const likeComment = useLikeCommentMutation();
   const handleLike = async () => {
-    if (!currentUser._id) return;
+    if (!currentUser.id) return;
     if (loadLike) return;
     setLoadLike(true);
-    likeComment.mutate(comment._id, {
+    likeComment.mutate(comment.id, {
       onSuccess: () => {
-        setListComments((prev) =>
+        setComments((prev) =>
           [...prev].map((item) => {
-            if (item._id === comment._id) {
-              return { ...item, likes: [...item.likes, currentUser] };
+            if (item.id === comment.id) {
+              return { ...item, commentLikes: [...item.commentLikes, currentUser.id] };
             } else return item;
           }),
         );
@@ -95,12 +96,12 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
   const handleUnLike = async () => {
     if (loadLike) return;
     setLoadLike(true);
-    likeComment.mutate(comment._id, {
+    likeComment.mutate(comment.id, {
       onSuccess: () => {
-        setListComments((prev) =>
+        setComments((prev) =>
           [...prev].map((item) => {
-            if (item._id === comment._id) {
-              return { ...item, likes: [...item.likes].filter((i) => i._id !== currentUser._id) };
+            if (item.id === comment.id) {
+              return { ...item, commentLikes: [...item.commentLikes].filter((i) => i !== currentUser.id) };
             } else return item;
           }),
         );
@@ -115,14 +116,14 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
   };
 
   const handleReply = () => {
-    if (!currentUser._id) return;
+    if (!currentUser.id) return;
     if (onReply) return setOnReply(false);
-    setOnReply({ ...comment, commentId });
+    else setOnReply({ ...comment, id: commentParentId });
   };
 
   const styleCard = {
-    opacity: comment._id ? 1 : 0.5,
-    pointerEvents: comment._id ? 'inherit' : 'none',
+    opacity: comment.id ? 1 : 0.5,
+    pointerEvents: comment.id ? 'inherit' : 'none',
   };
   const inputElement = useRef(null);
   useEffect(() => {
@@ -139,13 +140,11 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
   }, [inputElement]);
   useEffect(() => {
     let role = '';
-    console.log('hello', members);
-    console.log(comment.user._id);
     members.forEach((mem) => {
-      if (mem.user._id === comment.user._id && mem.isAccepted === true) {
+      if (mem.userId === comment.author?.id && !mem.isOwner) {
         role = 'Member';
       }
-      if (mem.user._id === comment.user._id && mem.isOwner === true) {
+      if (mem.userId === comment.author?.id && mem.isOwner) {
         role = 'Owner';
       }
     });
@@ -155,9 +154,9 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
   return (
     <div className={cx('wrapper')} style={styleCard}>
       <div className={cx('inner')}>
-        <Link to={`/individuals/${comment.user._id}/profile`} className={cx('avatar')}>
+        <Link to={`/individuals/${comment.author?.id}/profile`} className={cx('avatar')}>
           <img
-            src={comment.user.avatar?.url}
+            src={comment.author?.avatar || defaultAvt}
             style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
             alt="avatar user"
           />
@@ -168,7 +167,7 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
             <div className={cx('comment_content')}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <span className={cx('fullName')} style={{ marginRight: '8px' }}>
-                  {comment.user.fullName}
+                  {comment.author?.fullName}
                 </span>
                 {role === 'Owner' && (
                   <span
@@ -206,15 +205,15 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
                   <input value={content} className={cx('input-edit')} onChange={(e) => setContent(e.target.value)} />
                 ) : (
                   <div>
-                    {comment.tag && comment.tag._id !== comment.user._id && (
-                      <Link to={`/profile/${comment.tag._id}`} style={{ marginRight: '4px' }}>
+                    {comment.tag && comment.tag?.id !== comment.author?.id && (
+                      <Link to={`/profile/${comment.tag.id}`} style={{ marginRight: '4px' }}>
                         @{comment.tag.fullName}
                       </Link>
                     )}
                     <span style={{ color: '#555' }}>
-                      {content.length < 100 ? content : readMore ? content + ' ' : content.slice(0, 100) + '....'}
+                      {content?.length < 100 ? content : readMore ? content + ' ' : content?.slice(0, 100) + '....'}
                     </span>
-                    {content.length > 100 && (
+                    {content?.length > 100 && (
                       <span className={cx('readMore')} onClick={() => setReadMore(!readMore)}>
                         {readMore ? (
                           <span style={{ color: 'crimson', marginLeft: '8px', cursor: 'pointer' }}>Ẩn nội dung</span>
@@ -238,9 +237,9 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
             </div>
           </div>
           <div className={cx('like-action')}>
-            <div>
+            <div className="flex">
               <LikeButton isLike={isLike} handleLike={handleLike} handleUnLike={handleUnLike} />
-              <small style={{ fontWeight: 'bold', marginLeft: '4px' }}>{comment.likes.length}</small>
+              <small style={{ fontWeight: 'bold', marginLeft: '4px' }}>{comment.commentLikes?.length || 0}</small>
             </div>
 
             {onEdit ? (
@@ -263,19 +262,12 @@ const CommentCard = ({ children, comment, campaign, commentId, setListComments, 
                 {onReply ? 'Hủy' : 'Phản hồi'}
               </small>
             )}
-            <small style={{ color: 'grey' }}>{moment(comment.createdAt).fromNow()}</small>
+            <small style={{ color: 'grey' }}>{moment(comment.createdAt).add(7, 'hours').fromNow()}</small>
           </div>
           {onReply && (
             <div style={{ marginTop: '8px', marginLeft: '8px' }}>
-              <InputComment
-                onReply={onReply}
-                setOnReply={setOnReply}
-                campaign={campaign}
-                setListComments={setListComments}
-              >
-                <Link to={`/profile/${onReply.user._id}`} style={{ marginRight: '4px', color: '#5c9aff' }}>
-                  @{onReply.user.fullName}:
-                </Link>
+              <InputComment onReply={onReply} setOnReply={setOnReply} campaign={campaign} setComments={setComments}>
+                <Link style={{ marginRight: '4px', color: '#5c9aff' }}>@{onReply.author.fullName}:</Link>
               </InputComment>
             </div>
           )}

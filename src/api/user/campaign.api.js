@@ -9,7 +9,7 @@ export const createCampaign = async () => {
 
 // handleAPI
 export const getCampaignById = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/${id}`);
+  const response = await CustomAxios.get(`${baseUrl}/campaign/id/${id}`);
   return response.data;
 };
 
@@ -94,6 +94,6 @@ export const getCampainsExplore = async ({ page, status, searchString, criteria,
 
 // handleAPI
 export const getPopulateCampaigns = async () => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/populate`);
-  return response.data.data;
+  const response = await CustomAxios.get(`${baseUrl}/campaign/popularity`);
+  return response.data;
 };

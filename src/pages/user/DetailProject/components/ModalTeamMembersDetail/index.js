@@ -7,18 +7,11 @@ import { defaultAvt } from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
-function ModalTeamMembersDetail({ setIsOpenModalMember }) {
-  const { id } = useParams();
+function ModalTeamMembersDetail({ setIsOpenModalMember, members }) {
   const handleClose = () => {
     setIsOpenModalMember(false);
   };
-  const [members, setMembers] = useState([]);
-  const { data: response, refetch } = useGetTeamMemberByCampaignId(id);
-  useEffect(() => {
-    if (response) {
-      setMembers(response);
-    }
-  }, [response]);
+
   return (
     <div onClick={handleClose} className={cx('wrapper')}>
       <div onClick={(e) => e.stopPropagation()} className={cx('modal')}>

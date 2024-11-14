@@ -21,6 +21,7 @@ const cx = classNames.bind(styles);
 
 function Home() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const responsive = {
     superLargeDesktop: {
       // the naming can be any, depends on you.
@@ -48,16 +49,7 @@ function Home() {
     );
     navigate('/explore');
   };
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get('accessToken');
-    const refreshToken = urlParams.get('refreshToken');
-    if (accessToken && refreshToken) {
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      window.location.href = '/';
-    }
-  }, []);
+
   const ButtonGroup = ({ next, previous, goToSlide, ...rest }) => {
     const {
       carouselState: { currentSlide },
@@ -81,8 +73,6 @@ function Home() {
       setCampaigns(data);
     }
   }, [data]);
-
-  const navigate = useNavigate();
 
   return (
     <div className={cx('wrapper', 'responsive')}>
