@@ -161,7 +161,7 @@ function UserManagement() {
                   'icon',
                   `${
                     filter.page <= data?.totalPages &&
-                    data?.data?.totalPages !== 1 &&
+                    data?.totalPages !== 1 &&
                     filter.page > 1 &&
                     'hover:bg-[#ebe8f1] hover:cursor-pointer'
                   }`,

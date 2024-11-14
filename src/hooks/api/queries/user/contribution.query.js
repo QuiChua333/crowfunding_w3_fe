@@ -52,10 +52,26 @@ export const useGetQuantityContributeOfUserQuery = (id) => {
   });
 };
 
-export const useGetAllContributionsByCampaignQuery = () => {
+// handleAPI
+export const useGetAllContributionsByCampaignQuery = ({
+  campaignId,
+  searchString,
+  status,
+  sortMoney,
+  sortContributionDate,
+  page,
+}) => {
   return useQuery({
-    queryKey: [`useGetAllContributionsByCampaignQuery`],
-    queryFn: () => getAllContributionsByCampaign(),
+    queryKey: ['useGetAllContributionsByCampaignQuery', searchString, status, sortMoney, sortContributionDate, page],
+    queryFn: () =>
+      getAllContributionsByCampaign({
+        campaignId,
+        searchString,
+        status,
+        sortMoney,
+        sortContributionDate,
+        page,
+      }),
     refetchOnWindowFocus: false,
   });
 };

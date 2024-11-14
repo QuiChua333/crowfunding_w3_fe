@@ -165,7 +165,7 @@ const CommentCard = ({ children, comment, campaign, setComments, handleRemoveCom
         <div className={cx('content-wrapper')} ref={inputElement}>
           <div className={cx('commen-action')}>
             <div className={cx('comment_content')}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span className={cx('fullName')} style={{ marginRight: '8px' }}>
                   {comment.author?.fullName}
                 </span>

@@ -48,7 +48,23 @@ export const paymentSuccess = async () => {
   return response.data;
 };
 
-export const getAllContributionsByCampaign = async ({ id, queryString }) => {
-  const response = await CustomAxios.get(`${baseUrl}/contribution/campaign/${id}?${queryString}`);
+export const getAllContributionsByCampaign = async ({
+  campaignId,
+  searchString,
+  status,
+  sortMoney,
+  sortContributionDate,
+  page,
+}) => {
+  const queryParams = {
+    campaignId,
+    searchString,
+    status,
+    sortMoney,
+    sortContributionDate,
+    page,
+  };
+  const queryString = new URLSearchParams(queryParams).toString();
+  const response = await CustomAxios.get(`${baseUrl}/contribution/campaign/${campaignId}?${queryString}`);
   return response.data;
 };

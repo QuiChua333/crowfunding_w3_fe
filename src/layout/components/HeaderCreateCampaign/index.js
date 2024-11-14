@@ -66,11 +66,11 @@ function HeaderCreateCampaign() {
   const handleClickLogout = () => {
     logOutMutation.mutate(null, {
       onSuccess() {
+        window.location.href = '/';
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         dispatch(setCurrentUser({}));
         queryClient.removeQueries('getCurrentUser');
-        navigate('/');
       },
       onError(err) {
         console.log(err.response.data.message);

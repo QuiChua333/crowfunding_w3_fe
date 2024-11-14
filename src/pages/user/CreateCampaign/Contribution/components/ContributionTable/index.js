@@ -13,16 +13,14 @@ function ContributionTable({ contributions, onContributionTableChange, openDetai
   const [isCheckAll, setCheckAll] = useState(false);
   useEffect(() => {
     setlistContributions((prev) => {
-      const state = [...contributions].map((item) => {
+      const state = [...contributions]?.map((item) => {
         return {
-          id: item._id,
-          userName: item.shippingInfo.fullName,
-          estDelivery: item.shippingInfo?.estDelivery
-            ? convertDateFromString(item.shippingInfo?.estDelivery, 'less')
-            : '',
-          email: item.user[0]?.email || 'Không có',
+          id: item.id,
+          userName: item.fullName || 'Khách vãng lai',
+          estDeliveryDate: item.estDeliveryDate ? convertDateFromString(item.estDeliveryDate) : 'Không có',
+          email: item.email,
           perks: item.perks,
-          money: formatMoney(item.money) + 'VNĐ',
+          money: formatMoney(Number(item.amount)) + 'VNĐ',
           date: convertDateFromString(item.date),
           status: item.isFinish ? 'Đã gửi' : 'Chưa gửi',
           isChecked: false,

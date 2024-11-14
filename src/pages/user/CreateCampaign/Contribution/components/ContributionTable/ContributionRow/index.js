@@ -35,7 +35,7 @@ function ContributionRow({ index, contribution, setChecked, openDetailContributi
       {/* <td className={cx('perks')}>{contribution.perks.map(i => i.perkTitle).join(', ')}</td> */}
       <td className={cx('money')}>{contribution.money}</td>
       <td className={cx('date')}>{contribution.date}</td>
-      <td className={cx('date')}>{contribution.estDelivery}</td>
+      <td className={cx('date')}>{contribution.estDeliveryDate}</td>
       <td className={cx('status')}>
         <span className={cx('campaign-status')}>{contribution.status}</span>
       </td>

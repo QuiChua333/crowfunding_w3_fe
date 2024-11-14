@@ -15,6 +15,7 @@ import { convertDateFromString } from '~/utils';
 import { useEditContributionStatusMutation } from '~/hooks/api/mutations/user/contribution.mutation';
 const cx = classNames.bind(styles);
 function ModalContribution({ setShowModal, contribution, handleChangeStatus, isEditComponent }) {
+  console.log(contribution);
   const dispatch = useDispatch();
   const [showListStatus, setShowListStatus] = useState(false);
   const [listStatus, setListStatus] = useState(() => {
@@ -48,7 +49,7 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
       dispatch(setLoading(true));
       editContributionStatusMutation.mutate(
         {
-          id: contribution._id,
+          id: contribution.id,
           data: {
             isFinish: true,
           },
@@ -56,7 +57,7 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
         {
           onSuccess(data) {
             console.log(data.data);
-            handleChangeStatus(contribution._id);
+            handleChangeStatus(contribution.id);
             dispatch(setLoading(false));
             setShowModal(false);
             toast.success('Thay đổi trạng thái gửi đặc quyền thành công!');
@@ -72,15 +73,13 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
     <div className={cx('wrapper')}>
       <div className={cx('body')}>
         <h3 className={cx('title')}>PHIÊN ĐÓNG GÓP</h3>
-        <p className={cx('description')}>
-          Tên người dùng hệ thống: {contribution.email ? contribution.user[0].fullName : 'Khách vãng lai'}
-        </p>
-        <p className={cx('description')}>Email: {contribution.email ? contribution.email : 'Không'}</p>
+        <p className={cx('description')}>Tên người dùng hệ thống: {contribution.fullName || 'Khách vãng lai'}</p>
+        <p className={cx('description')}>Email: {contribution.email}</p>
         <div style={{ marginBottom: '32px' }}>
           <div className={cx('product-container')}>
             <div className={cx('order-container')}>
               <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#4bac4d' }}>
-                Mã đóng góp {`#${contribution.contributionId.substring(4)}`}
+                Mã đóng góp {`#${contribution.id.substring(14)}`}
                 {contribution.perks && contribution.perks.length > 0 && (
                   <span style={{ color: '#000' }}>
                     / Trạng thái
@@ -117,7 +116,7 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                     <label>Tiền đặc quyền: </label>
                     <div className={cx('info-value')}>
                       {formatMoney(
-                        contribution.perks.reduce((acc, cur) => {
+                        contribution.perks?.reduce((acc, cur) => {
                           return acc + cur.price;
                         }, 0),
                       )}{' '}
@@ -128,20 +127,12 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                 <div style={{ width: '40%' }}>
                   <div className={cx('form-group')}>
                     <label>Số đặc quyền: </label>
-                    <div className={cx('info-value')}>{contribution.perks.length}</div>
+                    <div className={cx('info-value')}>{contribution.perks?.length || 0}</div>
                   </div>
                   <div className={cx('form-group')}>
                     <label>Phí ship:</label>
                     <div className={cx('info-value')}>
-                      {contribution.perks && contribution.perks.length > 0
-                        ? formatMoney(
-                            contribution.money -
-                              contribution.perks.reduce((acc, cur) => {
-                                return acc + cur.price;
-                              }, 0),
-                          )
-                        : 0}{' '}
-                      VNĐ
+                      {formatMoney(contribution.totalPayment - contribution.amount)}
                     </div>
                   </div>
                 </div>
@@ -149,7 +140,7 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
               <div style={{ display: 'flex', gap: '48px' }}>
                 <div className={cx('form-group', 'single')} style={{ width: '40%' }}>
                   <label>Tổng tiền: </label>
-                  <div className={cx('info-value')}>{formatMoney(contribution.money)} VNĐ</div>
+                  <div className={cx('info-value')}>{formatMoney(contribution.totalPayment)} VNĐ</div>
                 </div>
 
                 <div className={cx('form-group', 'single')} style={{ width: '40%' }}>
@@ -167,7 +158,7 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                     Danh sách sản phẩm
                   </label>
                   <div className={cx('order-item-wrapper')}>
-                    {contribution.perks.map((item, index) => {
+                    {contribution.perks?.map((item, index) => {
                       return <ItemPayment key={index} index={index} item={item} />;
                     })}
                   </div>
@@ -195,7 +186,14 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
 
                           <div style={{ marginLeft: '16px', fontSize: '14px' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
                                 <span>
                                   <IoPersonOutline style={{ marginRight: '6px' }} />
                                 </span>
@@ -205,7 +203,14 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                             </div>
 
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
                                 <span>
                                   <BiPhoneCall style={{ marginRight: '6px' }} />
                                 </span>
@@ -214,7 +219,14 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                               <span>{contribution.shippingInfo?.phoneNumber}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
                                 <span>
                                   <BiMap style={{ marginRight: '6px' }} />
                                 </span>
@@ -223,7 +235,14 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                               <span>{contribution.shippingInfo?.province}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
                                 <span>
                                   <BiMapPin style={{ marginRight: '6px' }} />
                                 </span>
@@ -232,7 +251,14 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                               <span>{contribution.shippingInfo?.district}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
                                 <span>
                                   <BiSitemap style={{ marginRight: '6px' }} />
                                 </span>
@@ -241,7 +267,14 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                               <span>{contribution.shippingInfo?.ward}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
                                 <span>
                                   <BiMessageSquareDetail style={{ marginRight: '6px' }} />
                                 </span>
@@ -269,23 +302,53 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
 
                         <div style={{ marginLeft: '16px', fontSize: '14px' }}>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                            <span
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                width: '150px',
+                                fontWeight: '600',
+                              }}
+                            >
                               <span>
                                 <IoPersonOutline style={{ marginRight: '6px' }} />
                               </span>
                               Tên ngân hàng:
                             </span>
-                            <span>{contribution.bankAccount?.bank}</span>
+                            <span>{contribution.bankName}</span>
                           </div>
 
                           <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                            <span
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                width: '150px',
+                                fontWeight: '600',
+                              }}
+                            >
                               <span>
                                 <BiPhoneCall style={{ marginRight: '6px' }} />
                               </span>
                               Số tài khoản:
                             </span>
-                            <span>{contribution.bankAccount?.numberAccount}</span>
+                            <span>{contribution.bankAccountNumber}</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <span
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                width: '150px',
+                                fontWeight: '600',
+                              }}
+                            >
+                              <span>
+                                <BiPhoneCall style={{ marginRight: '6px' }} />
+                              </span>
+                              Tên tài khoản:
+                            </span>
+                            <span>{contribution.bankUsername}</span>
                           </div>
                         </div>
                       </div>

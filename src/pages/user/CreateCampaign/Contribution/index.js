@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import Search from '~/pages/admin/components/Search';
-import baseURL from '~/utils/baseURL';
 import Filter from '~/pages/admin/components/Filter';
 import { useDispatch, useSelector } from 'react-redux';
 import ModalContribution from './components/ModalContribution';
@@ -18,11 +17,8 @@ import ModalGivePerk from './components/ModalGivePerk';
 import formatMoney from '~/utils/formatMoney';
 import ModalGift from './components/ModalGift';
 import { arrow, noPerk } from '~/assets/images';
-import { useQueryClient } from '@tanstack/react-query';
 import {
   useGetAllContributionsByCampaignQuery,
-  useGetMoneyByCampaignQuery,
-  useGetQuantityPeopleByCampaignQuery,
   useGetTopUserContributionByCampaignQuery,
 } from '~/hooks/api/queries/user/contribution.query';
 import { useGetAllGiftsByCampaignQuery } from '~/hooks/api/queries/user/gift.query';
@@ -33,10 +29,9 @@ function ContributionCampaign() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const [numberSelected, setNumberSelected] = useState(0);
-  const [pathWithQuery, setPathWithQuery] = useState('');
   const [queryStringGift, setQueryStringGift] = useState('');
   const [isOpenDropdownAction, setOpenDropdownAction] = useState(false);
-  const [campagin, setCampaign] = useState({});
+  const [campaign, setCampaign] = useState({});
   const [indexContributionActive, setIndexContributionActive] = useState(-1);
   const [indexGiftActive, setIndexGiftActive] = useState(-1);
   const [contributions, setContributions] = useState([]);
@@ -50,12 +45,11 @@ function ContributionCampaign() {
   const [showModalGift, setShowModalGift] = useState(false);
   const [showModalGivePerk, setShowModalGivePerk] = useState(false);
 
-  const [filter, setFilter] = useState({
-    textSearch: '',
+  const [filterContribution, setFilterContribution] = useState({
+    searchString: '',
     status: 'Tất cả',
-    money: 'Tất cả',
-    time: 'Tất cả',
-    timeDelivery: 'Tất cả',
+    sortMoney: 'Tất cả',
+    sortContributionDate: 'Tất cả',
     page: 1,
   });
   const [filterGift, setFilterGift] = useState({
@@ -64,88 +58,39 @@ function ContributionCampaign() {
     time: 'Tất cả',
     page: 1,
   });
-  const [currentMoney, setCurrentMoney] = useState(0);
-  const [backers, setBackers] = useState(0);
 
-  const queryClient = useQueryClient();
-  const dataCampaign = queryClient.getQueryData(['getCampaignById']);
+  const campaignData = useSelector((state) => state.userCampaign.campaign);
   useEffect(() => {
-    if (dataCampaign) {
+    if (campaignData) {
       let infoBasic = {
-        id: dataCampaign.data._id,
-        title: dataCampaign.data.title || '',
-        cardImage: dataCampaign.data.cardImage || { url: '', public_id: '' },
-        status: dataCampaign.data.status,
-        startDate: dataCampaign.data.startDate,
-        goal: dataCampaign.data.goal,
-        duration: dataCampaign.data.duration,
-        isIndemand: dataCampaign.data.isIndemand || false,
-        owner: dataCampaign.data.owner || '',
-        team: dataCampaign.data.team || [],
+        status: campaignData.status,
+        startDate: campaignData.startDate,
+        goal: campaignData.goal,
+        duration: campaignData.duration,
+        currentMoney: campaignData.currentMoney,
+        daysLeft: campaignData.daysLeft,
+        percentProgress: campaignData.percentProgress,
+        totalContributions: campaignData.totalContributions,
+        owner: campaignData.owner || '',
       };
       setCampaign({ ...infoBasic });
     }
-  }, [dataCampaign]);
+  }, [campaignData]);
 
-  const { data: dataMoney } = useGetMoneyByCampaignQuery(id);
-  useEffect(() => {
-    if (dataMoney) {
-      setCurrentMoney(dataMoney.data);
-    }
-  }, [dataMoney]);
+  const { data: dataContributions } = useGetAllContributionsByCampaignQuery({
+    ...filterContribution,
+    campaignId: id,
+  });
 
-  const { data: peoplesData } = useGetQuantityPeopleByCampaignQuery(id);
-  useEffect(() => {
-    if (peoplesData) {
-      setBackers(peoplesData.data);
-    }
-  }, [peoplesData]);
+  const handleClickPreviousPageContribution = () => {
+    if (filterContribution.page === 1) return;
+    setFilterContribution((prev) => ({ ...prev, page: prev.page - 1 }));
+  };
+  const handleClickNextPageContribution = () => {
+    if (filterContribution.page === dataContributions?.totalPages) return;
+    setFilterContribution((prev) => ({ ...prev, page: prev.page + 1 }));
+  };
 
-  useEffect(() => {
-    if (campagin.id) {
-      let startDateTime = new Date(campagin.startDate);
-      let endDateTime = startDateTime.getTime() + campagin.duration * 24 * 60 * 60 * 1000;
-      const currentDateTime = new Date().getTime();
-      const remainingHours = Math.ceil((endDateTime - currentDateTime) / (1000 * 60 * 60));
-      let daysLeft = '';
-      if (remainingHours > 24) daysLeft = 'Còn ' + Math.ceil(remainingHours / 24) + ' ngày';
-      else if (remainingHours > 0) {
-        daysLeft = 'Còn ' + Math.ceil(remainingHours) + ' giờ';
-      } else daysLeft = 'Hết hạn';
-      setTimeLeft(daysLeft);
-    }
-  }, [campagin]);
-  useEffect(() => {
-    if (campagin.goal && currentMoney) {
-      setCurrentPercent((currentMoney / campagin.goal) * 100);
-    }
-  }, [campagin, currentMoney]);
-
-  useEffect(() => {
-    const queryParams = {
-      page: filter.page,
-      searchString: filter.textSearch,
-      status: filter.status,
-      time: filter.time,
-      money: filter.money,
-      timeDelivery: filter.timeDelivery,
-    };
-    const queryString = new URLSearchParams(queryParams).toString();
-    // const pathWithQuery = `${baseURL}/contribution/getAllContributionsByCampaign/${id}?${queryString}`;
-    getAllContributionsByCampaignMutation.mutate(
-      {
-        id,
-        queryString,
-      },
-      {
-        onSuccess(data) {
-          setContributions(data.data.contributions);
-          setTotalPages(data.data.totalPages);
-        },
-      },
-    );
-  }, [filter]);
-  const getAllContributionsByCampaignMutation = useGetAllContributionsByCampaignQuery();
   const getAllGiftsByCampaignMutation = useGetAllGiftsByCampaignQuery();
   const getAllGiftsByCampaign = () => {
     getAllGiftsByCampaignMutation.mutate(
@@ -184,13 +129,13 @@ function ContributionCampaign() {
   };
 
   const handleChangeSearchInput = (value) => {
-    setFilter((prev) => ({ ...prev, textSearch: value }));
+    setFilterContribution((prev) => ({ ...prev, searchString: value }));
   };
   const handleChangeSearchInputGift = (value) => {
     setFilterGift((prev) => ({ ...prev, textSearch: value }));
   };
   const handleClickItemFilterStatus = (item) => {
-    setFilter((prev) => ({ ...prev, status: item }));
+    setFilterContribution((prev) => ({ ...prev, status: item }));
   };
   const handleClickItemFilterGiftStatus = (item) => {
     setFilterGift((prev) => ({ ...prev, status: item }));
@@ -200,28 +145,26 @@ function ContributionCampaign() {
   };
 
   const handleClickItemFilterTime = (item) => {
-    setFilter((prev) => ({ ...prev, time: item, money: 'Tất cả', timeDelivery: 'Tất cả' }));
-  };
-  const handleClickItemFilterTimeDelivery = (item) => {
-    setFilter((prev) => ({ ...prev, timeDelivery: item, money: 'Tất cả', time: 'Tất cả' }));
+    setFilterContribution((prev) => ({
+      ...prev,
+      sortContributionDate: item,
+      sortMoney: 'Tất cả',
+    }));
   };
 
   const handleClickItemFilterMoney = (item) => {
-    setFilter((prev) => ({ ...prev, money: item, time: 'Tất cả', timeDelivery: 'Tất cả' }));
+    setFilterContribution((prev) => ({
+      ...prev,
+      sortMoney: item,
+      sortContributionDate: 'Tất cả',
+    }));
   };
 
-  const handleClickPreviousPage = () => {
-    if (filter.page === 1) return;
-    setFilter((prev) => ({ ...prev, page: prev.page - 1 }));
-  };
   const handleClickPreviousPageGift = () => {
     if (filterGift.page === 1) return;
     setFilterGift((prev) => ({ ...prev, page: prev.page - 1 }));
   };
-  const handleClickNextPage = () => {
-    if (filter.page === totalPages) return;
-    setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
-  };
+
   const handleClickNextPageGift = () => {
     if (filterGift.page === totalPages) return;
     setFilterGift((prev) => ({ ...prev, page: prev.page + 1 }));
@@ -263,10 +206,13 @@ function ContributionCampaign() {
 
   const isEditComponent = useSelector((state) => state.userCampaign.isEditAll);
 
+  useEffect(() => {
+    console.log({ campaign });
+  }, [campaign]);
   return (
     <>
       <div className={cx('body')}>
-        {campagin.status && campagin.status !== 'Bản nháp' && (
+        {campaign.status && campaign.status !== 'Bản nháp' && (
           <>
             <div>
               <div className={cx('entreSection')}>
@@ -304,7 +250,7 @@ function ContributionCampaign() {
                     <Filter
                       listConditions={['Tất cả', 'Đã gửi', 'Chưa gửi']}
                       handleClickItem={handleClickItemFilterStatus}
-                      valueShow={filter.status}
+                      valueShow={filterContribution.status}
                     />
                   </div>
 
@@ -313,23 +259,15 @@ function ContributionCampaign() {
                     <Filter
                       listConditions={['Tất cả', 'Tăng dần', 'Giảm dần']}
                       handleClickItem={handleClickItemFilterMoney}
-                      valueShow={filter.money}
+                      valueShow={filterContribution.sortMoney}
                     />
                   </div>
                   <div>
                     <label style={{ marginBottom: '4px' }}>Thời gian đóng góp</label>
                     <Filter
-                      listConditions={['Tất cả', 'Gần nhất', 'Sớm nhất']}
+                      listConditions={['Tất cả', 'Gần đây nhất', 'Sớm nhất']}
                       handleClickItem={handleClickItemFilterTime}
-                      valueShow={filter.time}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ marginBottom: '4px' }}>Thời gian dự kiến giao</label>
-                    <Filter
-                      listConditions={['Tất cả', 'Trễ nhất', 'Sớm nhất']}
-                      handleClickItem={handleClickItemFilterTimeDelivery}
-                      valueShow={filter.timeDelivery}
+                      valueShow={filterContribution.sortContributionDate}
                     />
                   </div>
                 </div>
@@ -340,33 +278,42 @@ function ContributionCampaign() {
                   <div className={cx('card-progress')}>
                     <div className={cx('money-info')}>
                       <div className={cx('money')}>
-                        <span className={cx('current-money')}>{formatMoney(currentMoney || 0)}</span>
+                        <span className={cx('current-money')}>{formatMoney(campaign.currentMoney)}</span>
+                        <span className={cx('unit-money')}>VNĐ</span>
+                      </div>
+                      <div className={cx('money')}>
+                        <span className={cx('current-money')}>{formatMoney(Number(campaign.goal))}</span>
                         <span className={cx('unit-money')}>VNĐ</span>
                       </div>
                     </div>
                     <div className={cx('progressbar')}>
                       <div
                         className={cx('progressbar-value')}
-                        style={{ width: currentPercent >= 100 ? '100%' : `${currentPercent}%` }}
+                        style={{
+                          width: campaign.percentProgress >= 100 ? '100%' : `${campaign.percentProgress}%`,
+                        }}
                       ></div>
                     </div>
 
                     <div className={cx('days-left')}>
                       <span className={cx('percent')}>
-                        {currentPercent % 100 === 0 ? currentPercent : currentPercent.toFixed(2)}%
+                        {campaign.percentProgress % 100 === 0
+                          ? campaign.percentProgress
+                          : campaign.percentProgress?.toFixed(2)}
+                        %
                       </span>
                       <span className={cx('left')}>
                         <AiFillClockCircle style={{ color: 'rgb(173 172 172)' }} />
-                        <span>{timeLeft}</span>
+                        <span>{campaign.daysLeft}</span>
                       </span>
                     </div>
                   </div>
-                  {timeLeft === 'Hết hạn' && (
+                  {campaign.daysLeft === 'Hết hạn' && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '24px' }}>
                       <span style={{ display: 'block', paddingBottom: '2px', borderBottom: '1px dashed #949494' }}>
                         Gây quỹ:
                       </span>
-                      {campagin.isSSuccessFunding && (
+                      {campaign.status === 'Đã hoàn thành' && (
                         <div
                           style={{
                             padding: '4px 16px',
@@ -378,7 +325,7 @@ function ContributionCampaign() {
                           Thành công
                         </div>
                       )}
-                      {!campagin.isSSuccessFunding && (
+                      {campaign.status !== 'Đã hoàn thành' && (
                         <div
                           style={{
                             padding: '4px 16px',
@@ -393,24 +340,54 @@ function ContributionCampaign() {
                     </div>
                   )}
                   <ContributionTable
-                    contributions={contributions}
+                    contributions={dataContributions?.contributions || []}
                     onContributionTableChange={handleChangStateListContributions}
                     openDetailContribution={openDetailContribution}
                   />
-                </div>
-                {totalPages > 0 && (
-                  <div className={cx('pagination-wrapper')}>
-                    <div className={cx('pagination')}>
-                      <span className={cx('icon')} onClick={handleClickPreviousPage}>
-                        <FaAngleLeft style={{ color: '#7a69b3' }} />
-                      </span>
-                      <span className={cx('curent')}>{`${filter.page} của ${totalPages}`}</span>
-                      <span className={cx('icon')} onClick={handleClickNextPage}>
-                        <FaAngleRight style={{ color: '#7a69b3' }} />
-                      </span>
+                  {dataContributions?.totalPages > 0 && (
+                    <div className={cx('pagination-wrapper')}>
+                      <div className={cx('pagination')}>
+                        <span
+                          className={cx(
+                            'icon',
+                            `${
+                              filterContribution.page <= dataContributions?.totalPages &&
+                              dataContributions.totalPages !== 1 &&
+                              filterContribution.page > 1 &&
+                              'hover:bg-[#ebe8f1] hover:cursor-pointer'
+                            }`,
+                          )}
+                          onClick={handleClickPreviousPageContribution}
+                        >
+                          <FaAngleLeft
+                            style={{ color: '#7a69b3', opacity: filterContribution.page === 1 ? '0.3' : '1' }}
+                          />
+                        </span>
+
+                        <span
+                          className={cx('curent')}
+                        >{`${filterContribution.page} của ${dataContributions?.totalPages}`}</span>
+                        <span
+                          className={cx(
+                            'icon',
+                            `${
+                              filterContribution.page < dataContributions?.totalPages &&
+                              'hover:bg-[#ebe8f1] hover:cursor-pointer'
+                            }`,
+                          )}
+                          onClick={handleClickNextPageContribution}
+                        >
+                          <FaAngleRight
+                            style={{
+                              color: '#7a69b3',
+                              opacity: filterContribution.page === dataContributions?.totalPages ? '0.3' : '1',
+                            }}
+                          />
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
 
@@ -504,7 +481,7 @@ function ContributionCampaign() {
             </div>
           </>
         )}
-        {campagin.status === 'Bản nháp' && (
+        {campaign.status === 'Bản nháp' && (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div className={cx('container-layout')}>
               <div style={{ fontSize: '24px', fontWeight: '600', marginTop: '32px' }}>
@@ -541,7 +518,7 @@ function ContributionCampaign() {
         <ModalContribution
           isEditComponent={isEditComponent}
           setShowModal={setShowModal}
-          contribution={contributions[indexContributionActive]}
+          contribution={dataContributions?.contributions[indexContributionActive]}
           handleChangeStatus={handleChangeStatus}
         />
       )}

@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { CustomAxios } from '~/config';
 import { setContentError, setShowErrorDelete, setTab } from '~/redux/slides/UserCampaign';
-import { useGetUserByEmailMutation } from '~/hooks/api/mutations/user/user.mutation';
 
 import { useDeleteMemberMutation, useSendInvitationMutation } from '~/hooks/api/mutations/user/team.mutation';
 import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
