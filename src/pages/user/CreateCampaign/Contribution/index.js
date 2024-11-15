@@ -22,6 +22,7 @@ import {
   useGetTopUserContributionByCampaignQuery,
 } from '~/hooks/api/queries/user/contribution.query';
 import { useGetAllGiftsByCampaignQuery } from '~/hooks/api/queries/user/gift.query';
+import { setTab } from '~/redux/slides/UserCampaign';
 
 const cx = classNames.bind(styles);
 
@@ -45,6 +46,14 @@ function ContributionCampaign() {
   const [showModalGift, setShowModalGift] = useState(false);
   const [showModalGivePerk, setShowModalGivePerk] = useState(false);
 
+  useEffect(() => {
+    dispatch(
+      setTab({
+        number: 8,
+        content: 'Đóng góp',
+      }),
+    );
+  }, []);
   const [filterContribution, setFilterContribution] = useState({
     searchString: '',
     status: 'Tất cả',
@@ -195,12 +204,7 @@ function ContributionCampaign() {
       }),
     );
   };
-  const { data: topUsersData } = useGetTopUserContributionByCampaignQuery(id);
-  useEffect(() => {
-    if (topUsersData) {
-      setListUserContribution(topUsersData.data);
-    }
-  }, [topUsersData]);
+  const { data: dataTopContributions } = useGetTopUserContributionByCampaignQuery(id);
 
   const [userContributionGivePerk, setUserContributionGivePerk] = useState({});
 
@@ -403,7 +407,7 @@ function ContributionCampaign() {
                 <div className={cx('table-wrapper-2')}>
                   <TopContributionTable
                     isEditComponent={isEditComponent}
-                    listUserContribution={listUserContribution}
+                    listUserContribution={dataTopContributions || []}
                     setShowModalGivePerk={setShowModalGivePerk}
                     setUserContributionGivePerk={setUserContributionGivePerk}
                   />

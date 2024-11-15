@@ -13,8 +13,11 @@ const slice = createSlice({
         ...action.payload,
       };
     },
+    setFollowCampaigns: (state, action) => {
+      state.currentUser.followCampaigns = [...action.payload];
+    },
   },
 });
 
 export default slice.reducer;
-export const { setCurrentUser } = slice.actions;
+export const { setCurrentUser, setFollowCampaigns } = slice.actions;

@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 import { setEditComponent, setTab } from '~/redux/slides/UserCampaign';
 import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
+import { useQueryClient } from '@tanstack/react-query';
 
 const cx = classNames.bind(styles);
 function BasicCampaign() {
@@ -190,6 +191,7 @@ function BasicCampaign() {
     }
   };
   const editCampaignByIdMutation = useEditCampaignByIdMutation();
+  const queryClient = useQueryClient();
   const handleClickSaveContinue = async () => {
     const body = { ...campaginState };
     let flagTitle = validateTitle(body.title);
@@ -225,6 +227,7 @@ function BasicCampaign() {
         },
         {
           onSuccess(data) {
+            queryClient.invalidateQueries([`getCampaignById`, id]);
             navigate(`/campaigns/${id}/edit/story`);
           },
           onError(error) {

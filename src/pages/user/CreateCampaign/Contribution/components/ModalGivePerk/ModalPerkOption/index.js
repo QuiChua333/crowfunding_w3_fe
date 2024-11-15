@@ -7,9 +7,25 @@ import { IoCloseSharp } from 'react-icons/io5';
 const cx = classNames.bind(styles);
 
 function ModalPerkOption({ perk, setShowModalOption, handleAddPerk }) {
-  console.log('ModalPerkOption');
+  const [newPerk, setNewPerk] = useState({
+    ...perk,
+    detailPerks: perk.detailPerks?.map((item) => ({
+      ...item,
+      item: {
+        ...item.item,
+        ...(item.item.isHasOption
+          ? {
+              options: item.item.options.map((option) => ({
+                ...option,
+                values: option.values?.split('|') ?? [],
+              })),
+            }
+          : {}),
+      },
+    })),
+  });
   const [optionsSelectedItems, setOptionsSelectedItems] = useState(() => {
-    let arrItemHasOption = perk.detailPerks.filter((itemA) => {
+    let arrItemHasOption = newPerk.detailPerks.filter((itemA) => {
       return itemA.item.isHasOption && itemA.item.options.length > 0;
     });
 
@@ -55,7 +71,7 @@ function ModalPerkOption({ perk, setShowModalOption, handleAddPerk }) {
   };
   const handleOnclickAccept = () => {
     const newItem = {
-      ...perk,
+      ...newPerk,
       detailPerks: [...perk.detailPerks].map((itemA) => {
         if (itemA.item.isHasOption && itemA.item.options.length > 0) {
           return {
@@ -91,7 +107,7 @@ function ModalPerkOption({ perk, setShowModalOption, handleAddPerk }) {
 
           <div style={{ width: '50%' }}>
             <p style={{ fontSize: '20px', margin: '24px' }}>Chọn vật phẩm</p>
-            {perk.detailPerks.map((itemA, indexA) => {
+            {newPerk.detailPerks.map((itemA, indexA) => {
               return (
                 <div className={cx('container-list-perk')} key={indexA}>
                   <p style={{ fontSize: '18px', fontWeight: '600' }}>{itemA.item.name}</p>
@@ -102,7 +118,7 @@ function ModalPerkOption({ perk, setShowModalOption, handleAddPerk }) {
                         <div className={cx('container-options')} key={indexB}>
                           <span className={cx('name')}>{itemB.name + ': '}</span>
                           <select onChange={(e) => handleChangeSelectOption(e, itemA.item.name)} name={itemB.name}>
-                            {itemB.values.map((itemC, indexC) => {
+                            {itemB.values?.map((itemC, indexC) => {
                               return (
                                 <option value={itemC} key={indexC}>
                                   {itemC}

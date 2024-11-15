@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 import { setTab } from '~/redux/slides/UserCampaign';
+import { useQueryClient } from '@tanstack/react-query';
 const cx = classNames.bind(styles);
 
 function FundingCampaign() {
@@ -19,7 +20,7 @@ function FundingCampaign() {
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    setCampaignState((prev) => ({ ...prev, [name]: value }));
+    setCampaignState((prev) => ({ ...prev, [name]: Number(value) }));
   };
 
   const [isEditComponent, setEditComponent] = useState(true);
@@ -112,7 +113,7 @@ function FundingCampaign() {
   };
 
   const editCampaignByIdMutation = useEditCampaignByIdMutation();
-
+  const queryClient = useQueryClient();
   const handleClickSaveContinue = async () => {
     const body = { ...campaignState };
 
@@ -130,6 +131,7 @@ function FundingCampaign() {
         },
         {
           onSuccess(data) {
+            queryClient.invalidateQueries([`getCampaignById`, id]);
             navigate(`/campaigns/${id}/edit/settings`);
           },
           onError(error) {

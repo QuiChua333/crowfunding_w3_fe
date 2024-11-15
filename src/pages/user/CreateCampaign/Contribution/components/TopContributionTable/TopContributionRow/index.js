@@ -38,9 +38,9 @@ function TopContributionRow({
     <tr>
       {/* <Link to='/campaigns/:id/edit/perks/new' style={{position: 'relative', zIndex: '10'}}></Link> */}
       <td className={cx('top')}>{index + 1}</td>
-      <td className={cx('email')}>{userContribution.user?.email}</td>
-      <td className={cx('num')}>{userContribution.totalCount}</td>
-      <td className={cx('total')}>{formatMoney(userContribution.totalMoney)} VNĐ</td>
+      <td className={cx('email')}>{userContribution.email}</td>
+      <td className={cx('num')}>{userContribution.contributionCount}</td>
+      <td className={cx('total')}>{formatMoney(userContribution.totalAmount)} VNĐ</td>
       <td className={cx('action')}>
         <div
           className={cx('action-doc')}

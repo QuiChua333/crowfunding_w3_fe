@@ -5,33 +5,39 @@ import { AiFillClockCircle } from 'react-icons/ai';
 import { useEffect, useState } from 'react';
 import formatMoney from '~/utils/formatMoney';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import baseURL from '~/utils/baseURL';
 import { CustomAxios } from '~/config';
 import { defaultCardCampaign } from '~/assets/images';
 import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-campaign.mutation';
+import { setFollowCampaigns } from '~/redux/slides/User';
 
 const cx = classNames.bind(styles);
 
 function ProjectCardItem({ campaign, refreshCampaign }) {
+  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
-  console.log(currentUser, campaign.id);
   const navigate = useNavigate();
   const [favourite, setFavourite] = useState(false);
   useEffect(() => {
     if (currentUser.followCampaigns?.includes(campaign.id)) {
       setFavourite(true);
     } else setFavourite(false);
-  }, [campaign, currentUser]);
+  }, [campaign, currentUser.followCampaigns?.length]);
   const handleClickCampaign = () => {
     navigate(`/project/${campaign.id}/detail`);
   };
   const followCampaignMutation = useFollowCampaignMutation();
   const handleClickHeart = async (e) => {
     e.stopPropagation();
+
     followCampaignMutation.mutate(campaign.id, {
       onSuccess() {
-        setFavourite(!favourite);
+        if (currentUser.followCampaigns.includes(campaign.id)) {
+          dispatch(setFollowCampaigns(currentUser.followCampaigns.filter((item) => item !== campaign.id)));
+        } else {
+          dispatch(setFollowCampaigns([...currentUser.followCampaigns, campaign.id]));
+        }
       },
       onError() {},
     });

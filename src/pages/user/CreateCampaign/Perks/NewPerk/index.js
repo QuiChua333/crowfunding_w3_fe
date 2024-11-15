@@ -95,7 +95,7 @@ function NewPerk() {
       });
       setPerk({
         id: response.id,
-        name: response.title || '',
+        name: response.name || '',
         price: response.price || '',
         isVisible: response.isVisible || false,
         detailPerks:
@@ -224,7 +224,7 @@ function NewPerk() {
     setListItemsAvailable((prev) => [...prev, { ...item, quantity: null }]);
   };
   const handleClickAddItem = () => {
-    if (perkState.detailPerks?.length === 0) {
+    if (listItemsAvailable?.length === 0) {
       setOptionEdit({ type: 'add' });
       setShowModal(true);
     } else {
@@ -396,7 +396,9 @@ function NewPerk() {
     <>
       <div className={cx('controlBar')}>
         <div className={cx('controlBar-container')}>
-          <div className={cx('controlBar-content')}>Đặc quyền / {idPerk === 'new' ? 'Tạo đặc quyền' : perk.title}</div>
+          <div className={cx('controlBar-content')}>
+            Đặc quyền / {idPerk === 'new' ? 'Tạo đặc quyền' : perkState.name}
+          </div>
           <div className={cx('controlBar-controls')}>
             <Link to={`/campaigns/${id}/edit/perks/table`} className={cx('btn', 'btn-cancel')}>
               Hủy

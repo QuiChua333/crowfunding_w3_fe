@@ -13,7 +13,8 @@ import { setLoading } from '~/redux/slides/GlobalApp';
 import { useDispatch, useSelector } from 'react-redux';
 import { CustomUploadCKEAdapter } from '~/config';
 import { useEditCampaignByIdMutation } from '~/hooks/api/mutations/user/campaign.mutation';
-import { setTab } from '~/redux/slides/UserCampaign';
+import { setCampaign, setTab } from '~/redux/slides/UserCampaign';
+import { useQueryClient } from '@tanstack/react-query';
 
 ClassicEditor.create(document.querySelector('#editor'), {
   extraPlugins: [CustomUploadCKEAdapter],
@@ -167,6 +168,7 @@ function ContentCampaign() {
   const [flagFaqs, setFlagFaqs] = useState(false);
 
   const editCampaignByIdMutation = useEditCampaignByIdMutation();
+  const queryClient = useQueryClient();
   const handleClickSaveContinue = async () => {
     const body = { ...campaginState };
 
@@ -197,6 +199,7 @@ function ContentCampaign() {
         },
         {
           onSuccess(data) {
+            queryClient.invalidateQueries([`getCampaignById`, id]);
             navigate(`/campaigns/${id}/edit/perks/table`);
           },
           onError(error) {

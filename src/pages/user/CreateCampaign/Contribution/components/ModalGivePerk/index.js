@@ -40,7 +40,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
   const { data: perksData } = useGetPerksHasListItemsByCampaignIdQuery(id);
   useEffect(() => {
     if (perksData) {
-      setListPerks(perksData.data);
+      setListPerks(perksData);
     }
   }, [perksData]);
 
@@ -198,8 +198,10 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
       <div className={cx('wrapper')}>
         <div className={cx('body')}>
           <h3 className={cx('title')}>TẶNG ĐẶC QUYỀN</h3>
-          <p className={cx('description')}>Tên người dùng hệ thống: {userContributionGivePerk.user?.fullName}</p>
-          <p className={cx('description')}>Email: {userContributionGivePerk.user?.email}</p>
+          <p className={cx('description')}>
+            Tên người dùng hệ thống: {userContributionGivePerk.fullName || 'Khách vãng lai'}
+          </p>
+          <p className={cx('description')}>Email: {userContributionGivePerk.email}</p>
           <div style={{ marginBottom: '32px' }}>
             <div className={cx('delivery')}>
               <label className={cx('label-delivery')}>Thông tin giao nhận</label>

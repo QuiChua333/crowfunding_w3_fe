@@ -17,19 +17,18 @@ import ModalReport from './components/ModalReport';
 import FAQSection from './components/FAQTab';
 import StorySection from './components/StoryTab';
 import CommentSection from './components/CommentTab';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { convertDateFromString } from '~/utils';
 import { defaultAvt } from '~/assets/images';
 
 import {
   useGetCampaignByIdQuery,
-  useGetQuantityCampaignsOfOwnerQuery,
   useGetQuantitySuccessCampaignByCampaignId,
 } from '~/hooks/api/queries/user/campaign.query';
 import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
 import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-campaign.mutation';
-import { useGetMoneyQuery, useGetQuantityPeopleByCampaignQuery } from '~/hooks/api/queries/user/contribution.query';
 import { useGetPerksHasListItemsByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
+import { setFollowCampaigns } from '~/redux/slides/User';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -48,6 +47,8 @@ function DetailProject() {
   const [openDropDown, setOpenDropDown] = useState(false);
   const docElement = useRef(null);
   const [endDate, setEndDate] = useState('');
+
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -110,19 +111,23 @@ function DetailProject() {
   }, [dataProjectById, dataListPerksByCampaignId]);
 
   const [favourite, setFavourite] = useState(false);
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (currentUser.followCampaigns?.includes(ItemProject.id)) {
       setFavourite(true);
     } else setFavourite(false);
-  }, [ItemProject]);
+  }, [ItemProject, currentUser.followCampaigns?.length]);
 
   const followCampaign = useFollowCampaignMutation();
 
   const handleClickFollowCampaign = async () => {
     followCampaign.mutate(ItemProject.id, {
       onSuccess: () => {
-        setFavourite(!favourite);
+        if (currentUser.followCampaigns.includes(ItemProject.id)) {
+          dispatch(setFollowCampaigns(currentUser.followCampaigns.filter((item) => item !== ItemProject.id)));
+        } else {
+          dispatch(setFollowCampaigns([...currentUser.followCampaigns, ItemProject.id]));
+        }
       },
       onError: (error) => {
         console.log('Error follow campaign', error);

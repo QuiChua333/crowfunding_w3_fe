@@ -3,23 +3,23 @@ import { AiOutlineSearch, AiOutlineClose } from 'react-icons/ai';
 import ProjectCardItem from '~/components/ProjectCardItem';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
-import baseURL from '~/utils/baseURL';
 import styles from './Explore.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { CustomAxios } from '~/config';
 import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
 import { useUserGetAllCampaignQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useQueryClient } from '@tanstack/react-query';
 const cx = classNames.bind(styles);
 
 function Explore() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  queryClient.invalidateQueries([`getCurrentUser`]);
   const [listFieldGrouByname, setListFieldGrouByname] = useState([]);
   const [filter, setFilter] = useState(() => {
     const state = {
       searchString: '',
-      criteria: 'Mới nhất',
+      criteria: 'new',
       name: 'Tất cả',
       status: 'Tất cả',
       page: 1,

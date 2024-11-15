@@ -46,9 +46,9 @@ function PerkItem({
 
   return (
     <div className={cx('wrapper')} onClick={handleClickItem}>
-      <img src={item.image.url} alt="img" />
+      <img src={item.image} alt="img" />
       <div className={cx('container-body')}>
-        <h2 style={{ fontSize: '20px' }}>{item.title}</h2>
+        <h2 style={{ fontSize: '20px' }}>{item.name}</h2>
         <b className={cx('price')}>{formatMoney(item.price)}VNĐ</b>
         <p className={cx('des')}>{item.description}</p>
 
@@ -57,14 +57,14 @@ function PerkItem({
             <p>
               <b className={cx('text-title')}>Bao gồm: </b>
               <ul className={cx('items')}>
-                {item.items.map((itemA, indexA) => {
-                  return <li key={indexA}>{itemA.item.name}</li>;
+                {item.detailPerks?.map((itemA, indexA) => {
+                  return <li key={indexA}>{`${itemA.quantity} ${itemA.item.name}`}</li>;
                 })}
               </ul>
             </p>
             <p className={cx('text-title')}>Ngày giao dự kiến</p>
-            <p className={cx('des')}>{convertDateFromString(item.estDelivery)}</p>
-            <p className={cx('des')}>Giao toàn lành thổ.</p>
+            <p className={cx('des')}>{convertDateFromString(item.estDeliveryDate)}</p>
+            <p className={cx('des')}>Giao toàn quốc.</p>
 
             {isShowButton &&
               (item.quantity !== item.claimed ? (
