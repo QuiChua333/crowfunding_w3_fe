@@ -23,13 +23,12 @@ function ViewContributes() {
   const { data: dataUser } = useGetInfoUserQuery(id);
   useEffect(() => {
     if (dataUser) {
-      setUser(dataUser?.data?.data);
+      setUser(dataUser);
     }
   }, [dataUser]);
 
-  const [pathWithQuery, setPathWithQuery] = useState('');
   const [filter, setFilter] = useState({
-    textSearch: '',
+    searchString: '',
     status: 'Tất cả',
     page: 1,
   });
@@ -37,30 +36,21 @@ function ViewContributes() {
     setFilter((prev) => ({ ...prev, status: item }));
   };
   const handleChangeSearchInput = (value) => {
-    setFilter((prev) => ({ ...prev, textSearch: value }));
+    setFilter((prev) => ({ ...prev, searchString: value }));
   };
   const handleClickPreviousPage = () => {
     if (filter.page === 1) return;
     setFilter((prev) => ({ ...prev, page: prev.page - 1 }));
   };
   const handleClickNextPage = () => {
-    if (filter.page === data?.data?.totalPages) return;
+    if (filter.page === data?.totalPages) return;
     setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
-  useEffect(() => {
-    const queryParams = { page: filter.page, searchString: filter.textSearch, status: filter.status };
-    const queryString = new URLSearchParams(queryParams).toString();
-    const pathWithQuery = `${baseURL}/contribution/getAllContributionsOfUser/${id}/?${queryString}`;
-    setPathWithQuery(pathWithQuery);
-  }, [filter]);
-
-  const { data, refetch } = useGetAllContributesOfUserQuery(pathWithQuery);
-  useEffect(() => {
-    if (pathWithQuery) {
-      refetch();
-    }
-  }, [pathWithQuery]);
+  const { data, refetch } = useGetAllContributesOfUserQuery({
+    ...filter,
+    userId: id,
+  });
 
   const [isOpenModalDetail, setIsOpenModalDetail] = useState(false);
   const [indexOfRow, setIndexOfRow] = useState(null);
@@ -98,7 +88,7 @@ function ViewContributes() {
             <Link to={`/individuals/${id}/campaigns`} className={cx('tab')}>
               Chiến dịch
             </Link>
-            {currentUser._id && currentUser._id === id && (
+            {currentUser.id && currentUser.id === id && (
               <Link to={`/individuals/${id}/contributions`} className={cx('tab', 'active')}>
                 Đóng góp của tôi
               </Link>
@@ -143,20 +133,20 @@ function ViewContributes() {
                 <div style={{ marginTop: '20px' }}>
                   <div className={cx('table-wrapper')}>
                     <ContributeTable
-                      contributesOfUer={data?.data?.contributions || []}
+                      contributesOfUer={data?.contributions || []}
                       handleViewContribution={handleViewContribution}
                     />
                   </div>
 
-                  {data?.data?.totalPages > 0 && (
+                  {data?.totalPages > 0 && (
                     <div className={cx('pagination-wrapper')}>
                       <div className={cx('pagination')}>
                         <span
                           className={cx(
                             'icon',
                             `${
-                              filter.page <= data?.data?.totalPages &&
-                              data?.data?.totalPages !== 1 &&
+                              filter.page <= data?.totalPages &&
+                              data?.totalPages !== 1 &&
                               filter.page > 1 &&
                               'hover:bg-[#ebe8f1] hover:cursor-pointer'
                             }`,
@@ -166,16 +156,16 @@ function ViewContributes() {
                           <FaAngleLeft style={{ color: '#7a69b3', opacity: filter.page === 1 ? '0.3' : '1' }} />
                         </span>
 
-                        <span className={cx('curent')}>{`${filter.page} của ${data?.data?.totalPages}`}</span>
+                        <span className={cx('curent')}>{`${filter.page} của ${data?.totalPages}`}</span>
                         <span
                           className={cx(
                             'icon',
-                            `${filter.page < data?.data?.totalPages && 'hover:bg-[#ebe8f1] hover:cursor-pointer'}`,
+                            `${filter.page < data?.totalPages && 'hover:bg-[#ebe8f1] hover:cursor-pointer'}`,
                           )}
                           onClick={handleClickNextPage}
                         >
                           <FaAngleRight
-                            style={{ color: '#7a69b3', opacity: filter.page === data?.data?.totalPages ? '0.3' : '1' }}
+                            style={{ color: '#7a69b3', opacity: filter.page === data?.totalPages ? '0.3' : '1' }}
                           />
                         </span>
                       </div>
@@ -189,7 +179,7 @@ function ViewContributes() {
       </div>
       {isOpenModalDetail && (
         <ModalDetailContribution
-          contribution={data?.data?.contributions[indexOfRow]}
+          contribution={data?.contributions[indexOfRow]}
           setIsOpenModalDetail={setIsOpenModalDetail}
         />
       )}

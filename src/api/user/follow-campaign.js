@@ -2,8 +2,8 @@ import { CustomAxios } from '~/config';
 import { baseUrl } from '~/utils';
 
 // handleAPI
-export const getCampaignsFollowed = async () => {
-  const response = await CustomAxios.get(`${baseUrl}/follow-campaign/me`);
+export const getCampaignsFollowed = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/follow-campaign/user/${id}`);
   return response.data;
 };
 

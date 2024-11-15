@@ -3,7 +3,7 @@ import styles from '../../Profile.module.scss';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { toast } from 'react-toastify';
@@ -116,19 +116,19 @@ function EditProfile() {
   return (
     <div className={cx('wrapper')}>
       <div className={cx('navbar')}>
-        <a href={`/individuals/${id}/profile`} className={cx('nav-item')}>
+        <Link to={`/individuals/${id}/profile`} className={cx('nav-item')}>
           <span>
             <MdOutlineRemoveRedEye style={{ fontSize: '24px', marginRight: '8px' }} />
             Xem hồ sơ
           </span>
-        </a>
-        <a href={`/individuals/${id}/edit/profile`} className={cx('nav-item', 'active')}>
+        </Link>
+        <Link to={`/individuals/${id}/edit/profile`} className={cx('nav-item', 'active')}>
           <span>
             {' '}
             <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
             Chỉnh sửa hồ sơ & Cài đặt
           </span>
-        </a>
+        </Link>
       </div>
 
       <div className={cx('body')}>
@@ -136,12 +136,12 @@ function EditProfile() {
 
         <div className={cx('content')}>
           <div className={cx('tabpanel')}>
-            <a href={`/individuals/${id}/edit/profile`} className={cx('tab', 'active')}>
+            <Link to={`/individuals/${id}/edit/profile`} className={cx('tab', 'active')}>
               Hồ sơ
-            </a>
-            <a href={`/individuals/${id}/edit/settings`} className={cx('tab')}>
+            </Link>
+            <Link to={`/individuals/${id}/edit/settings`} className={cx('tab')}>
               Cài đặt
-            </a>
+            </Link>
           </div>
 
           <div className={cx('section-info')} style={{ marginTop: '32px' }}>

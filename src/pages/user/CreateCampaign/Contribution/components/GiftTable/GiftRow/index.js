@@ -13,7 +13,7 @@ function GiftRow({ index, gift, getAllContributions, openDetailGift }) {
     <tr onClick={() => openDetailGift(index)}>
       {/* <Link to='/campaigns/:id/edit/perks/new' style={{position: 'relative', zIndex: '10'}}></Link> */}
       <td className={cx('email')}>{gift.email}</td>
-      <td className={cx('perks')}>{gift.perks.map((i) => i.perkTitle).join(', ')}</td>
+      <td className={cx('perks')}>{gift.perks.map((i) => i.name).join(', ')}</td>
       <td className={cx('date')}>{gift.date}</td>
       <td className={cx('status')}>
         <span className={cx('campaign-status')}>{gift.status}</span>

@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { convertDateFromString } from '~/utils';
 import { useReplyComplaintMutation } from '~/hooks/api/mutations/admin/admin.complaint.mutation';
+import { defaultAvt } from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,7 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
   const [textValidate, setTextValidate] = useState('');
   const [showTextValidate, setShowTextValidate] = useState(false);
   const [textContent, setTextContent] = useState('');
+  const [files, setFiles] = useState([]);
   const [images, setImages] = useState([]);
   const fileInputRef = useRef(null);
   function selectFiles() {
@@ -33,6 +35,7 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
       if (files[i].type.split('/')[0] !== 'image') continue;
       if (!images.some((e) => e.name === files[i].name)) {
         const reader = new FileReader();
+        setFiles((prev) => [...prev, files[i]]);
         reader.readAsDataURL(files[i]);
         reader.onload = () => {
           setImages((prevImages) => [
@@ -61,38 +64,28 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
       setTextValidate('');
       setShowTextValidate(false);
       dispatch(setLoading(true));
-      const newListImage = images.map((itemp) => {
-        return itemp.imageBase64;
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append('files', file);
       });
+      formData.append('content', textContent);
 
-      const data = {
-        id: report._id,
-        content: textContent,
-        images: newListImage,
-        emailUser: report.userInfo.email,
-        title: report.title,
-      };
-
-      const url = `${baseURL}/report/responseReport/${report._id}`;
-      const dataApi = {
-        url,
-        data,
-      };
-      replyComplaint.mutate(dataApi, {
-        onSuccess: (res) => {
-          getAllReports();
-          if (res.data) {
+      replyComplaint.mutate(
+        { reportId: report.id, formData },
+        {
+          onSuccess: (res) => {
+            getAllReports();
             dispatch(setLoading(false));
             setIsOpenModalSeeDetail(false);
-          }
+          },
+          onError: (error) => {
+            console.log('error', error);
+          },
+          onSettled: () => {
+            dispatch(setLoading(false));
+          },
         },
-        onError: (error) => {
-          console.log('error', error);
-        },
-        onSettled: () => {
-          dispatch(setLoading(false));
-        },
-      });
+      );
     }
   };
 
@@ -101,13 +94,13 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
       <div className={cx('modal')} onClick={(e) => e.stopPropagation()}>
         <div className={cx('header')}>
           <div className={cx('info-user')}>
-            <img src={report.userInfo.avatar.url} alt="img" />
+            <img src={report.reportBy?.avatar || defaultAvt} alt="img" />
             <div className={cx('info-detail')}>
-              <a href={`/individuals/${report.userInfo._id}/profile`} className={cx('name')}>
-                {report.userInfo.fullName}
+              <a href={`/individuals/${report.reportBy?.id}/profile`} className={cx('name')}>
+                {report.reportBy?.fullName}
               </a>
-              <a href={`mailto:${report.userInfo.email}`} className={cx('email')}>
-                {report.userInfo.email}
+              <a href={`mailto:${report.reportBy?.email}`} className={cx('email')}>
+                {report.reportBy?.email}
               </a>
             </div>
           </div>
@@ -124,13 +117,13 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
             <div className={cx('separate-topic')}></div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span style={{ fontStyle: 'italic', fontSize: '13px' }}>** Nội dung báo cáo vi phạm</span>
-              <a href={`/project/${report.campaignInfo._id}/detail`} className={cx('btn-goto-campaign')}>
+              <a href={`/project/${report.campaign.id}/detail`} className={cx('btn-goto-campaign')}>
                 Đi đến chiến dịch này
               </a>
             </div>
             <div className={cx('content-report')}>
               <div className={cx('list-image-report')}>
-                {report.images.map((item) => {
+                {report.images?.split('|')?.map((item) => {
                   return <img src={item} alt="img" />;
                 })}
               </div>
@@ -139,26 +132,26 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
             </div>
           </div>
 
-          {report.isResponsed && (
+          {report.reportResponse && (
             <div className={cx('container-response')}>
               <span style={{ fontStyle: 'italic', fontSize: '13px', textAlign: 'right', width: '100%' }}>
                 ** Nội dung phản hồi
               </span>
               <div className={cx('content-response')}>
                 <div className={cx('list-image-response')}>
-                  {report.responsed.images.map((item) => {
+                  {report.reportResponse.images?.split('|')?.map((item) => {
                     return <img src={item} alt="img" />;
                   })}
                 </div>
-                <div className={cx('text-response')}>{report.responsed.content}</div>
-                <span className={cx('date-response')}>{convertDateFromString(report.responsed.date)}</span>
+                <div className={cx('text-response')}>{report.reportResponse.content}</div>
+                <span className={cx('date-response')}>{convertDateFromString(report.reportResponse.date)}</span>
               </div>
             </div>
           )}
         </div>
         {showTextValidate && <span className={cx('text-validate')}>{textValidate}</span>}
 
-        {report.isResponsed === false && (
+        {!report.reportResponse && (
           <div style={{ marginBottom: '40px' }}>
             <div className={cx('content-body')}>
               <div className={cx('content-report')}>
@@ -189,7 +182,7 @@ function ModalDetailReport({ getAllReports, setIsOpenModalSeeDetail, report }) {
           </div>
         )}
 
-        {report.isResponsed && <div className={cx('btn-res')}>ĐÃ PHẢN HỒI</div>}
+        {report.reportResponse && <div className={cx('btn-res')}>ĐÃ PHẢN HỒI</div>}
       </div>
     </div>
   );

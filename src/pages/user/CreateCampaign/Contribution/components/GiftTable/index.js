@@ -14,12 +14,12 @@ function GiftTable({ gifts, getAllContributions, openDetailGift }) {
     setlistGifts((prev) => {
       const state = [...gifts].map((item) => {
         return {
-          id: item._id,
-          userName: item.user.fullName,
-          email: item.user.email || '',
+          id: item.id,
+          userName: item.fullName || 'Khách vãng lai',
+          email: item.email || '',
           perks: item.perks,
-          money: formatMoney(item.money) + 'VNĐ',
-          date: convertDateFromString(item.shippingInfo.estDelivery, 'less'),
+          money: formatMoney(item.amount) + 'VNĐ',
+          date: convertDateFromString(item.shippingInfo.estDeliveryDate, 'less'),
           status: item.isFinish ? 'Đã gửi' : 'Chưa gửi',
         };
       });

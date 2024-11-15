@@ -75,7 +75,7 @@ function NewPerk() {
   }, [campaignRoot]);
   const { data: response } = useGetPerk(idPerk);
   useEffect(() => {
-    if (response) {
+    if (response && idPerk !== 'new') {
       setPerkState({
         id: response.id,
         name: response.name || '',

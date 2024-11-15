@@ -21,8 +21,8 @@ import {
   useGetAllContributionsByCampaignQuery,
   useGetTopUserContributionByCampaignQuery,
 } from '~/hooks/api/queries/user/contribution.query';
-import { useGetAllGiftsByCampaignQuery } from '~/hooks/api/queries/user/gift.query';
 import { setTab } from '~/redux/slides/UserCampaign';
+import { useGetAllGiftssByCampaignQuery } from '~/hooks/api/queries/user/gift.query';
 
 const cx = classNames.bind(styles);
 
@@ -62,9 +62,8 @@ function ContributionCampaign() {
     page: 1,
   });
   const [filterGift, setFilterGift] = useState({
-    textSearch: '',
+    searchString: '',
     status: 'Tất cả',
-    time: 'Tất cả',
     page: 1,
   });
 
@@ -100,35 +99,10 @@ function ContributionCampaign() {
     setFilterContribution((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
-  const getAllGiftsByCampaignMutation = useGetAllGiftsByCampaignQuery();
-  const getAllGiftsByCampaign = () => {
-    getAllGiftsByCampaignMutation.mutate(
-      {
-        id,
-        queryString: queryStringGift,
-      },
-      {
-        onSuccess(data) {
-          setGifts(data.data.gifts);
-          setTotalPagesGift(data.data.totalPages);
-        },
-      },
-    );
-  };
-  useEffect(() => {
-    const queryParams = {
-      page: filterGift.page,
-      searchString: filterGift.textSearch,
-      status: filterGift.status,
-      time: filterGift.time,
-    };
-    const queryString = new URLSearchParams(queryParams).toString();
-    setQueryStringGift(queryString);
-    // const pathWithQueryGift = `${baseURL}/gift/getAllGiftsByCampaign/${id}?${queryString}`;
-  }, [filterGift]);
-  useEffect(() => {
-    getAllGiftsByCampaign();
-  }, [queryStringGift]);
+  const { data: dataGifts, refetch: refetchGifts } = useGetAllGiftssByCampaignQuery({
+    ...filterGift,
+    campaignId: id,
+  });
 
   const handleChangStateListContributions = (listCampaign) => {
     setNumberSelected((prev) => {
@@ -141,16 +115,13 @@ function ContributionCampaign() {
     setFilterContribution((prev) => ({ ...prev, searchString: value }));
   };
   const handleChangeSearchInputGift = (value) => {
-    setFilterGift((prev) => ({ ...prev, textSearch: value }));
+    setFilterGift((prev) => ({ ...prev, searchString: value }));
   };
   const handleClickItemFilterStatus = (item) => {
     setFilterContribution((prev) => ({ ...prev, status: item }));
   };
   const handleClickItemFilterGiftStatus = (item) => {
     setFilterGift((prev) => ({ ...prev, status: item }));
-  };
-  const handleClickItemFilterGiftTime = (item) => {
-    setFilterGift((prev) => ({ ...prev, time: item }));
   };
 
   const handleClickItemFilterTime = (item) => {
@@ -175,7 +146,7 @@ function ContributionCampaign() {
   };
 
   const handleClickNextPageGift = () => {
-    if (filterGift.page === totalPages) return;
+    if (filterGift.page === dataGifts.totalPages) return;
     setFilterGift((prev) => ({ ...prev, page: prev.page + 1 }));
   };
   const openDetailContribution = (index) => {
@@ -189,7 +160,7 @@ function ContributionCampaign() {
   const handleChangeStatus = (id) => {
     setContributions((prev) =>
       [...prev].map((item) => {
-        if (item._id === id) {
+        if (item.id === id) {
           return { ...item, isFinish: true };
         } else return item;
       }),
@@ -198,7 +169,7 @@ function ContributionCampaign() {
   const handleChangeStatusGift = (id) => {
     setGifts((prev) =>
       [...prev].map((item) => {
-        if (item._id === id) {
+        if (item.id === id) {
           return { ...item, isFinish: true };
         } else return item;
       }),
@@ -453,30 +424,45 @@ function ContributionCampaign() {
                       valueShow={filterGift.status}
                     />
                   </div>
-                  <div>
-                    <label style={{ marginBottom: '4px' }}>Thời gian dự kiến giao</label>
-                    <Filter
-                      listConditions={['Tất cả', 'Trễ nhất', 'Sớm nhất']}
-                      handleClickItem={handleClickItemFilterGiftTime}
-                      valueShow={filterGift.time}
-                    />
-                  </div>
                 </div>
               </div>
 
               <div style={{ marginTop: '40px' }}>
                 <div className={cx('table-wrapper')}>
-                  <GiftTable gifts={gifts} openDetailGift={openDetailGift} />
+                  <GiftTable gifts={dataGifts?.gifts || []} openDetailGift={openDetailGift} />
                 </div>
-                {totalPagesGift > 0 && (
+                {dataGifts?.totalPages > 0 && (
                   <div className={cx('pagination-wrapper')}>
                     <div className={cx('pagination')}>
-                      <span className={cx('icon')} onClick={handleClickPreviousPageGift}>
-                        <FaAngleLeft style={{ color: '#7a69b3' }} />
+                      <span
+                        className={cx(
+                          'icon',
+                          `${
+                            filterGift.page <= dataGifts?.totalPages &&
+                            dataGifts.totalPages !== 1 &&
+                            filterGift.page > 1 &&
+                            'hover:bg-[#ebe8f1] hover:cursor-pointer'
+                          }`,
+                        )}
+                        onClick={handleClickPreviousPageGift}
+                      >
+                        <FaAngleLeft style={{ color: '#7a69b3', opacity: filterGift.page === 1 ? '0.3' : '1' }} />
                       </span>
-                      <span className={cx('curent')}>{`${filterGift.page} của ${totalPagesGift}`}</span>
-                      <span className={cx('icon')} onClick={handleClickNextPageGift}>
-                        <FaAngleRight style={{ color: '#7a69b3' }} />
+
+                      <span className={cx('curent')}>{`${filterGift.page} của ${dataGifts?.totalPages}`}</span>
+                      <span
+                        className={cx(
+                          'icon',
+                          `${filterGift.page < dataGifts?.totalPages && 'hover:bg-[#ebe8f1] hover:cursor-pointer'}`,
+                        )}
+                        onClick={handleClickNextPageGift}
+                      >
+                        <FaAngleRight
+                          style={{
+                            color: '#7a69b3',
+                            opacity: filterGift.page === dataGifts?.totalPages ? '0.3' : '1',
+                          }}
+                        />
                       </span>
                     </div>
                   </div>
@@ -530,14 +516,14 @@ function ContributionCampaign() {
         <ModalGivePerk
           setShowModalGivePerk={setShowModalGivePerk}
           userContributionGivePerk={userContributionGivePerk}
-          getAllGifts={getAllGiftsByCampaign}
+          getAllGifts={refetchGifts}
         />
       )}
       {showModalGift && (
         <ModalGift
           isEditComponent={isEditComponent}
           setShowModalGift={setShowModalGift}
-          gift={gifts[indexGiftActive]}
+          gift={dataGifts.gifts[indexGiftActive]}
           handleChangeStatus={handleChangeStatusGift}
         />
       )}

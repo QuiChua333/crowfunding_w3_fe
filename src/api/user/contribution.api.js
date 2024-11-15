@@ -26,9 +26,21 @@ export const editContributionStatus = async (body) => {
 };
 
 // handleAPI
-export const getQuantityContributeOfUser = async (id) => {
-  const response = await CustomAxios.get(`${baseUrl}/contribution/user/quantity`);
-  return response;
+export const getQuantityContributionOfUser = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/contribution/user/${id}/quantity`);
+  return response.data;
+};
+
+// handleAPI
+export const getAllContributesOfUser = async ({ page, searchString, status, userId }) => {
+  const queryParams = {
+    page,
+    searchString,
+    status,
+  };
+  const queryString = new URLSearchParams(queryParams).toString();
+  const response = await CustomAxios.get(`${baseUrl}/contribution/current-user?${queryString}`);
+  return response.data;
 };
 
 // handleAPI

@@ -46,12 +46,12 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
       dispatch(setLoading(true));
       editGiftStatusMutation.mutate(
         {
-          id: gift._id,
+          id: gift.id,
           data: { isFinish: true },
         },
         {
           onSuccess(data) {
-            handleChangeStatus(gift._id);
+            handleChangeStatus(gift.id);
             dispatch(setLoading(false));
             setShowModalGift(false);
             toast.success('Thay đổi trạng thái gửi đặc quyền thành công!');
@@ -68,8 +68,8 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
     <div className={cx('wrapper')}>
       <div className={cx('body')}>
         <h3 className={cx('title')}>THÔNG TIN QUÀ TẶNG</h3>
-        <p className={cx('description')}>Tên người dùng hệ thống: {gift.user.fullName}</p>
-        <p className={cx('description')}>Email: {gift.user.email}</p>
+        <p className={cx('description')}>Tên người dùng hệ thống: {gift.fullName || 'Khách vãng lai'}</p>
+        <p className={cx('description')}>Email: {gift.email}</p>
         <div style={{ marginBottom: '32px' }}>
           <div className={cx('product-container')}>
             <div className={cx('order-container')}>
@@ -99,7 +99,9 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
                 </span>
                 <div className={cx('form-group')} style={{ color: '#212121' }}>
                   <label>Ngày giao dự kiến: </label>
-                  <div className={cx('info-value')}>{convertDateFromString(gift.shippingInfo.estDelivery, 'less')}</div>
+                  <div className={cx('info-value')}>
+                    {convertDateFromString(gift.shippingInfo.estDeliveryDate, 'less')}
+                  </div>
                 </div>
               </div>
 
@@ -130,7 +132,9 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
 
                       <div style={{ marginLeft: '16px', fontSize: '14px' }}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                          <span
+                            style={{ display: 'inline-flex', alignItems: 'center', width: '150px', fontWeight: '600' }}
+                          >
                             <span>
                               <IoPersonOutline style={{ marginRight: '6px' }} />
                             </span>
@@ -140,7 +144,9 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                          <span
+                            style={{ display: 'inline-flex', alignItems: 'center', width: '150px', fontWeight: '600' }}
+                          >
                             <span>
                               <BiPhoneCall style={{ marginRight: '6px' }} />
                             </span>
@@ -149,7 +155,9 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
                           <span>{gift.shippingInfo?.phoneNumber}</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                          <span
+                            style={{ display: 'inline-flex', alignItems: 'center', width: '150px', fontWeight: '600' }}
+                          >
                             <span>
                               <BiMap style={{ marginRight: '6px' }} />
                             </span>
@@ -158,7 +166,9 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
                           <span>{gift.shippingInfo?.province}</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                          <span
+                            style={{ display: 'inline-flex', alignItems: 'center', width: '150px', fontWeight: '600' }}
+                          >
                             <span>
                               <BiMapPin style={{ marginRight: '6px' }} />
                             </span>
@@ -167,7 +177,9 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
                           <span>{gift.shippingInfo?.district}</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                          <span
+                            style={{ display: 'inline-flex', alignItems: 'center', width: '150px', fontWeight: '600' }}
+                          >
                             <span>
                               <BiSitemap style={{ marginRight: '6px' }} />
                             </span>
@@ -176,7 +188,9 @@ function ModalGift({ setShowModalGift, gift, handleChangeStatus, isEditComponent
                           <span>{gift.shippingInfo?.ward}</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <span style={{ display: 'inline-block', width: '150px', fontWeight: '600' }}>
+                          <span
+                            style={{ display: 'inline-flex', alignItems: 'center', width: '150px', fontWeight: '600' }}
+                          >
                             <span>
                               <BiMessageSquareDetail style={{ marginRight: '6px' }} />
                             </span>

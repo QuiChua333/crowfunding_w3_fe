@@ -40,9 +40,9 @@ function ContributeRow({ index, contribute, handleViewContribution }) {
           padding: '0 30px',
         }}
       >
-        {contribute.campaignInfo.title}
+        {contribute.campaignTitle}
       </td>
-      <td>{formatMoney(contribute.money)} VND</td>
+      <td>{formatMoney(contribute.amount)} VND</td>
 
       {contribute.isFinish ? (
         <td>

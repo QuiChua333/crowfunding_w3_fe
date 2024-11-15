@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   getAllContributionsByCampaign,
   getMoneyByCampaign,
-  getQuantityContributeOfUser,
+  getQuantityContributionOfUser,
   getQuantityPeopleByCampaign,
   getTopUserContributionByCampaign,
 } from '~/api/user/contribution.api';
@@ -44,10 +44,10 @@ export const useGetMoneyQuery = (id) => {
 };
 
 // handleAPI
-export const useGetQuantityContributeOfUserQuery = (id) => {
+export const useGetQuantityContributionOfUserQuery = (id) => {
   return useQuery({
     queryKey: [`useGetQuantityContributeOfUserQuery`],
-    queryFn: () => getQuantityContributeOfUser(id),
+    queryFn: () => getQuantityContributionOfUser(id),
     refetchOnWindowFocus: false,
   });
 };

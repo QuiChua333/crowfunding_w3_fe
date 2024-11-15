@@ -7,6 +7,7 @@ import { IoCloseSharp } from 'react-icons/io5';
 const cx = classNames.bind(styles);
 
 function ModalPerkOption({ perk, setShowModalOption, handleAddPerk }) {
+  console.log({ perk });
   const [newPerk, setNewPerk] = useState({
     ...perk,
     detailPerks: perk.detailPerks?.map((item) => ({

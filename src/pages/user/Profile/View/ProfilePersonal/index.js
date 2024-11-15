@@ -11,8 +11,8 @@ import { FaUserCircle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
 import { defaultAvt } from '~/assets/images';
 import { useGetInfoUserQuery } from '~/hooks/api/queries/user/user.query';
-import { useGetQuantityContributeOfUserQuery } from '~/hooks/api/queries/user/contribution.query';
-import { useGetQuantityCampaignOfUserQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useGetQuantityContributionOfUserQuery } from '~/hooks/api/queries/user/contribution.query';
+import { useGetQuantitySuccessCampaignsOfUserQuery } from '~/hooks/api/queries/user/campaign.query';
 const cx = classNames.bind(styles);
 
 function ProfilePersonal() {
@@ -39,27 +39,27 @@ function ProfilePersonal() {
   const { data: dataUser } = useGetInfoUserQuery(id);
   useEffect(() => {
     if (dataUser) {
-      setUser(dataUser?.data?.data);
+      setUser(dataUser);
     }
   }, [dataUser]);
 
-  const { data: dataQuantityCampaignOfUser } = useGetQuantityCampaignOfUserQuery(id);
+  const { data: dataQuantityCampaignOfUser } = useGetQuantitySuccessCampaignsOfUserQuery(id);
   useEffect(() => {
     if (dataQuantityCampaignOfUser) {
-      setQuantityCampaignOfUser(dataQuantityCampaignOfUser?.data?.data);
+      setQuantityCampaignOfUser(dataQuantityCampaignOfUser);
     }
   }, [dataQuantityCampaignOfUser]);
 
-  const { data: dataQuantityContributeOfUser } = useGetQuantityContributeOfUserQuery(id);
+  const { data: dataQuantityContributeOfUser } = useGetQuantityContributionOfUserQuery(id);
   useEffect(() => {
     if (dataQuantityContributeOfUser) {
-      setQuantityContributeOfUser(dataQuantityContributeOfUser?.data?.data);
+      setQuantityContributeOfUser(dataQuantityContributeOfUser);
     }
   }, [dataQuantityContributeOfUser]);
 
   return (
     <div className={cx('wrapper')}>
-      {currentUser._id === id && (
+      {currentUser.id === id && (
         <div className={cx('navbar')}>
           <Link to={`/individuals/${id}/profile`} className={cx('nav-item', 'active')}>
             <span>
@@ -88,7 +88,7 @@ function ProfilePersonal() {
             <Link to={`/individuals/${id}/campaigns`} className={cx('tab')}>
               Chiến dịch
             </Link>
-            {currentUser._id && currentUser._id === id && (
+            {currentUser.id && currentUser.id === id && (
               <Link to={`/individuals/${id}/contributions`} className={cx('tab')}>
                 Đóng góp của tôi
               </Link>
@@ -96,25 +96,19 @@ function ProfilePersonal() {
           </div>
 
           <div className={cx('container-body-profile')}>
-            <img
-              className={cx('avatar')}
-              src={user?.profileImage?.url ? user?.profileImage?.url : defaultAvt}
-              alt="img"
-            />
+            <img className={cx('avatar')} src={user?.avatar || defaultAvt} alt="img" />
             <div className={cx('container-middle')}>
               <span className={cx('title-profile')}>Giới thiệu</span>
               <p className={cx('des-profile')}>
-                {user.story?.shortDescription.trim().length === 0
-                  ? 'Thông tin chưa cập nhật'
-                  : user.story?.shortDescription}
+                {user.shortDescription?.trim().length === 0 ? 'Thông tin chưa cập nhật' : user.shortDescription}
               </p>
             </div>
             <div className={cx('container-final')}>
               <span className={cx('title-profile')}>Về bản thân tôi</span>
               <div className={cx('container-me')}>
                 <div className={cx('container-campaigns')}>
-                  <span className={cx('quantity-campaigns')}>{quantityCampaignOfUser}</span>
-                  <span className={cx('title-campaigns')}>Chiến dịch</span>
+                  <span className={cx('quantity-campaigns')}>{quantityCampaignOfUser || 0} </span>
+                  <span className={cx('title-campaigns')}>Chiến dịch thành công</span>
                   <BsFillQuestionCircleFill
                     onMouseOver={handleShowModalOverCampaigns}
                     onMouseOut={handleShowModalOutCampaigns}
@@ -129,7 +123,7 @@ function ProfilePersonal() {
                 </div>
 
                 <div className={cx('container-campaigns')}>
-                  <span className={cx('quantity-campaigns')}>{quantityContributeOfUser}</span>
+                  <span className={cx('quantity-campaigns')}>{quantityContributeOfUser || 0}</span>
                   <span className={cx('title-campaigns')}>Đóng góp</span>
                   <BsFillQuestionCircleFill
                     onMouseOver={handleShowModalOverContributes}
@@ -177,7 +171,7 @@ function ProfilePersonal() {
                   >
                     <FaUserCircle style={{ fontSize: '20px' }} />
                     <span style={{ marginLeft: '10px', fontWeight: '500' }}>
-                      {user.isVerifiedUser ? 'Đã xác minh tài khoản' : 'Chưa xác minh tài khoản'}
+                      {user.verifyStatus === 'Đã xác thực' ? 'Đã xác minh tài khoản' : 'Chưa xác minh tài khoản'}
                     </span>
                   </div>
                 </div>

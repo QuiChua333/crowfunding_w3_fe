@@ -13,8 +13,8 @@ const cx = classNames.bind(styles);
 
 function Explore() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  queryClient.invalidateQueries([`getCurrentUser`]);
+  // const queryClient = useQueryClient();
+  // queryClient.invalidateQueries([`getCurrentUser`]);
   const [listFieldGrouByname, setListFieldGrouByname] = useState([]);
   const [filter, setFilter] = useState(() => {
     const state = {

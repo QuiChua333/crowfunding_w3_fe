@@ -12,7 +12,7 @@ function DropDown({ handleView, report }) {
       </div>
       <div style={{ height: '1px', background: '#ccc' }}></div>
       <div className={cx('action')}>
-        <Link to={`/project/${report.campaignInfo._id}/detail`}>Đi đến chiến dịch</Link>
+        <Link to={`/project/${report.campaign?.id}/detail`}>Đi đến chiến dịch</Link>
       </div>
     </div>
   );

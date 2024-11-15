@@ -99,6 +99,7 @@ function ItemShipping({
           </div>
         </div>
       )}
+      {lengthListItemShiping <= 1 && <div className="w-1/12"></div>}
     </div>
   );
 }

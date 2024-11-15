@@ -32,7 +32,7 @@ function ComplaintManagement() {
     setFilter((prev) => ({ ...prev, page: prev.page - 1 }));
   };
   const handleClickNextPage = () => {
-    if (filter.page === data?.data?.totalPages) return;
+    if (filter.page === data?.totalPages) return;
     setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 

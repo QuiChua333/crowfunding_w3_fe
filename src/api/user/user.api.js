@@ -16,7 +16,7 @@ export const getUserByEmail = async (email) => {
 // handleAPI
 export const getUserById = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/user/${id}`);
-  return response;
+  return response.data;
 };
 
 // handleAPI
@@ -29,9 +29,4 @@ export const updateProfileUser = async (data) => {
 export const updatePasswordUser = async ({ currentPassword, newPassword }) => {
   const response = await CustomAxios.patch(`${baseUrl}/user/updatePassword`, { currentPassword, newPassword });
   return response;
-};
-
-export const getAllContributesOfUser = async (url) => {
-  const response = await CustomAxios.get(url);
-  return response.data;
 };

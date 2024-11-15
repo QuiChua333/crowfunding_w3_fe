@@ -11,6 +11,7 @@ import { defaultCardCampaign } from '~/assets/images';
 const cx = classNames.bind(styles);
 
 function ItemCampaign({ item, getCampaignsFollowed }) {
+  console.log(item.teamMembers);
   const navigate = useNavigate();
   const [showDropDown, setShowDropDown] = useState(false);
   const dropdownElement = useRef();
@@ -93,7 +94,7 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
       </div>
       <div>
         {currentUser.id &&
-          (item.teamMember?.some((x) => {
+          (item.teamMembers?.some((x) => {
             return x.user.id === currentUser.id && x.confirmStatus === 'Đã xác nhận';
           }) ||
             item.ownerId === currentUser.id) && (
@@ -105,7 +106,7 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
               <div className={cx('action-dropdown', { show: showDropDown })}>
                 {currentUser.id &&
                   (item.ownerId === currentUser.id ||
-                    item.teamMember?.some((x) => {
+                    item.teamMembers?.some((x) => {
                       return x.user.id === currentUser.id && x.confirmStatus === 'Đã xác nhận' && x.isEdit === true;
                     })) && (
                     <a className={cx('item-dropdown')} href={`/campaigns/${item.id}/edit/basic`}>
@@ -115,7 +116,7 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
 
                 {currentUser.id &&
                   (item.ownerId === currentUser.id ||
-                    item.teamMember?.some((x) => {
+                    item.teamMembers?.some((x) => {
                       return x.user.id === currentUser.id && x.confirmStatus === 'Đã xác nhận';
                     })) && (
                     <a className={cx('item-dropdown')} href={`/campaigns/${item.id}/edit/basic`}>

@@ -3,7 +3,7 @@ import styles from '../../Profile.module.scss';
 import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { toast } from 'react-toastify';
@@ -20,7 +20,7 @@ function EditSetting() {
       const state = {
         fullName: user.fullName || '',
         isVerifiedEmail: user.isVerifiedEmail || false,
-        isVerifiedUser: user.isVerifiedUser || false,
+        verifyStatus: user.verifyStatus,
         email: user.email || '',
       };
 
@@ -75,19 +75,19 @@ function EditSetting() {
   return (
     <div className={cx('wrapper')}>
       <div className={cx('navbar')}>
-        <a href={`/individuals/${id}/profile`} className={cx('nav-item')}>
+        <Link to={`/individuals/${id}/profile`} className={cx('nav-item')}>
           <span>
             <MdOutlineRemoveRedEye style={{ fontSize: '24px', marginRight: '8px' }} />
             Xem hồ sơ
           </span>
-        </a>
-        <a href={`/individuals/${id}/edit/profile`} className={cx('nav-item', 'active')}>
+        </Link>
+        <Link to={`/individuals/${id}/edit/profile`} className={cx('nav-item', 'active')}>
           <span>
             {' '}
             <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
             Chỉnh sửa hồ sơ & Cài đặt
           </span>
-        </a>
+        </Link>
       </div>
 
       <div className={cx('body')}>
@@ -95,12 +95,12 @@ function EditSetting() {
 
         <div className={cx('content')}>
           <div className={cx('tabpanel')}>
-            <a href={`/individuals/${id}/edit/profile`} className={cx('tab')}>
+            <Link to={`/individuals/${id}/edit/profile`} className={cx('tab')}>
               Hồ sơ
-            </a>
-            <a href={`/individuals/${id}/edit/settings`} className={cx('tab', 'active')}>
+            </Link>
+            <Link to={`/individuals/${id}/edit/settings`} className={cx('tab', 'active')}>
               Cài đặt
-            </a>
+            </Link>
           </div>
 
           <div className={cx('section-info')} style={{ marginTop: '32px' }}>
@@ -138,7 +138,7 @@ function EditSetting() {
           <div className={cx('section-info')} style={{ marginTop: '32px' }}>
             <h1 className={cx('section-title')} style={{ display: 'flex', alignItems: 'center' }}>
               <span> Xác thực người dùng</span>
-              {userState.isVerifiedUser && (
+              {userState.verifyStatus === 'Đã xác thực' && (
                 <span
                   style={{
                     display: 'inline-block',
@@ -155,7 +155,7 @@ function EditSetting() {
                   Người dùng đã xác minh
                 </span>
               )}
-              {!userState.isVerifiedUser && (
+              {userState.verifyStatus !== 'Đã xác thực' && (
                 <span
                   style={{
                     display: 'inline-block',
@@ -175,7 +175,7 @@ function EditSetting() {
             </h1>
 
             <div style={{ marginTop: '24px' }}>
-              {userState.isVerifiedUser && (
+              {userState.verifyStatus === 'Đã xác thực' && (
                 <div className={cx('entreField')} onClick={handleClickVerify}>
                   <a className={cx('btn', 'btn-ok')} style={{ marginLeft: '0' }}>
                     XEM THÔNG TIN XÁC MINH
@@ -183,7 +183,7 @@ function EditSetting() {
                 </div>
               )}
 
-              {!userState.isVerifiedUser && (
+              {userState.verifyStatus !== 'Đã xác thực' && (
                 <div className={cx('entreField')} onClick={handleClickVerify}>
                   <a onClick={handleClickVerify} className={cx('btn', 'btn-ok')} style={{ marginLeft: '0' }}>
                     XÁC MINH NGƯỜI DÙNG

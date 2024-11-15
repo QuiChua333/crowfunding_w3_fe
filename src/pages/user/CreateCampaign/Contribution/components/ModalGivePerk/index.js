@@ -34,12 +34,31 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
     ward: '',
     detail: '',
     phoneNumber: '',
-    estDelivery: nowDate,
+    estDeliveryDate: nowDate,
   });
 
   const { data: perksData } = useGetPerksHasListItemsByCampaignIdQuery(id);
   useEffect(() => {
     if (perksData) {
+      // let newData = perksData.map((perk) => {
+      //   return {
+      //     ...perk,
+      //     detailPerks: perk.detailPerks?.map((item) => ({
+      //       ...item,
+      //       item: {
+      //         ...item.item,
+      //         ...(item.item.isHasOption
+      //           ? {
+      //               options: item.item.options.map((option) => ({
+      //                 ...option,
+      //                 values: option.values?.split('|') ?? [],
+      //               })),
+      //             }
+      //           : {}),
+      //       },
+      //     })),
+      //   };
+      // });
       setListPerks(perksData);
     }
   }, [perksData]);
@@ -66,6 +85,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
               ...acc,
               {
                 name: cur.item.name,
+                quantity: cur.quantity,
                 optionsString: cur.optionsSelected.map((i) => i.value).join('|'),
               },
             ];
@@ -74,6 +94,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
               ...acc,
               {
                 name: cur.item.name,
+                quantity: cur.quantity,
                 optionsString: '',
               },
             ];
@@ -97,7 +118,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
   const handleClickSubItemSelected = (id) => {
     setListPerksSelected((prev) =>
       [...prev].map((item) => {
-        if (item.perkId === id) {
+        if (item.id === id) {
           return {
             ...item,
             quantity: item.quantity - 1 === 0 ? item.quantity : item.quantity - 1,
@@ -109,7 +130,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
   const handleClickAddItemSelected = (id) => {
     setListPerksSelected((prev) =>
       [...prev].map((item) => {
-        if (item.perkId === id) {
+        if (item.id === id) {
           const quantityAvailable = listPerks.find((i) => i.id === id).quantity;
           return {
             ...item,
@@ -120,11 +141,10 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
     );
   };
   const handleRemoveItemSelected = (id) => {
-    setListPerksSelected((prev) => [...prev].filter((item) => item.perkId !== id));
+    setListPerksSelected((prev) => [...prev].filter((item) => item.id !== id));
     console.log('id', id);
     setListPerks((prev) =>
       [...prev].map((item2) => {
-        console.log('item2', item2.id);
         if (item2.id === id) {
           return {
             ...item2,
@@ -148,25 +168,27 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
       },
       onError(error) {
         dispatch(setLoading(false));
-        console.log(error.message);
+        console.log(error.response.data.message);
       },
     });
   };
   const handleClickAccept = () => {
-    const dateString = address.estDelivery;
+    const dateString = address.estDeliveryDate;
     let dateArray = dateString.split('/');
     let month = parseInt(dateArray[0], 10);
     let year = parseInt(dateArray[1], 10);
     let dateObject = new Date(year, month - 1, 1);
     const gift = {
-      user: userContributionGivePerk.id,
-      campaign: id,
-      shippingInfo: { ...address, estDelivery: dateObject },
+      email: userContributionGivePerk.email,
+      userId: userContributionGivePerk.userId,
+      campaignId: id,
+      shippingInfo: { ...address, estDeliveryDate: dateObject },
       perks: [...listPerksSelected],
-      money: listPerks.reduce((acc, cur) => {
-        return acc + cur.price;
+      money: listPerksSelected.reduce((acc, cur) => {
+        return acc + cur.price * cur.quantity;
       }, 0),
     };
+    console.log({ gift });
     saveGift(gift);
   };
   const dateInputElement = useRef(null);
@@ -177,12 +199,12 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
   const handleChangeDateInput = (e) => {
     let value = e.target.value;
     if (!value) {
-      setAddress((prev) => ({ ...prev, estDelivery: '' }));
+      setAddress((prev) => ({ ...prev, estDeliveryDate: '' }));
       return;
     }
     const res = convertDate2(value);
 
-    setAddress((prev) => ({ ...prev, estDelivery: res }));
+    setAddress((prev) => ({ ...prev, estDeliveryDate: res }));
   };
   const handleChangeInput = (e) => {
     const name = e.target.name;
@@ -210,7 +232,7 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
                 <div style={{ position: 'relative', width: 'fit-content' }} onClick={handleMouseOverDateFilter}>
                   <div className={cx('function-button')}>
                     <span className={cx('btn', 'btn-succeed')} style={{ fontSize: '14px' }}>
-                      {address.estDelivery}
+                      {address.estDeliveryDate}
                       <AiFillCaretDown style={{ marginLeft: '4px' }} />
                     </span>
                   </div>

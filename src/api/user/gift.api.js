@@ -3,7 +3,7 @@ import { baseUrl } from '~/utils';
 
 // handleAPI
 export const addGift = async (body) => {
-  const response = await CustomAxios.post(`${baseUrl}/gift/addGift`, body);
+  const response = await CustomAxios.post(`${baseUrl}/gift`, body);
   return response.data;
 };
 
@@ -13,7 +13,14 @@ export const editGiftStatus = async (body) => {
   return response.data;
 };
 
-export const getAllGiftsByCampaign = async ({ id, queryString }) => {
-  const response = await CustomAxios.get(`${baseUrl}/gift/getAllGiftsByCampaign/${id}?${queryString}`);
+export const getAllGiftsByCampaign = async ({ campaignId, searchString, status, page }) => {
+  const queryParams = {
+    campaignId,
+    searchString,
+    status,
+    page,
+  };
+  const queryString = new URLSearchParams(queryParams).toString();
+  const response = await CustomAxios.get(`${baseUrl}/gift/campaign/${campaignId}?${queryString}`);
   return response.data;
 };

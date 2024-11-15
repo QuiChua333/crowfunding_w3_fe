@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import formatMoney from '~/utils/formatMoney';
 import { BiPlus } from 'react-icons/bi';
 import { HiOutlineMinusSm } from 'react-icons/hi';
@@ -10,7 +10,7 @@ function ItemSelected({ item, handleClickSub, handleClickAdd, handleRemove }) {
         <div style={{ marginTop: '-6px' }}>
           <div style={{ fontSize: '16px', margin: 'auto 0', fontWeight: '600' }}>{item.name}</div>
           <div style={{ display: 'flex', flexDirection: 'column', fontSize: '14px' }}>
-            {item.options.map((option, index) => {
+            {item.options?.map((option, index) => {
               return (
                 <span key={index}>
                   {`${option.quantity} ${option.name}`}

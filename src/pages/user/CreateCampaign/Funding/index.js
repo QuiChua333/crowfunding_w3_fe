@@ -20,7 +20,7 @@ function FundingCampaign() {
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    setCampaignState((prev) => ({ ...prev, [name]: Number(value) }));
+    setCampaignState((prev) => ({ ...prev, [name]: value }));
   };
 
   const [isEditComponent, setEditComponent] = useState(true);
@@ -115,7 +115,7 @@ function FundingCampaign() {
   const editCampaignByIdMutation = useEditCampaignByIdMutation();
   const queryClient = useQueryClient();
   const handleClickSaveContinue = async () => {
-    const body = { ...campaignState };
+    const body = { ...campaignState, goal: Number(campaignState.goal) };
 
     let flagGoal = validateGoal(body.goal);
     let flagBankAccountNumber = validateBankAccountNumber(body.bankAccountNumber);
@@ -224,7 +224,7 @@ function FundingCampaign() {
             không thể chuyển tiền cho bạn.
           </div>
           <input
-            type="number"
+            type="text"
             className={cx('itext-field', 'account-number-input')}
             placeholder="000000000000"
             value={campaignState.bankAccountNumber}

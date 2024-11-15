@@ -13,7 +13,11 @@ export const getAllReports = async ({ page, status, searchString }) => {
   return response.data;
 };
 
-export const replyComplaint = async (dataApi) => {
-  const response = await CustomAxios.patch(dataApi.url, dataApi.data);
+export const replyComplaint = async ({ reportId, formData }) => {
+  const response = await CustomAxios.post(`${baseUrl}/report-response/report/${reportId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 };

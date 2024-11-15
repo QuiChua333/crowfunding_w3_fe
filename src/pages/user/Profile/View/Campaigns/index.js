@@ -7,12 +7,10 @@ import { Link, useParams } from 'react-router-dom';
 import ItemCampaign from './components/ItemCampaign';
 import { useSelector } from 'react-redux';
 import { useGetCampaignsFollowedQuery } from '~/hooks/api/queries/user/follow-campaign.query';
-import { useGetCampaignsOfOwnerQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useGetCampaignsOfMemberQuery, useGetCampaignsOfOwnerQuery } from '~/hooks/api/queries/user/campaign.query';
 const cx = classNames.bind(styles);
 function ViewCampaigns() {
-  const [isHasCampaign, setHasCampaign] = useState(false);
   const [isHasCampaignMember, setHasCampaignMember] = useState(false);
-  const [isHasCampaignFollowed, setHasCampaignFollowed] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
   const { id } = useParams();
   const [campaignsOfUser, setCampaignOfUser] = useState([]);
@@ -29,7 +27,7 @@ function ViewCampaigns() {
   // const { data: dataUser } = useGetInfoUserQuery(id);
 
   const { data: dataCampaignsFollowed, refetch } = useGetCampaignsFollowedQuery(id);
-
+  const { data: dataCampaignsMember } = useGetCampaignsOfMemberQuery(id);
   useEffect(() => {
     if (dataCampaignsFollowed) {
       setCampaignsFollowed(dataCampaignsFollowed);
@@ -116,30 +114,38 @@ function ViewCampaigns() {
               </span>
             </div>
 
-            {campaignsOfUser.map((item, index) => {
-              if (
-                item.teamMembers?.some((x) => {
-                  return x.user.id === id && x.isAccepted === true;
-                }) &&
-                (item.status === 'Đang gây quỹ' ||
-                  item.status === 'Đã kết thúc' ||
-                  item.team?.some((x) => {
-                    return x.user === currentUser.id && x.isAccepted === true;
-                  }))
-              ) {
-                if (!isHasCampaignMember) setHasCampaignMember(true);
-                return <ItemCampaign key={index} item={item} />;
-              } else return <></>;
-            })}
-            {!isHasCampaignMember && (
-              <>
-                {id !== currentUser.id ? (
-                  <p>Hiện người này chưa là thành viên của chiến dịch gây quỹ chính thức nào!</p>
-                ) : (
-                  <p>Hiện bạn chưa chưa là thành viên của chiến dịch gây quỹ chính thức nào!</p>
-                )}
-              </>
+            {dataCampaignsMember?.length === 0 && !currentUser.id && (
+              <p>Hiện người này chưa là thành viên của chiến dịch gây quỹ chính thức nào!</p>
             )}
+            {dataCampaignsMember?.length === 0 && currentUser.id && currentUser.id === id && (
+              <p>Hiện bạn chưa chưa là thành viên của chiến dịch gây quỹ chính thức nào!</p>
+            )}
+            {dataCampaignsMember?.length === 0 && currentUser.id && currentUser.id !== id && (
+              <p>Hiện người này chưa là thành viên của chiến dịch gây quỹ chính thức nào!</p>
+            )}
+            {dataCampaignsMember?.length > 0 &&
+              currentUser.id &&
+              currentUser.id === id &&
+              dataCampaignsMember?.map((item, index) => {
+                return <ItemCampaign key={index} item={item} />;
+              })}
+
+            {dataCampaignsMember?.length > 0 &&
+              currentUser.id &&
+              currentUser.id !== id &&
+              dataCampaignsMember
+                ?.filter((campaign) => campaign.status !== 'Bản nháp')
+                .map((item, index) => {
+                  return <ItemCampaign key={index} item={item} />;
+                })}
+
+            {dataCampaignsMember?.length > 0 &&
+              !currentUser.id &&
+              dataCampaignsMember
+                ?.filter((campaign) => campaign.status !== 'Bản nháp')
+                .map((item, index) => {
+                  return <ItemCampaign key={index} item={item} />;
+                })}
           </div>
 
           {currentUser.id && currentUser.id === id && (
@@ -158,12 +164,10 @@ function ViewCampaigns() {
                   Dự án đang theo dõi
                 </span>
               </div>
-
+              {campaignsFollowed?.length === 0 && <p>Bạn hiện chưa theo dõi chiến dịch nào!</p>}
               {campaignsFollowed?.map((item, index) => {
-                if (!isHasCampaignFollowed) setHasCampaignFollowed(true);
                 return <ItemCampaign key={index} item={item} />;
               })}
-              {!isHasCampaignFollowed && <p>Bạn hiện chưa theo dõi chiến dịch nào!</p>}
             </div>
           )}
         </div>

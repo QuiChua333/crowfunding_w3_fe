@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setMessageBox } from '~/redux/slides/GlobalApp';
 import { useSendReportCampaignMutation } from '~/hooks/api/mutations/user/report.mutation';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,7 @@ function ModalReport({ setIsOpenModalReport }) {
   const messageBox = useSelector((state) => state.globalApp.messageBox);
   const [topic, setTopic] = useState('');
   const [textContent, setTextContent] = useState('');
+  const [files, setFiles] = useState([]);
   const [images, setImages] = useState([]);
   const [textValidate, setTextValidate] = useState('');
   const [showTextValidate, setShowTextValidate] = useState(false);
@@ -37,6 +39,7 @@ function ModalReport({ setIsOpenModalReport }) {
       if (!images.some((e) => e.name === files[i].name)) {
         const reader = new FileReader();
         reader.readAsDataURL(files[i]);
+        setFiles((prev) => [...prev, files[i]]);
         reader.onload = () => {
           setImages((prevImages) => [
             ...prevImages,
@@ -66,35 +69,32 @@ function ModalReport({ setIsOpenModalReport }) {
       setTextValidate('');
       setShowTextValidate(false);
       dispatch(setLoading(true));
-      const newListImage = images.map((itemp) => {
-        return itemp.imageBase64;
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append('files', file);
       });
-      const data = {
-        campaignId: id,
-        title: topic.toUpperCase(),
-        content: textContent,
-        images: [...newListImage],
-      };
+      formData.append('title', topic);
+      formData.append('campaignId', id);
+      formData.append('content', textContent);
 
-      sendReport.mutate(data, {
+      sendReport.mutate(formData, {
         onSuccess: (res) => {
-          if (res?.data) {
-            dispatch(setLoading(false));
-            setIsOpenModalReport(false);
-            dispatch(
-              setMessageBox({
-                title: 'Thông báo',
-                content:
-                  'Báo cáo của bạn đã được gửi đến chung tôi, chúng tôi sẽ phản hồi báo cáo của bạn sớm nhất thông qua email!',
-                contentOK: 'OK',
-                isShow: true,
-                type: `report${idCampaign.id}`,
-              }),
-            );
-          }
+          dispatch(setLoading(false));
+          setIsOpenModalReport(false);
+          dispatch(
+            setMessageBox({
+              title: 'Thông báo',
+              content:
+                'Báo cáo của bạn đã được gửi đến chung tôi, chúng tôi sẽ phản hồi báo cáo của bạn sớm nhất thông qua email!',
+              contentOK: 'OK',
+              isShow: true,
+              type: `report${idCampaign.id}`,
+            }),
+          );
         },
         onError: (error) => {
-          console.log(error.message);
+          toast.error(error.response.data.message);
+          console.log(error.response.data.message);
         },
         onSettled: () => {
           dispatch(setLoading(false));

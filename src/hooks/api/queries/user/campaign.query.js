@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   getCampaignById,
+  getCampaignsOfMember,
   getCampaignsOfOwner,
   getCampaignsOfUser,
   getCampainsExplore,
@@ -8,6 +9,7 @@ import {
   getQuantityCampaignsOfOwner,
   getQuantityCampaignsOfUser,
   getQuantitySuccessCampaignByCampaignId,
+  getQuantitySuccessCampaignsOfUser,
 } from '~/api/user/campaign.api';
 
 // handleAPI
@@ -38,6 +40,15 @@ export const useGetCampaignsOfOwnerQuery = (id) => {
 };
 
 // handleAPI
+export const useGetCampaignsOfMemberQuery = (id) => {
+  return useQuery({
+    queryKey: [`useGetCampaignsOfMemberQuery`],
+    queryFn: () => getCampaignsOfMember(id),
+    refetchOnWindowFocus: false,
+  });
+};
+
+// handleAPI
 export const useGetQuantityCampaignsOfOwnerQuery = (campaignId) => {
   return useQuery({
     queryKey: [`useGetQuantityCampaignsOfOwnerQuery`],
@@ -56,10 +67,10 @@ export const useGetCampaignsOfUserQuery = (id) => {
 };
 
 // handleAPI
-export const useGetQuantityCampaignOfUserQuery = (id) => {
+export const useGetQuantitySuccessCampaignsOfUserQuery = (id) => {
   return useQuery({
-    queryKey: [`getQuantityCampaignOfUser`],
-    queryFn: () => getQuantityCampaignsOfUser(id),
+    queryKey: [`useGetQuantitySuccessCampaignsOfUserQuery`],
+    queryFn: () => getQuantitySuccessCampaignsOfUser(id),
     refetchOnWindowFocus: false,
   });
 };
