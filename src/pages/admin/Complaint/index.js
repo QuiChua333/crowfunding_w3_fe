@@ -63,7 +63,10 @@ function ComplaintManagement() {
           }}
         >
           <div className="max-w-[600px] w-[600px]">
-            <Search handleChangeInput={handleChangeSearchInput} />
+            <Search
+              handleChangeInput={handleChangeSearchInput}
+              placeholder={'Tìm theo tên chiến dịch, tiêu đề, họ tên, email người gửi'}
+            />
           </div>
           <div>
             <label style={{ marginBottom: '4px' }}>Trạng thái</label>

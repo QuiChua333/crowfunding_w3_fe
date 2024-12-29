@@ -198,7 +198,7 @@ function ContributionCampaign() {
                 </div>
               </div>
               <div style={{ marginBottom: '24px', maxWidth: '600px' }}>
-                <Search handleChangeInput={handleChangeSearchInput} />
+                <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm đóng góp, tên, email'} />
               </div>
               <div className={cx('table-action')}>
                 <div style={{ opacity: numberSelected === 0 && '0' }}>
@@ -300,7 +300,7 @@ function ContributionCampaign() {
                           Thành công
                         </div>
                       )}
-                      {campaign.status !== 'Đã hoàn thành' && (
+                      {campaign.status === 'Thất bại' && (
                         <div
                           style={{
                             padding: '4px 16px',
@@ -394,7 +394,7 @@ function ContributionCampaign() {
                 </div>
               </div>
               <div style={{ marginBottom: '24px', maxWidth: '600px' }}>
-                <Search handleChangeInput={handleChangeSearchInputGift} />
+                <Search handleChangeInput={handleChangeSearchInputGift} placeholder={'Tìm kiếm email'} />
               </div>
               <div className={cx('table-action')}>
                 <div style={{ opacity: numberSelected === 0 && '0' }}>

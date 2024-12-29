@@ -8,6 +8,7 @@ const initialState = {
   },
   showErrorDelete: false,
   contentError: '',
+  errorOf: '',
   isEditAll: true,
   isEditComponent: true,
 };
@@ -34,8 +35,12 @@ const slice = createSlice({
     setEditComponent: (state, action) => {
       state.isEditComponent = action.payload;
     },
+    setErrofOf: (state, action) => {
+      state.errorOf = action.payload;
+    },
   },
 });
 
 export default slice.reducer;
-export const { setShowErrorDelete, setContentError, setEditAll, setEditComponent, setCampaign, setTab } = slice.actions;
+export const { setShowErrorDelete, setContentError, setEditAll, setEditComponent, setCampaign, setTab, setErrofOf } =
+  slice.actions;

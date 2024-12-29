@@ -32,6 +32,8 @@ function FundingCampaign() {
         bankAccountNumber: campaign.bankAccountNumber || '',
         bankName: campaign.bankName || '',
         bankUsername: campaign.bankUsername || '',
+        cryptocurrencyMode: campaign.cryptocurrencyMode,
+        walletAddress: campaign.walletAddress,
       };
 
       setCampaignState({ ...infoBasic });
@@ -90,6 +92,22 @@ function FundingCampaign() {
     }
   };
 
+  const [textValidateWalletAddress, setTextValidateWalletAddress] = useState('');
+  const validateWalletAddress = (value) => {
+    if (!campaignState.cryptocurrencyMode) {
+      setTextValidateWalletAddress('');
+      return true;
+    }
+
+    if (!value || value?.trim().length === 0 || value?.trim() === '') {
+      setTextValidateWalletAddress('* Vui lòng nhập địa chỉ ví ảo');
+      return false;
+    } else {
+      setTextValidateWalletAddress('');
+      return true;
+    }
+  };
+
   const [textBankName, setTextBankName] = useState('');
   const validateBankName = (value) => {
     if (value?.trim().length === 0 || value?.trim() === '') {
@@ -121,8 +139,9 @@ function FundingCampaign() {
     let flagBankAccountNumber = validateBankAccountNumber(body.bankAccountNumber);
     let flagBankName = validateBankName(body.bankName);
     let flagBankUsername = validateBankUsername(body.bankUsername);
+    let flagWalletAddress = validateWalletAddress(body.walletAddress);
 
-    if (flagGoal && flagBankAccountNumber && flagBankName && flagBankUsername) {
+    if (flagGoal && flagBankAccountNumber && flagBankName && flagBankUsername && flagWalletAddress) {
       dispatch(setLoading(true));
       editCampaignByIdMutation.mutate(
         {
@@ -144,6 +163,13 @@ function FundingCampaign() {
       );
     }
   };
+
+  const handleCheckOn = () => {
+    setCampaignState((prev) => ({ ...prev, cryptocurrencyMode: true }));
+  };
+  const handleCheckOff = () => {
+    setCampaignState((prev) => ({ ...prev, cryptocurrencyMode: false }));
+  };
   useEffect(() => {
     dispatch(
       setTab({
@@ -152,6 +178,7 @@ function FundingCampaign() {
       }),
     );
   }, []);
+
   return (
     <div className={cx('body-content')}>
       <div className={cx('entreSection')}>
@@ -267,6 +294,75 @@ function FundingCampaign() {
           />
           <span className={cx('entreField-validationLabel')}>{textBankUsername}</span>
         </div>
+        <div style={{ marginTop: '60px', borderTop: '1px solid #C8C8C8', textAlign: 'right' }}></div>
+      </div>
+
+      <div className={cx('entreSection')}>
+        <div className={cx('entreField-header')}>Thông tin ví tiền ảo</div>
+        <div className={cx('entreField-subHeader')}>
+          Điền thông tin ví ảo để các giao dịch có thể thực hiện thanh toán dưới hình thức tiền ảo
+        </div>
+        <div className={cx('entreField')}>
+          <label className={cx('entreField-label')}>Chế độ kích hoạt</label>
+          <div className={cx('entreField-subLabel')}>
+            Bạn có thể thay đổi chế độ kích hoạt thanh toán bằng tiền ảo bất kỳ lúc nào. Thay đổi chế độ thành tắt nếu
+            bạn không muốn hoặc chưa sẵn sàng nhận đóng góp bằng tiền ảo.
+          </div>
+          <div style={{ marginTop: '16px' }}>
+            <label className={cx('inputRadioGroup-radio')}>
+              <input
+                type="radio"
+                value={'INVS'}
+                name="perkVisibility"
+                onChange={handleCheckOff}
+                checked={!campaignState.cryptocurrencyMode}
+              />
+              <span className={cx('inputRadioGroup-radio-button')}></span>
+              <span className={cx('inputRadioGroup-radio-label')}>
+                <strong>Tắt. </strong> <span>Đặc quyền không thể thanh toán bằng tiền ảo</span>
+              </span>
+            </label>
+
+            <label className={cx('inputRadioGroup-radio')}>
+              <input
+                type="radio"
+                value={'VSBL'}
+                name="perkVisibility"
+                defaultChecked
+                onChange={handleCheckOn}
+                checked={campaignState.cryptocurrencyMode}
+              />
+              <span className={cx('inputRadioGroup-radio-button')}></span>
+              <span className={cx('inputRadioGroup-radio-label')}>
+                <strong>Bật. </strong> <span>Đặc quyền có thể thanh toán bằng tiền ảo</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        {campaignState.cryptocurrencyMode && (
+          <>
+            <div className={cx('entreField')}>
+              <label className={cx('entreField-label')}>
+                Địa chỉ ví <span className={cx('entreField-required')}>*</span>
+              </label>
+              <div className={cx('entreField-subLabel')}>
+                Nhập địa chỉ ví nhận tiền đóng góp đặc quyền. Hãy đảm bảo địa chỉ ví thật chính xác, nếu không chúng tôi
+                sẽ không thể chuyển tiền cho bạn.
+              </div>
+              <input
+                type="text"
+                className={cx('itext-field', 'account-number-input')}
+                placeholder="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+                value={campaignState.walletAddress}
+                onChange={handleChangeInputText}
+                name="walletAddress"
+              />
+              <span className={cx('entreField-validationLabel')}>{textValidateWalletAddress}</span>
+            </div>
+          </>
+        )}
+
         <div className={cx('container-btn')}>
           <span onClick={handleClickSaveContinue} className={cx('btn-ok')}>
             LƯU VÀ TIẾP TỤC

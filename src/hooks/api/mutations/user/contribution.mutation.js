@@ -1,6 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { editContributionStatus, paymentMomo, paymentStripe, paymentSuccess } from '~/api/user/contribution.api';
+import {
+  editContributionStatus,
+  paymentCrypto,
+  paymentMomo,
+  paymentStripe,
+  paymentSuccess,
+} from '~/api/user/contribution.api';
 
 // handleAPI
 export const useEditContributionStatusMutation = () => {
@@ -23,6 +29,14 @@ export const usePaymentMomoMutation = () => {
   return useMutation({
     mutationKey: [`usePaymentMomoMutation`],
     mutationFn: paymentMomo,
+  });
+};
+
+// handleAPI
+export const usePaymentCryptoMutation = () => {
+  return useMutation({
+    mutationKey: [`usePaymentCryptoMutation`],
+    mutationFn: paymentCrypto,
   });
 };
 

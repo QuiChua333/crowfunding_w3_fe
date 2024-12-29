@@ -16,7 +16,8 @@ function DetailPerk() {
   const location = useLocation();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
-  const itemPerkSelectedFirst = location.state;
+  const itemPerkSelectedFirst = location.state.perkSelected;
+  const cryptocurrencyMode = location.state.cryptocurrencyMode;
   const [quantityContribute, setQuantityContribute] = useState(0);
   const [listSelected, setListSelected] = useState([]);
   const [listPerkByCampaignId, setListPerkByCampaignId] = useState([]);
@@ -89,7 +90,11 @@ function DetailPerk() {
         }
       });
 
-      setListPerkByCampaignId(arr);
+      if (cryptocurrencyMode) {
+        setListPerkByCampaignId(arr);
+      } else {
+        setListPerkByCampaignId(arr.filter((perk) => !perk.isNFT));
+      }
     }
   }, [data]);
 
@@ -170,7 +175,9 @@ function DetailPerk() {
         image: item.image,
         name: item.name,
         quantity: item.quantityOrder,
+        ethPrice: item.ethPrice,
         price: item.price,
+        isNFT: item.isNFT,
         options: item.detailPerks.reduce((acc, cur) => {
           if (cur.optionsSelected && cur.optionsSelected.length > 0) {
             return [
@@ -209,8 +216,10 @@ function DetailPerk() {
     );
     const state = {
       total: total,
+      totalETH,
       listPerkPayment: listPayment,
       estDeliveryDate,
+      cryptocurrencyMode,
     };
     navigate(`/project/${id}/payments/new/checkout`, {
       state: {
@@ -233,12 +242,20 @@ function DetailPerk() {
   };
 
   const [total, setTotal] = useState(0);
+  const [totalETH, setTotalETH] = useState(0);
   useEffect(() => {
     setTotal(() => {
       const res = listSelected.reduce((acc, cur) => {
         return acc + cur.quantityOrder * cur.price;
       }, 0);
       return res;
+    });
+
+    setTotalETH(() => {
+      const res = listSelected.reduce((acc, cur) => {
+        return acc + cur.quantityOrder * Number(cur.ethPrice * 1000000);
+      }, 0);
+      return res / 1000000;
     });
   }, [listSelected]);
 
@@ -258,6 +275,7 @@ function DetailPerk() {
                   setPerkSelected={setPerkSelected}
                   setIsOpenModal={setIsOpenModal}
                   setIsOpenModalUpdate={setIsOpenModalUpdate}
+                  cryptocurrencyMode={cryptocurrencyMode}
                 />
               );
             })}
@@ -269,7 +287,7 @@ function DetailPerk() {
             <span className={cx('title')}>
               Đóng góp của bạn
               <span className={cx('value')}>
-                (<span>{quantityContribute}</span> item)
+                (<span>{quantityContribute}</span> đặc quyền)
               </span>
             </span>
             <div className={cx('custom-scroll-2')}>
@@ -284,6 +302,7 @@ function DetailPerk() {
                     setIsOpenModal={setIsOpenModal}
                     handleChangeQuantityOrder={handleChangeQuantityOrder}
                     handleClickRemoveItem={handleClickRemoveItem}
+                    cryptocurrencyMode={cryptocurrencyMode}
                   />
                 );
               })}
@@ -294,6 +313,14 @@ function DetailPerk() {
             <div className={cx('container-total')}>
               <span>Tổng tiền: </span>
               <b>{formatMoney(total)} VND</b>
+            </div>
+            <div className="flex items-center justify-end">
+              {cryptocurrencyMode && (
+                <>
+                  <span className="font-[600] mr-1">{`${totalETH}`} </span>
+                  <span>{'ETH'}</span>
+                </>
+              )}
             </div>
 
             <div className={cx('separate')}></div>
@@ -311,6 +338,7 @@ function DetailPerk() {
           handleSelectedItem={handleSelectedItem}
           itemPerk={perkSelected}
           setIsOpenModal={setIsOpenModal}
+          cryptocurrencyMode={cryptocurrencyMode}
         />
       )}
     </div>

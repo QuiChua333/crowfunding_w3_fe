@@ -153,10 +153,10 @@ function DropDown({ menu, onClickItem, index, campaign, getAllCampaigns }) {
           Phê duyệt dự án
         </div>
       )}
-      <div style={{ height: '1px', background: '#ccc' }}></div>
+      {/* <div style={{ height: '1px', background: '#ccc' }}></div>
       <div className={cx('action', 'action-delete')} onClick={handleAdminDelete}>
         Xóa dự án
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -20,6 +20,8 @@ function ViewContributes() {
   const [user, setUser] = useState({});
   const currentUser = useSelector((state) => state.user.currentUser);
 
+  const [date, setDate] = useState();
+
   const { data: dataUser } = useGetInfoUserQuery(id);
   useEffect(() => {
     if (dataUser) {
@@ -31,7 +33,15 @@ function ViewContributes() {
     searchString: '',
     status: 'Tất cả',
     page: 1,
+    sortContributionDate: 'Tất cả',
   });
+
+  const handleClickItemFilterTime = (item) => {
+    setFilter((prev) => ({
+      ...prev,
+      sortContributionDate: item,
+    }));
+  };
   const handleClickItemFilter = (item) => {
     setFilter((prev) => ({ ...prev, status: item }));
   };
@@ -109,25 +119,43 @@ function ViewContributes() {
                   }}
                 >
                   <div style={{ maxWidth: '600px', width: '500px' }}>
-                    <Search handleChangeInput={handleChangeSearchInput} />
+                    <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm theo tên chiến dịch'} />
                   </div>
-
-                  <div>
-                    <span
-                      style={{
-                        fontSize: '16px',
-                        color: '#888',
-                        fontWeight: '550',
-                        display: 'block',
-                        marginBottom: '8px',
-                      }}
-                    >
-                      Trạng thái:{' '}
-                    </span>
-                    <Filter
-                      handleClickItem={handleClickItemFilter}
-                      listConditions={['Tất cả', 'Đã nhận', 'Chưa nhận']}
-                    />
+                  <div className="flex gap-10">
+                    <div>
+                      <span
+                        style={{
+                          fontSize: '16px',
+                          color: '#888',
+                          fontWeight: '550',
+                          display: 'block',
+                          marginBottom: '8px',
+                        }}
+                      >
+                        Thời gian:{' '}
+                      </span>
+                      <Filter
+                        handleClickItem={handleClickItemFilterTime}
+                        listConditions={['Tất cả', 'Gần đây nhất', 'Sớm nhất']}
+                      />
+                    </div>
+                    <div>
+                      <span
+                        style={{
+                          fontSize: '16px',
+                          color: '#888',
+                          fontWeight: '550',
+                          display: 'block',
+                          marginBottom: '8px',
+                        }}
+                      >
+                        Trạng thái:{' '}
+                      </span>
+                      <Filter
+                        handleClickItem={handleClickItemFilter}
+                        listConditions={['Tất cả', 'Đã nhận', 'Chưa nhận']}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div style={{ marginTop: '20px' }}>

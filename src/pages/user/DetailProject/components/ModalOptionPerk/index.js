@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk }) {
+function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk, cryptocurrencyMode }) {
   console.log('ModalOptionPerk');
   const navigate = useNavigate();
   const { id } = useParams();
@@ -35,19 +35,22 @@ function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk }) {
   }, [optionsSelectedItems]);
   const handleClickPayment = () => {
     const state = {
-      ...itemPerk,
-      detailPerks: [...itemPerk.detailPerks].map((i) => {
-        if (i.item.isHasOption && i.item.options.length > 0) {
-          return {
-            ...i,
-            optionsSelected: optionsSelectedItems.find((j) => {
-              return j.name === i.item.name;
-            }),
-          };
-        } else {
-          return i;
-        }
-      }),
+      perkSelected: {
+        ...itemPerk,
+        detailPerks: [...itemPerk.detailPerks].map((i) => {
+          if (i.item.isHasOption && i.item.options.length > 0) {
+            return {
+              ...i,
+              optionsSelected: optionsSelectedItems.find((j) => {
+                return j.name === i.item.name;
+              }),
+            };
+          } else {
+            return i;
+          }
+        }),
+      },
+      cryptocurrencyMode,
     };
     navigate(`/project/${id}/perk/detail`, {
       state,
@@ -105,7 +108,7 @@ function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk }) {
         </div>
         <div className={cx('container-body-2')}>
           <div className={cx('container')}>
-            <PerkItem isShowButton={false} item={itemPerk} />
+            <PerkItem isShowButton={false} item={itemPerk} cryptocurrencyMode={cryptocurrencyMode} />
           </div>
 
           <div className={cx('container')}>

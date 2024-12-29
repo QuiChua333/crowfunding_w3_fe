@@ -71,9 +71,9 @@
           .container-input {
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 10px;
-            align-items: center;
 
             .input-price {
               width: 70%;
@@ -202,9 +202,9 @@
           .container-input {
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 10px;
-            align-items: center;
 
             .input-price {
               width: 70%;
@@ -333,9 +333,9 @@
           .container-input {
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 12px;
             margin-bottom: 10px;
-            align-items: center;
 
             .input-price {
               width: 70%;

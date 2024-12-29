@@ -5,7 +5,14 @@ import PerkItem from '~/components/PerkItem';
 
 const cx = classNames.bind(styles);
 
-function ModalDetailPerk({ itemPerk, setIsOpenModal, handleSelectedItem, isOpenModalUpdate, handleEditListSelected }) {
+function ModalDetailPerk({
+  itemPerk,
+  setIsOpenModal,
+  handleSelectedItem,
+  isOpenModalUpdate,
+  handleEditListSelected,
+  cryptocurrencyMode,
+}) {
   console.log('ModalDetailPerk');
 
   const [optionsSelectedItems, setOptionsSelectedItems] = useState(() => {
@@ -100,7 +107,7 @@ function ModalDetailPerk({ itemPerk, setIsOpenModal, handleSelectedItem, isOpenM
         </div>
         <div className={cx('container-2')}>
           <div style={{ width: '50%' }}>
-            <PerkItem isShowButton={false} item={itemPerk} />
+            <PerkItem isShowButton={false} item={itemPerk} cryptocurrencyMode={cryptocurrencyMode} />
           </div>
 
           <div style={{ width: '50%' }}>

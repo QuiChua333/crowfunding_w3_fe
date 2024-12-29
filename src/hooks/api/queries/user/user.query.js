@@ -23,10 +23,10 @@ export const useGetInfoUserQuery = (id) => {
   });
 };
 
-export const useGetAllContributesOfUserQuery = ({ page, searchString, status, userId }) => {
+export const useGetAllContributesOfUserQuery = ({ page, searchString, status, userId, sortContributionDate }) => {
   return useQuery({
-    queryKey: ['getAllContributesOfUser', page, searchString, status],
-    queryFn: () => getAllContributesOfUser({ page, searchString, status, userId }),
+    queryKey: ['getAllContributesOfUser', page, searchString, status, sortContributionDate],
+    queryFn: () => getAllContributesOfUser({ page, searchString, status, userId, sortContributionDate }),
     refetchOnWindowFocus: false,
   });
 };

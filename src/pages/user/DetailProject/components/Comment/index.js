@@ -24,7 +24,7 @@ const Comments = ({ campaign, comments, setComments, members }) => {
   const removeComment = useDeleteCommentMutation();
   const handleRemoveComment = async (comment) => {
     dispatch(setLoading(true));
-    const deleteArr = [...comments.filter((cm) => cm.reply.id === comment.id), comment];
+    const deleteArr = [...comments.filter((cm) => cm.reply?.id === comment.id), comment];
     for (let i = 0; i < deleteArr.length; i++) {
       removeComment.mutate(deleteArr[i].id, {
         onSuccess: () => {

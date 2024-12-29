@@ -6,6 +6,7 @@ import { BiMap, BiMapPin, BiSitemap, BiPhoneCall, BiMessageSquareDetail } from '
 import ItemPayment from '~/pages/user/Payment/components/ItemPayment';
 import formatMoney from '~/utils/formatMoney';
 import { convertDateFromString } from '~/utils';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 
 const cx = classNames.bind(styles);
 
@@ -35,7 +36,10 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                   </div>
                   <div className={cx('form-group')}>
                     <label>{contribution.perks?.length > 0 ? 'Tiền đặc quyền: ' : 'Tiền thanh toán: '} </label>
-                    <div className={cx('info-value')}>{formatMoney(Number(contribution.amount))} VNĐ</div>
+                    <div className={cx('info-value')}>
+                      {formatMoney(Number(contribution.amount))} VNĐ{' '}
+                      {contribution.method === 'crypto' && `(${contribution.amountCrypto} ETH)`}
+                    </div>
                   </div>
                 </div>
                 <div style={{ width: '40%' }}>
@@ -61,6 +65,48 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                   <div className={cx('info-value')}>{convertDateFromString(contribution.date, 'less')}</div>
                 </div>
               </div>
+
+              {contribution.method === 'crypto' && (
+                <>
+                  <div style={{ display: 'flex', gap: '48px' }}>
+                    <div className={cx('form-group', 'single')}>
+                      <label>Mã giao dịch: </label>
+                      <div className={cx('info-value')}>{contribution.transactionHash}</div>
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${contribution.transactionHash}`}
+                        target="_blank"
+                        title="Khám phá"
+                        style={{ marginLeft: '8px' }}
+                      >
+                        <FaExternalLinkAlt className="text-[20px] cursor-pointer hover:opacity-80" />
+                      </a>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '48px' }}>
+                    <div className={cx('form-group', 'single')}>
+                      <label>Ví giao dịch: </label>
+                      <div className={cx('info-value')}>{contribution.customerWalletAddress}</div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div style={{ display: 'flex', gap: '48px' }}>
+                <div
+                  className={cx('form-group', 'single')}
+                  style={{ width: contribution.method !== 'crypto' ? '40%' : '100%' }}
+                >
+                  <label style={{ width: '200px' }}>Phương thức thanh toán: </label>
+                  <div className={cx('info-value')}>
+                    {contribution.method === 'momo'
+                      ? 'Momo'
+                      : contribution.method === 'stripe'
+                      ? 'Stripe'
+                      : 'Tiền ảo ETH'}{' '}
+                  </div>
+                </div>
+              </div>
               {contribution.perks?.length > 0 && (
                 <div style={{ display: 'flex', overflow: 'hidden', marginTop: '16px' }}>
                   <div style={{ marginTop: '16px', width: '45%', marginRight: '32px' }}>
@@ -69,7 +115,7 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                     </label>
                     <div className={cx('order-item-wrapper')}>
                       {contribution.perks?.map((item, index) => {
-                        return <ItemPayment key={index} index={index} item={item} />;
+                        return <ItemPayment key={index} index={index} item={item} modalContribution={true} />;
                       })}
                     </div>
                     <div></div>

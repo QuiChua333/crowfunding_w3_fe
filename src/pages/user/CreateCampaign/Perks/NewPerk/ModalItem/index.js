@@ -119,7 +119,7 @@ function ModalItem({ setShowModal, addNewItem, optionEdit, updateItem }) {
                 className={cx('itext-field')}
                 value={itemName}
               />
-              <div className={cx('entreField-validationLabel')}>30</div>
+              {/* <div className={cx('entreField-validationLabel')}>30</div> */}
             </div>
 
             <div className={cx('entreField')} style={{ marginTop: '60px' }}>
@@ -152,24 +152,25 @@ function ModalItem({ setShowModal, addNewItem, optionEdit, updateItem }) {
               </div>
             </div>
             {chooseOption && (
-              <>
+              <div className="w-[80%]">
                 <div className={cx('entreField')}>
                   <div className={cx('inputDoubleField-headers')} style={{ display: 'flex' }}>
-                    <div style={{ padding: '6px' }} class="col-4">
+                    <div style={{ padding: '6px' }} className="w-4/12">
                       <label className={cx('entreField-label')} style={{ marginBottom: '0px' }}>
                         Tên tùy chọn
                       </label>
                     </div>
-                    <div style={{ padding: '6px' }} class="col-8">
+                    <div style={{ padding: '6px' }} className="w-8/12">
                       <label className={cx('entreField-label')} style={{ marginBottom: '0px' }}>
                         Giá trị tùy chọn
                       </label>
                     </div>
+                    {listOption?.length > 1 && <div className="w-1/12"></div>}
                   </div>
                   {listOption.map((itemA, indexA) => {
                     return (
                       <div key={indexA} style={{ display: 'flex', marginTop: '8px' }}>
-                        <div class="col-4" style={{ padding: '6px' }}>
+                        <div className="w-4/12" style={{ padding: '6px' }}>
                           <input
                             onChange={(e) => handleChangeInputTagName(e, indexA)}
                             type="text"
@@ -177,7 +178,7 @@ function ModalItem({ setShowModal, addNewItem, optionEdit, updateItem }) {
                             placeholder="Size"
                           />
                         </div>
-                        <div class="col-7" style={{ padding: '6px' }}>
+                        <div className="w-8/12" style={{ padding: '6px' }}>
                           <div className={cx('inputTags')}>
                             {listOption[indexA].values.map((itemB, indexB) => {
                               return (
@@ -210,7 +211,7 @@ function ModalItem({ setShowModal, addNewItem, optionEdit, updateItem }) {
                           </div>
                         </div>
                         {listOption?.length > 1 && (
-                          <div class="col">
+                          <div className="w-1/12">
                             <div
                               onClick={() => handleClickClose(indexA)}
                               style={{ cursor: 'pointer', marginTop: '12px' }}
@@ -261,7 +262,7 @@ function ModalItem({ setShowModal, addNewItem, optionEdit, updateItem }) {
                     <span style={{ color: '#7a69b3', fontWeight: '600' }}>THÊM TÙY CHỌN</span>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </div>
           <div className={cx('modalContent-footer')}>

@@ -16,6 +16,37 @@
       color: #e51075;
     }
   }
+
+  .inputCurrencyField {
+    width: 100%;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    transition: all 0.25s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+
+    .inputCurrencyField-symbol {
+      padding: 12px 8px 12px 16px;
+      color: #949494;
+    }
+
+    .inputCurrencyField-input {
+      border: none;
+      outline: none;
+      width: 100%;
+      display: block;
+      background-color: #fff;
+      transition: all 0.25s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+      -webkit-appearance: none;
+    }
+
+    .inputCurrencyField-isoCode {
+      color: #949494;
+      padding: 12px 16px;
+    }
+  }
+
   .inner {
     display: flex;
     // width: 100%;

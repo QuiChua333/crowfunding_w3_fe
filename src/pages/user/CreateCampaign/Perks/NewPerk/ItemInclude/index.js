@@ -38,7 +38,7 @@ function ItemInclude({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  console.log(itemData);
+
   return (
     <div className={cx('wrapper')}>
       <div className="w-[80%]" style={{ padding: '6px' }}>

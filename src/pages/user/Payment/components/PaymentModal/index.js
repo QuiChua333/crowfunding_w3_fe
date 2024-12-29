@@ -2,9 +2,9 @@ import classNames from 'classnames/bind';
 import styles from './PaymentModal.module.scss';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { momo, stripe } from '~/assets/images';
+import { eth, momo, stripe } from '~/assets/images';
 const cx = classNames.bind(styles);
-function PaymentModal({ setShowPaymentModal, handlePaymentMethod }) {
+function PaymentModal({ setShowPaymentModal, handlePaymentMethod, cryptocurrencyMode }) {
   const dispatch = useDispatch();
   const [method, setMethod] = useState('stripe');
   const handleClickAccept = () => {
@@ -25,7 +25,7 @@ function PaymentModal({ setShowPaymentModal, handlePaymentMethod }) {
             </div>
           </label>
         </div>
-        <div style={{ marginBottom: '32px', marginTop: '16px' }}>
+        <div style={{ marginTop: '16px' }}>
           <label className={cx('inputRadioGroup-radio')} onClick={() => setMethod('momo')}>
             <input type="radio" value={'momo'} name="paymentMethod" />
             <span className={cx('inputRadioGroup-radio-button')}></span>
@@ -35,6 +35,18 @@ function PaymentModal({ setShowPaymentModal, handlePaymentMethod }) {
             </div>
           </label>
         </div>
+        {cryptocurrencyMode && (
+          <div style={{ marginBottom: '32px', marginTop: '16px' }}>
+            <label className={cx('inputRadioGroup-radio')} onClick={() => setMethod('crypto')}>
+              <input type="radio" value={'crypto'} name="paymentMethod" />
+              <span className={cx('inputRadioGroup-radio-button')}></span>
+              <div className={cx('inputRadioGroup-radio-label')}>
+                <img src={eth} className={cx('img')} />
+                <span>Thanh toán bằng Ethereum</span>
+              </div>
+            </label>
+          </div>
+        )}
         <div className={cx('section-button')}>
           <a onClick={() => setShowPaymentModal(false)} className={cx('btn', 'btn-cancel')}>
             Đóng

@@ -29,6 +29,7 @@ import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.quer
 import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-campaign.mutation';
 import { useGetPerksHasListItemsByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
 import { setFollowCampaigns } from '~/redux/slides/User';
+import { useGetQuantityFollowsOfCampaignQuery } from '~/hooks/api/queries/user/follow-campaign.query';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -38,6 +39,7 @@ function DetailProject() {
   const [ItemProject, setItemProject] = useState({});
   const [listPerkByCampaignId, setListPerkByCampaignId] = useState([]);
   const [members, setMembers] = useState([]);
+  const [quantityFollowsOfCampaign, setQuantityFollowsCampaign] = useState(0);
   const [indexImage, setIndexImage] = useState(0);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [indexTabHeader, setIndexTabHeader] = useState(1);
@@ -72,6 +74,14 @@ function DetailProject() {
   const { data: dataListPerksByCampaignId } = useGetPerksHasListItemsByCampaignIdQuery(id);
   const { data: dataProjectById } = useGetCampaignByIdQuery(id);
   const { data: quantitySuccessCampaign } = useGetQuantitySuccessCampaignByCampaignId(id);
+  const { data: dataQuantityFollowsOfCampaign, refetch: refetchGetQuantityFollow } =
+    useGetQuantityFollowsOfCampaignQuery(id);
+
+  useEffect(() => {
+    if (dataQuantityFollowsOfCampaign) {
+      setQuantityFollowsCampaign(dataQuantityFollowsOfCampaign);
+    }
+  }, [dataQuantityFollowsOfCampaign]);
 
   const { data: dataMembers } = useGetTeamMemberByCampaignId(id);
   useEffect(() => {
@@ -104,9 +114,14 @@ function DetailProject() {
           listImageProject,
         };
       });
-    }
-    if (dataListPerksByCampaignId) {
-      setListPerkByCampaignId(dataListPerksByCampaignId);
+
+      if (dataListPerksByCampaignId) {
+        if (dataProjectById.cryptocurrencyMode) {
+          setListPerkByCampaignId(dataListPerksByCampaignId);
+        } else {
+          setListPerkByCampaignId(dataListPerksByCampaignId.filter((item) => !item.isNFT));
+        }
+      }
     }
   }, [dataProjectById, dataListPerksByCampaignId]);
 
@@ -125,9 +140,12 @@ function DetailProject() {
       onSuccess: () => {
         if (currentUser.followCampaigns.includes(ItemProject.id)) {
           dispatch(setFollowCampaigns(currentUser.followCampaigns.filter((item) => item !== ItemProject.id)));
+          setQuantityFollowsCampaign((prev) => prev - 1);
         } else {
           dispatch(setFollowCampaigns([...currentUser.followCampaigns, ItemProject.id]));
+          setQuantityFollowsCampaign((prev) => prev + 1);
         }
+        refetchGetQuantityFollow();
       },
       onError: (error) => {
         console.log('Error follow campaign', error);
@@ -336,8 +354,10 @@ function DetailProject() {
                   <FaHeart style={{ color: 'red' }} className={cx('text-follow')} />
                 ) : (
                   <FaRegHeart className={cx('text-follow')} />
-                )}{' '}
-                THEO DÕI
+                )}
+                <div>
+                  <span>{`${quantityFollowsOfCampaign} THEO DÕI`}</span>
+                </div>
               </button>
             </div>
             <div
@@ -395,18 +415,24 @@ function DetailProject() {
         <div className={cx('container-under-right')}>
           <div style={{ position: 'sticky', top: '20px' }}>
             <p style={{ fontSize: '18px', marginLeft: '10px', fontWeight: 'bold', marginBottom: '20px' }}>
-              Chọn một đặc quyền
+              Chọn đặc quyền
             </p>
             <div style={{ maxHeight: '920px', overflowY: 'scroll' }}>
               {listPerkByCampaignId.map((item, index) => {
                 return (
-                  <div style={{ pointerEvents: ItemProject.status === 'Đã kết thúc' && 'none' }}>
+                  <div
+                    style={{
+                      pointerEvents:
+                        (ItemProject.status === 'Thất bại' || ItemProject.status === 'Đã hoàn thành') && 'none',
+                    }}
+                  >
                     <PerkItem
                       setItemPerkSelected={setItemPerkSelected}
                       index={index}
                       item={item}
                       key={index}
                       isPage={true}
+                      cryptocurrencyMode={ItemProject.cryptocurrencyMode}
                       setIsOpenModalOption={setIsOpenModalOption}
                       closePerkModal={() => setIsOpenModal(false)}
                       setPerkInModal={setPerkInModal}
@@ -440,10 +466,12 @@ function DetailProject() {
           close={() => setIsOpenModalOption(false)}
           setIsOpenModal={setIsOpenModal}
           perkInModal={perkInModal}
+          cryptocurrencyMode={ItemProject.cryptocurrencyMode}
         />
       )}
       {isOpenModal && (
         <ModalPerk
+          cryptocurrencyMode={ItemProject.cryptocurrencyMode}
           setItemPerkSelected={setItemPerkSelected}
           listPerk={listPerkByCampaignId}
           close={() => setIsOpenModal(false)}

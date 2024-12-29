@@ -171,6 +171,51 @@
         }
       }
     }
+
+    .inputRadioGroup-radio {
+      display: block;
+      margin-bottom: 16px;
+      text-align: left;
+      position: relative;
+      line-height: 24px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      cursor: pointer;
+
+      .inputRadioGroup-radio-label {
+        padding-left: 20px;
+      }
+
+      input:checked ~ .inputRadioGroup-radio-button {
+        background-color: #2a2a2a;
+        border: none;
+      }
+
+      .inputRadioGroup-radio-button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 24px;
+        width: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        border: 1px solid #c8c8c8;
+
+        &::after {
+          content: '';
+          position: absolute;
+          // display: none;
+          top: 8px;
+          left: 8px;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #fff;
+        }
+      }
+    }
   }
 }
 @media (min-width: 768px) and (max-width: 1200px) {

@@ -119,7 +119,7 @@ function UserManagement() {
           }}
         >
           <div className="max-w-[600px] w-[600px]">
-            <Search handleChangeInput={handleChangeSearchInput} />
+            <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm theo tên người dùng, email'} />
           </div>
           <div className="flex gap-[24px]">
             <div>

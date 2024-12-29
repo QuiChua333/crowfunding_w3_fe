@@ -20,8 +20,12 @@ export const getUserById = async (id) => {
 };
 
 // handleAPI
-export const updateProfileUser = async (data) => {
-  const response = await CustomAxios.patch(`${baseUrl}/user`, data);
+export const updateProfileUser = async ({ formData }) => {
+  const response = await CustomAxios.patch(`${baseUrl}/user/profile`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 };
 

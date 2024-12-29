@@ -4,12 +4,37 @@
     width: 262px;
     border: 1px solid #ccc;
     display: flex;
+    position: relative;
     flex-direction: column;
     margin: 20px;
     border-radius: 4px;
     &:hover {
       box-shadow: 0 4px 4px #ccc;
       cursor: pointer;
+    }
+    .featured {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #e51075;
+      color: #fff;
+      width: fit-content;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      display: block;
+      border-bottom-right-radius: 6px;
+    }
+    .nft {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #34ca96;
+      color: #fff;
+      width: fit-content;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      display: block;
+      border-bottom-left-radius: 6px;
     }
 
     &.disabled {
@@ -43,8 +68,8 @@
       flex-direction: column;
       padding: 20px;
       .name {
-        font-size: 17px;
-        font-weight: 500;
+        font-size: 18px;
+        font-weight: 600;
         margin-top: 10px;
         display: -webkit-box;
         max-width: 100%;
@@ -54,8 +79,7 @@
         text-overflow: ellipsis;
       }
       .price {
-        font-size: 22px;
-        font-weight: 600;
+        font-size: 16px;
         margin-top: 10px;
       }
       .quantity {
@@ -77,6 +101,7 @@
     width: 262px;
     border: 1px solid #ccc;
     display: flex;
+    position: relative;
     flex-direction: column;
     margin: 20px;
     border-radius: 4px;
@@ -88,6 +113,30 @@
     &.disabled {
       pointer-events: none;
       opacity: 0.6;
+    }
+    .featured {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #e51075;
+      color: #fff;
+      width: fit-content;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      display: block;
+      border-bottom-right-radius: 6px;
+    }
+    .nft {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #34ca96;
+      color: #fff;
+      width: fit-content;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      display: block;
+      border-bottom-left-radius: 6px;
     }
     .btn-get {
       width: 80%;
@@ -117,7 +166,7 @@
       padding: 20px;
       .name {
         font-size: 17px;
-        font-weight: 500;
+        font-weight: 600;
         margin-top: 10px;
         display: -webkit-box;
         max-width: 100%;
@@ -127,8 +176,7 @@
         text-overflow: ellipsis;
       }
       .price {
-        font-size: 22px;
-        font-weight: 600;
+        font-size: 16px;
         margin-top: 10px;
       }
       .quantity {
@@ -150,6 +198,7 @@
     width: 100%;
     border: 1px solid #ccc;
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: space-between;
     margin: 20px;
@@ -157,6 +206,31 @@
     &:hover {
       box-shadow: 0 4px 4px #ccc;
       cursor: pointer;
+    }
+
+    .featured {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #e51075;
+      color: #fff;
+      width: fit-content;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      display: block;
+      border-bottom-right-radius: 6px;
+    }
+    .nft {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #34ca96;
+      color: #fff;
+      width: fit-content;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      display: block;
+      border-bottom-left-radius: 6px;
     }
 
     &.disabled {
@@ -178,7 +252,7 @@
       padding: 20px;
       .name {
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 600;
         margin-top: 10px;
         display: -webkit-box;
         max-width: 100%;
@@ -189,7 +263,7 @@
       }
       .price {
         font-size: 14px;
-        font-weight: 600;
+
         margin-top: 10px;
       }
       .quantity {

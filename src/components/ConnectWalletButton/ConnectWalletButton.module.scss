@@ -1,0 +1,33 @@
+.wrapper {
+  .btn {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 15px;
+    min-height: 40px;
+    min-width: 86px;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &.disabled {
+      pointer-events: none;
+      cursor: default;
+      background-color: #c8c8c8;
+      color: #ffffff;
+    }
+  }
+
+  .btn-ok {
+    background-color: #7a69b3;
+    border: none;
+    color: #ffffff;
+    margin-left: 16px;
+
+    &:hover {
+      background-color: #6653a5;
+      color: #ffffff;
+    }
+  }
+}

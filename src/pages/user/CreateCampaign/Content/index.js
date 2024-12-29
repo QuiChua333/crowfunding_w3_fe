@@ -239,8 +239,9 @@ function ContentCampaign() {
                 className={cx('i-media-button', {
                   'i-media-button-selected': typeIPitch === 2,
                 })}
+                style={{ width: '100px' }}
               >
-                Image
+                Hình ảnh
               </div>
             </div>
           </div>
@@ -252,7 +253,7 @@ function ContentCampaign() {
           >
             <div className={cx('entreField')} style={{ position: 'relative' }}>
               <label className={cx('entreField-label')}>
-                Video URL <span className={cx('entreField-required')}>*</span>
+                Đường dẫn Video <span className={cx('entreField-required')}>*</span>
               </label>
               <div className={cx('entreField-subLabel')}>
                 Nhập URL YouTube để xuất hiện ở đầu trang chiến dịch của bạn. Đảm bảo video của bạn đã bật phụ đề trên

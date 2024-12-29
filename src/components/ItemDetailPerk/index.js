@@ -5,7 +5,8 @@ import formatMoney from '~/utils/formatMoney';
 
 const cx = classNames.bind(styles);
 
-function ItemDetailPerk({ item, setPerkSelected, setIsOpenModal, index, setIsOpenModalUpdate }) {
+function ItemDetailPerk({ item, setPerkSelected, setIsOpenModal, index, setIsOpenModalUpdate, cryptocurrencyMode }) {
+  console.log(cryptocurrencyMode);
   const handleClickItem = () => {
     setPerkSelected({ ...item, index });
     setIsOpenModalUpdate(false);
@@ -16,11 +17,14 @@ function ItemDetailPerk({ item, setPerkSelected, setIsOpenModal, index, setIsOpe
       onClick={handleClickItem}
       className={cx('itemPerk', { disabled: item.isSelected || item.quantity === item.claimed })}
     >
+      {item.isFeatured && <span className={cx('featured')}>NỔI BẬT</span>}
+      {item.isNFT && <span className={cx('nft')}>NFT</span>}
       <div>
         <img src={item.image} alt="img" />
         <div className={cx('content')}>
           <span className={cx('name')}>{item.name}</span>
-          <span className={cx('price')}>{formatMoney(item.price)} VND</span>
+          <span className={cx('price')}>{`- ${formatMoney(item.price)}`} VND</span>
+          {cryptocurrencyMode && <span>{`- ${item.ethPrice} ETH`}</span>}
           <span className={cx('quantity')}>
             {item.claimed}/{item.quantity} <span style={{ fontWeight: '350' }}>đã được yêu cầu</span>
           </span>

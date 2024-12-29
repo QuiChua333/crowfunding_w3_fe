@@ -12,3 +12,9 @@ export const followCampaign = async (id) => {
   const response = await CustomAxios.post(`${baseUrl}/follow-campaign/follow`, { campaignId: id });
   return response.data;
 };
+
+// handleAPI
+export const getQuantityFollowsOfCampaign = async (id) => {
+  const response = await CustomAxios.get(`${baseUrl}/follow-campaign/quantity/${id}`);
+  return response.data;
+};

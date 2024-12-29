@@ -99,9 +99,7 @@ function ProfilePersonal() {
             <img className={cx('avatar')} src={user?.avatar || defaultAvt} alt="img" />
             <div className={cx('container-middle')}>
               <span className={cx('title-profile')}>Giới thiệu</span>
-              <p className={cx('des-profile')}>
-                {user.shortDescription?.trim().length === 0 ? 'Thông tin chưa cập nhật' : user.shortDescription}
-              </p>
+              <p className={cx('des-profile')}>{user.story ? user.story : 'Thông tin chưa cập nhật'}</p>
             </div>
             <div className={cx('container-final')}>
               <span className={cx('title-profile')}>Về bản thân tôi</span>

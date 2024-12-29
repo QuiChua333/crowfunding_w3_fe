@@ -32,11 +32,12 @@ export const getQuantityContributionOfUser = async (id) => {
 };
 
 // handleAPI
-export const getAllContributesOfUser = async ({ page, searchString, status, userId }) => {
+export const getAllContributesOfUser = async ({ page, searchString, status, userId, sortContributionDate }) => {
   const queryParams = {
     page,
     searchString,
     status,
+    sortContributionDate,
   };
   const queryString = new URLSearchParams(queryParams).toString();
   const response = await CustomAxios.get(`${baseUrl}/contribution/current-user?${queryString}`);
@@ -52,6 +53,12 @@ export const paymentStripe = async (body) => {
 // handleAPI
 export const paymentMomo = async (body) => {
   const response = await CustomAxios.post(`${baseUrl}/contribution/payment/momo`, body);
+  return response.data;
+};
+
+// handleAPI
+export const paymentCrypto = async (body) => {
+  const response = await CustomAxios.post(`${baseUrl}/contribution/payment/crypto`, body);
   return response.data;
 };
 

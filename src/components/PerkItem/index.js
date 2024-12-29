@@ -18,6 +18,7 @@ function PerkItem({
   item,
   index,
   setItemPerkSelected,
+  cryptocurrencyMode,
 }) {
   const navigate = useNavigate();
   const [showMore, setShowMore] = useState(!isPage);
@@ -47,28 +48,33 @@ function PerkItem({
   return (
     <div className={cx('container-item')} onClick={handleClickItem}>
       {item.isFeatured && <span className={cx('featured')}>NỔI BẬT</span>}
+      {item.isNFT && <span className={cx('nft')}>NFT</span>}
       <img src={item.image} alt="img" />
       <div className={cx('container-body')}>
-        <h2 style={{ fontSize: '24px' }}>{item.name}</h2>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <b className={cx('price')}>{formatMoney(item.price)}</b>
-          <span style={{ fontWeight: '50', color: '#7D7D7D', fontSize: '22px' }}>VND</span>
+        <h2 style={{ fontSize: '20px', fontWeight: '600' }}>{item.name}</h2>
+        <p className={cx('des')}>{`- ${item.description}`}</p>
+        <div className="mt-2">
+          <div>
+            <span className="text-[18px] font-[600]">Trị giá:</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginTop: '2px' }}>
+            <span>{`- ${formatMoney(item.price)} VNĐ`}</span>
+            {cryptocurrencyMode && <span>{`- ${item.ethPrice} ETH`}</span>}
+          </div>
         </div>
-        <p className={cx('des')}>{item.description}</p>
 
         {showMore && (
           <div>
-            <p>
-              <b className={cx('text-title')}>Bao gồm: </b>
+            <div>
+              <span className={cx('text-title')}>Bao gồm: </span>
               <ul className={cx('items')}>
                 {item.detailPerks.map((itemA, indexA) => {
-                  return <li key={indexA}>{`${item.quantity} ${itemA.item.name}`}</li>;
+                  return <li key={indexA}>{`- ${item.quantity} ${itemA.item.name}`}</li>;
                 })}
               </ul>
-            </p>
+            </div>
             <p className={cx('text-title')}>Ngày giao dự kiến</p>
-            <p className={cx('des')}>{convertDateFromString(item.estDeliveryDate)}</p>
-            <p className={cx('des')}>Giao toàn quốc.</p>
+            <p className={cx('des')}>{`- ${convertDateFromString(item.estDeliveryDate)}`}</p>
 
             {isShowButton &&
               (item.quantity !== item.claimed ? (

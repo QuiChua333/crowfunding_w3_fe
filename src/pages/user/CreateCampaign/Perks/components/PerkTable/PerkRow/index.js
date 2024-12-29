@@ -12,6 +12,7 @@ import baseURL from '~/utils/baseURL';
 import { convertDateFromString } from '~/utils';
 import { useEditPerkMutation } from '~/hooks/api/mutations/user/perk.mutation';
 import { toast } from 'react-toastify';
+import { IoCheckboxSharp } from 'react-icons/io5';
 const cx = classNames.bind(styles);
 function PerkRow({ index, perk, setChecked, getPerksByCampaignId, isEditComponent, handleDeletePerK }) {
   const { id } = useParams();
@@ -82,6 +83,7 @@ function PerkRow({ index, perk, setChecked, getPerksByCampaignId, isEditComponen
           </>
         )}
       </td>
+      <td className={cx('nft')}>{perk.isNFT && <IoCheckboxSharp style={{ fontSize: '26px', color: '#000' }} />}</td>
       <td className={cx('price')}>{perk.price} VNĐ</td>
       <td className={cx('type')}>{perk.isFeatured && <span className={cx('featured')}>NỔI BẬT</span>}</td>
       <td className={cx('quantity')}>{perk.claimed + '/' + perk.quantity}</td>

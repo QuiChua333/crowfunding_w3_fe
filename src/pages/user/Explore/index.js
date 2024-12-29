@@ -299,7 +299,7 @@ function Explore() {
             </span>
             <input
               type="text"
-              placeholder="Search for campaigns"
+              placeholder="Tìm kiếm chiến dịch"
               className={cx('exploreLayout-main-input')}
               value={filter.searchString}
               onChange={(e) => handleChangeSearchInput(e.target.value)}

@@ -51,6 +51,12 @@
       font-size: 12px;
     }
 
+    th.nft,
+    td.nft {
+      justify-content: center;
+      display: flex;
+    }
+
     th.price,
     td.price {
       width: 200px;

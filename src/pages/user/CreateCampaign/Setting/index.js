@@ -106,7 +106,7 @@ function SettingCampaign() {
         <div className={cx('entreField-header')}>Cài đặt</div>
         <div className={cx('entreField-subHeader')}>Phát hành chiến dịch của bạn tại đây!</div>
         <div className={cx('entreField-subHeader')}>
-          Lưu ý: Bạn phải đạt ít nhất 70% mục tiêu gây quỹ thì chiến dịch của bạn mới được xem là thành công!
+          Lưu ý: Bạn phải đạt được mục tiêu gây quỹ thì chiến dịch của bạn mới được xem là thành công!
         </div>
       </div>
 

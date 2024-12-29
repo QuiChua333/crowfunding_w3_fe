@@ -15,6 +15,7 @@ function ItemDetailPerkSelect({
   handleClickRemoveItem,
   handleChangeQuantityOrder,
   setIsOpenModalUpdate,
+  cryptocurrencyMode,
 }) {
   const [options, setOptions] = useState([]);
   const handleClickEdit = () => {
@@ -64,7 +65,14 @@ function ItemDetailPerkSelect({
       <div className={cx('container-body')}>
         <div className={cx('container-1')}>
           <div>
-            <span>{item.name}</span>
+            <div className="flex items-center gap-2">
+              {item.isNFT && (
+                <div className={cx('nft')} style={{ fontSize: '12px' }}>
+                  NFT
+                </div>
+              )}
+              <span>{item.name}</span>
+            </div>
             <img src={item.image} alt="img" />
           </div>
           <div className={cx('content')}>
@@ -90,16 +98,25 @@ function ItemDetailPerkSelect({
         <div className={cx('container-2')}>
           <div>
             <span className={cx('btn-edit')} onClick={handleClickEdit}>
-              Edit
+              Chỉnh sửa
             </span>
             <span className={cx('btn-remove')} onClick={() => handleClickRemoveItem(index)}>
-              Remove
+              Xóa
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <span className={cx('money')}>{formatMoney(item.price)}</span>
             <span>VND</span>
           </div>
+        </div>
+
+        <div className="flex items-center justify-end">
+          {cryptocurrencyMode && (
+            <>
+              <span className="font-[600] mr-1">{`${item.ethPrice}`} </span>
+              <span>{'ETH'}</span>
+            </>
+          )}
         </div>
       </div>
       {item.quantityOrder === item.quantity - item.claimed && (

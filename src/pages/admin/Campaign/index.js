@@ -65,7 +65,7 @@ function CampaignManagement() {
         }}
       >
         <div className="w-[600px] max-w-[600px]">
-          <Search handleChangeInput={handleChangeSearchInput} />
+          <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm tên chiến dịch, chủ sở hữu'} />
         </div>
         <div className={cx('table-action')}>
           {/* <div style={{ opacity: numberSelected == 0 && '0' }}>
@@ -90,7 +90,15 @@ function CampaignManagement() {
             <div>
               <label style={{ marginBottom: '4px' }}>Trạng thái</label>
               <Filter
-                listConditions={['Tất cả', 'Chờ xác nhận', 'Đang gây quỹ', 'Tạm dừng', 'Đã hoàn thành', 'Thất bại']}
+                listConditions={[
+                  'Tất cả',
+                  'Chờ xác nhận',
+                  'Đang gây quỹ',
+                  'Tạm dừng',
+                  'Đã hoàn thành',
+                  'Thất bại',
+                  'Bản nháp',
+                ]}
                 handleClickItem={handleClickItemFilter}
               />
             </div>

@@ -96,7 +96,7 @@
           }
         }
         .money {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
         }
       }
@@ -106,6 +106,16 @@
       margin-top: 20px;
       font-size: 14px;
       color: #ff582a;
+    }
+
+    .nft {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #34ca96;
+      color: #fff;
+      width: fit-content;
+      display: block;
+      border-radius: 6px;
     }
   }
 }
@@ -207,10 +217,20 @@
           }
         }
         .money {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
         }
       }
+    }
+
+    .nft {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #34ca96;
+      color: #fff;
+      width: fit-content;
+      display: block;
+      border-radius: 6px;
     }
 
     .text-error {
@@ -318,7 +338,7 @@
           }
         }
         .money {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
         }
       }
@@ -328,6 +348,16 @@
       margin-top: 20px;
       font-size: 14px;
       color: #ff582a;
+    }
+
+    .nft {
+      font-size: 14px;
+      padding: 4px 8px;
+      background-color: #34ca96;
+      color: #fff;
+      width: fit-content;
+      display: block;
+      border-radius: 6px;
     }
   }
 }

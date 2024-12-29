@@ -12,10 +12,20 @@ import axios from 'axios';
 import { PaymentModal, ItemPayment } from './components';
 import { useGetCampaignByIdQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
-import { usePaymentMomoMutation, usePaymentStripeMutation } from '~/hooks/api/mutations/user/contribution.mutation';
+import {
+  usePaymentCryptoMutation,
+  usePaymentMomoMutation,
+  usePaymentStripeMutation,
+} from '~/hooks/api/mutations/user/contribution.mutation';
 import { defaultAvt } from '~/assets/images';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
+import { useDebouncedCallback } from 'use-debounce';
+import ConnectWalletModal from './components/ConnectWalletModal';
+import { parseEther } from 'ethers';
+import { toast } from 'react-toastify';
+import { factoryContract } from '~/redux/slides/Web3';
+import { useMintNFTMutation } from '~/hooks/api/mutations/user/nft.mutation';
 
 const cx = classNames.bind(styles);
 
@@ -26,9 +36,17 @@ function Payment() {
   const lct = useLocation();
   let payment = null;
   let money = null;
+  let ethPrice = null;
+  let cryptocurrencyMode = false;
+  let ethToVnd = 0;
   if (lct.state.hasPerk) {
     payment = lct.state.res;
-  } else money = lct.state.money;
+  } else {
+    money = lct.state.money;
+    ethPrice = lct.state.ethPrice;
+    cryptocurrencyMode = lct.state.cryptocurrencyMode;
+    ethToVnd = lct.state.ethToVnd;
+  }
   const { id } = useParams();
   const [campaign, setCampaign] = useState({});
   const [showLocation, setShowLocation] = useState(false);
@@ -38,6 +56,7 @@ function Payment() {
   const [isAcceptRule, setAcceptRule] = useState(false);
   const element = useRef(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showConnectWalletModal, setShowConnectWalletModal] = useState(false);
 
   const [contribution, setContribution] = useState(() => {
     return {
@@ -64,9 +83,15 @@ function Payment() {
     console.log(contribution);
   }, [contribution]);
   const [moneyState, setMoneyState] = useState('');
+  const [ethPriceState, setETHPriceState] = useState('');
   useEffect(() => {
     setMoneyState(money);
   }, [money]);
+
+  useEffect(() => {
+    setETHPriceState(ethPrice);
+  }, [ethPrice]);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (element.current && !element.current.contains(event.target)) {
@@ -158,6 +183,8 @@ function Payment() {
       stripeMethod();
     } else if (method === 'momo') {
       momoMethod();
+    } else if (method === 'crypto') {
+      CryptoMethod();
     }
   };
   const paymentStripeMutation = usePaymentStripeMutation();
@@ -202,6 +229,150 @@ function Payment() {
     });
   };
 
+  const CryptoMethod = () => {
+    setShowConnectWalletModal(true);
+  };
+
+  const metamask = useSelector((state) => state.metamask);
+  const paymentCryptoMutation = usePaymentCryptoMutation();
+  const handlePaymentCrypto = async () => {
+    contribution.userId = currentUser.id ?? '';
+    contribution.shippingFee = shipFee;
+    contribution.amountCrypto = money ? ethPriceState : payment.totalETH.toString();
+    contribution.customerWalletAddress = metamask.account;
+    if (currentUser.id) contribution.email = currentUser.email;
+    console.log(contribution);
+
+    if (!contribution.perks) {
+      transferFund();
+    } else if (contribution.perks?.length > 0) {
+      transferPerk();
+    }
+  };
+
+  const transferFund = async () => {
+    dispatch(setLoading(true));
+    try {
+      const priceWei = parseEther(ethPriceState);
+      const tx = await factoryContract.transferFund({ value: priceWei });
+      console.log('Transaction sent:', tx);
+      const receipt = await tx.wait();
+      const transactionHash = tx.hash;
+      contribution.transactionHash = transactionHash;
+
+      if (receipt.status === 1) {
+        paymentCryptoMutation.mutate(contribution, {
+          onSuccess(data) {
+            navigate('/payment/thanks');
+            dispatch(setLoading(false));
+          },
+          onError(error) {
+            console.log(error);
+            toast.error('Giao dịch không thành công');
+            dispatch(setLoading(false));
+          },
+        });
+      } else {
+        toast.error('Có lỗi khi thanh toán');
+        dispatch(setLoading(false));
+      }
+    } catch (error) {
+      toast.error('Có lỗi khi thanh toán');
+      dispatch(setLoading(false));
+    }
+  };
+
+  const mintNFTMutation = useMintNFTMutation();
+
+  const transferPerk = async () => {
+    const userId = currentUser.id ?? '';
+    const mintPerks = contribution.perks
+      .filter((item) => item.isNFT)
+      .map((item) => ({
+        perkId: item.id,
+        quantity: item.quantity,
+      }));
+    dispatch(setLoading(true));
+    mintNFTMutation.mutate(
+      {
+        userId,
+        perks: mintPerks,
+      },
+      {
+        async onSuccess(data) {
+          const perks = contribution.perks.map((perk) => {
+            const perkResponse = data.find((item) => item.perkId === perk.id);
+            return {
+              quantity: perk.quantity,
+              isNFT: perk.isNFT,
+              priceWhenNotNFT: parseEther(perk.ethPrice),
+              nftContractAddress: perkResponse?.nftContractAddress ?? '0x0000000000000000000000000000000000000000',
+              tokenIds: perkResponse?.tokenIds ?? [],
+            };
+          });
+          console.log(payment.totalETH.toString());
+          try {
+            const totalAmountWei = parseEther(payment.totalETH.toString());
+            console.log(perks);
+            const tx = await factoryContract.transferPerk(perks, { value: totalAmountWei });
+            console.log('Transaction sent:', tx);
+            const receipt = await tx.wait();
+
+            const transactionHash = tx.hash;
+            contribution.transactionHash = transactionHash;
+
+            if (receipt.status === 1) {
+              const newContribution = {
+                ...contribution,
+                perks: contribution.perks.map((perk) => {
+                  const perkResponse = data.find((item) => item.perkId === perk.id);
+                  return {
+                    ...perk,
+                    uri: perkResponse?.uri ?? '',
+                    tokenIds: perkResponse?.tokenIds ?? [],
+                  };
+                }),
+              };
+              paymentCryptoMutation.mutate(newContribution, {
+                onSuccess(data) {
+                  navigate('/payment/thanks');
+                  dispatch(setLoading(false));
+                },
+                onError(error) {
+                  console.log(error);
+                  toast.error('Giao dịch không thành công');
+                  dispatch(setLoading(false));
+                },
+              });
+            } else {
+              toast.error('Có lỗi khi thanh toán');
+              dispatch(setLoading(false));
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        },
+        onError(error) {
+          console.log(error);
+          dispatch(setLoading(false));
+          toast.error('Có lỗi trong quá trình thanh toán');
+        },
+      },
+    );
+  };
+
+  const debounced = useDebouncedCallback(
+    // function
+    (value) => {
+      setETHPriceState((value / ethToVnd).toFixed(6));
+    },
+    500,
+  );
+  const handleChangeMoney = (e) => {
+    const value = e.target.value;
+    debounced(value);
+    setMoneyState(value);
+  };
   const [textValidateFullname, setTextValidateFullname] = useState('');
   const validateFullname = (value) => {
     if (!value || value?.trim().length === 0 || value?.trim() === '') {
@@ -613,21 +784,25 @@ function Payment() {
             <div className={cx('title')}>Tóm tắt đóng góp</div>
 
             {!payment && (
-              <input
-                type="text"
-                maxLength="50"
-                className={cx('itext-field')}
-                name="numberAccount"
-                value={moneyState}
-                onChange={(e) => setMoneyState(e.target.value)}
-                style={{ marginTop: '32px' }}
-              />
+              <div className="mt-6">
+                <div className={cx('inputCurrencyField')}>
+                  <span className={cx('inputCurrencyField-symbol')}>$</span>
+                  <input
+                    type="text"
+                    maxLength="50"
+                    className={cx('inputCurrencyField-input')}
+                    value={moneyState}
+                    onChange={handleChangeMoney}
+                  />
+                  <span className={cx('inputCurrencyField-isoCode')}>VNĐ</span>
+                </div>
+              </div>
             )}
             {payment && (
               <>
                 <div style={{ marginTop: '32px' }}>
                   {payment?.listPerkPayment.map((item, index) => {
-                    return <ItemPayment item={item} key={index} />;
+                    return <ItemPayment item={item} key={index} cryptocurrencyMode={payment.cryptocurrencyMode} />;
                   })}
                 </div>
 
@@ -642,6 +817,11 @@ function Payment() {
                 >
                   <span>Tiền đặc quyền</span>
                   <span>{formatMoney(payment.total)}VNĐ</span>
+                </div>
+                <div>
+                  {payment.cryptocurrencyMode && (
+                    <div className="text-right text-[16px]">{`${payment.totalETH}`} ETH </div>
+                  )}
                 </div>
                 <div
                   style={{
@@ -659,9 +839,9 @@ function Payment() {
             )}
             <div
               style={{
-                fontSize: '20px',
+                fontSize: '18px',
                 fontWeight: '600',
-                margin: '32px 0',
+                marginTop: '32px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
@@ -669,8 +849,17 @@ function Payment() {
             >
               <span>Tổng tiền</span>
               {payment && <span>{formatMoney(payment.total + shipFee)}VNĐ</span>}
-              {money && <span>{formatMoney(Number(moneyState))}VNĐ</span>}
+              {money && (
+                <>
+                  <span>{formatMoney(Number(moneyState))}VNĐ</span>
+                </>
+              )}
             </div>
+
+            {money && cryptocurrencyMode && <div className="text-right text-[16px]">{`~ ${ethPriceState} `}ETH</div>}
+            {payment && payment.cryptocurrencyMode && (
+              <div className="text-right text-[16px]">{`~ ${payment.totalETH} `}ETH</div>
+            )}
 
             <div
               style={{
@@ -718,7 +907,18 @@ function Payment() {
       <Footer />
 
       {showPaymentModal && (
-        <PaymentModal setShowPaymentModal={setShowPaymentModal} handlePaymentMethod={handlePaymentMethod} />
+        <PaymentModal
+          setShowPaymentModal={setShowPaymentModal}
+          handlePaymentMethod={handlePaymentMethod}
+          cryptocurrencyMode={cryptocurrencyMode || payment.cryptocurrencyMode}
+        />
+      )}
+
+      {showConnectWalletModal && (
+        <ConnectWalletModal
+          setShowConnectWalletModal={setShowConnectWalletModal}
+          handlePaymentCrypto={handlePaymentCrypto}
+        />
       )}
     </div>
   );

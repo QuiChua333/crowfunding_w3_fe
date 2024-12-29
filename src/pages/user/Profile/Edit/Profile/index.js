@@ -10,35 +10,27 @@ import { toast } from 'react-toastify';
 import { setCurrentUser } from '~/redux/slides/User';
 import { defaultAvt } from '~/assets/images';
 import { useUpdateProfileUserMutation } from '~/hooks/api/mutations/user/user.mutation';
+import { useQueryClient } from '@tanstack/react-query';
 const cx = classNames.bind(styles);
 function EditProfile() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.currentUser);
+  const queryClient = useQueryClient();
+  const refetchUserData = () => {
+    queryClient.invalidateQueries('getCurrentUser'); // Key của query
+  };
+  const [file, setFile] = useState();
   const [userState, setUserState] = useState({});
   useEffect(() => {
     setUserState((prev) => {
       const state = {
         fullName: user.fullName || '',
-        address: user.address || {
-          province: '',
-          district: '',
-          ward: '',
-          phoneNumber: '',
-        },
-        story: user.story || {
-          shortDescription: '',
-          aboutMe: '',
-        },
-        avatar: user.avatar || {
-          url: '',
-          public_id: '',
-        },
-        profileImage: user.profileImage || {
-          url: '',
-          public_id: '',
-        },
-        linkFacebook: user.linkFacebook || '',
+        address: user.address || '',
+        phoneNumber: user.phoneNumber || '',
+        story: user.story || '',
+        avatar: user.avatar || '',
+        facebookLink: user.facebookLink || '',
       };
 
       return state;
@@ -50,46 +42,22 @@ function EditProfile() {
   const handleChangeInputBasic = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    if (name.startsWith('address') || name.startsWith('story')) {
-      const name1 = name.split('/')[0];
-      const name2 = name.split('/')[1];
-      setUserState((prev) => ({
-        ...prev,
-        [name1]: {
-          ...prev[`${name1}`],
-          [name2]: value,
-        },
-      }));
-    } else {
-      setUserState((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setUserState((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleChangeProfileImage = (e) => {
-    if (e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        let res = reader.result;
-        setUserState((prev) => {
-          return { ...prev, profileImage: { ...prev.profileImage, url: res } };
-        });
-      };
-    }
-  };
   const handleChangeAvatar = (e) => {
     if (e.target.files[0]) {
       const file = e.target.files[0];
+      setFile(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         let res = reader.result;
         setUserState((prev) => {
-          return { ...prev, avatar: { ...prev.avatar, url: res } };
+          return { ...prev, avatar: res };
         });
       };
     }
@@ -98,20 +66,34 @@ function EditProfile() {
   const updateProfileUserMutation = useUpdateProfileUserMutation();
   const handleSave = async () => {
     dispatch(setLoading(true));
-    const data = userState;
-    updateProfileUserMutation.mutate(data, {
-      onSuccess(response) {
-        dispatch(setCurrentUser(response));
-        toast.success('Cập nhật thông tin thành công');
-      },
-      onError(err) {
-        toast.error('Cập nhật thông tin thất bại', err);
-        console.log(err);
-      },
-      onSettled(response, err) {
-        dispatch(setLoading(false));
-      },
+    const body = { ...userState };
+    delete body.avatar;
+
+    const formData = new FormData();
+    if (file) {
+      formData.append('file', file);
+    }
+
+    Object.entries(body).forEach(([key, value]) => {
+      formData.append(key, value);
     });
+
+    updateProfileUserMutation.mutate(
+      { formData },
+      {
+        onSuccess(response) {
+          refetchUserData();
+          toast.success('Cập nhật thông tin thành công');
+        },
+        onError(err) {
+          toast.error('Cập nhật thông tin thất bại', err);
+          console.log(err);
+        },
+        onSettled(response, err) {
+          dispatch(setLoading(false));
+        },
+      },
+    );
   };
   return (
     <div className={cx('wrapper')}>
@@ -158,45 +140,23 @@ function EditProfile() {
                 />
               </div>
 
-              <div style={{ display: 'flex', gap: '32px', maxWidth: '700px', marginTop: '24px' }}>
-                <div className={cx('field')} style={{ flex: '3' }}>
-                  <label className={cx('field-label')}>Tỉnh/Thành phố</label>
-                  <input
-                    className={cx('itext-field')}
-                    value={userState.address?.province}
-                    onChange={handleChangeInputBasic}
-                    name="address/province"
-                  />
-                </div>
-                <div className={cx('field')} style={{ flex: '2' }}>
-                  <label className={cx('field-label')}>Quận/Huyện</label>
-                  <input
-                    className={cx('itext-field')}
-                    value={userState.address?.district}
-                    onChange={handleChangeInputBasic}
-                    name="address/district"
-                  />
-                </div>
+              <div className={cx('field')} style={{ maxWidth: '600px', marginTop: '16px' }}>
+                <label className={cx('field-label')}>Địa chỉ liên hệ</label>
+                <input
+                  className={cx('itext-field')}
+                  value={userState.address}
+                  onChange={handleChangeInputBasic}
+                  name="address"
+                />
               </div>
-              <div style={{ display: 'flex', gap: '32px', maxWidth: '700px', marginTop: '16px' }}>
-                <div className={cx('field')} style={{ flex: '3' }}>
-                  <label className={cx('field-label')}>Xã/Phường</label>
-                  <input
-                    className={cx('itext-field')}
-                    value={userState.address?.ward}
-                    onChange={handleChangeInputBasic}
-                    name="address/ward"
-                  />
-                </div>
-                <div className={cx('field')} style={{ flex: '2' }}>
-                  <label className={cx('field-label')}>Số điện thoại</label>
-                  <input
-                    className={cx('itext-field')}
-                    value={userState.address?.phoneNumber}
-                    onChange={handleChangeInputBasic}
-                    name="address/phoneNumber"
-                  />
-                </div>
+              <div className={cx('field')} style={{ maxWidth: '600px', marginTop: '16px' }}>
+                <label className={cx('field-label')}>Số điện thoại</label>
+                <input
+                  className={cx('itext-field')}
+                  value={userState.phoneNumber}
+                  onChange={handleChangeInputBasic}
+                  name="phoneNumber"
+                />
               </div>
             </div>
           </div>
@@ -205,23 +165,14 @@ function EditProfile() {
             <h1 className={cx('section-title')}>Câu Chuyện Của Bạn</h1>
 
             <div style={{ marginTop: '24px' }}>
-              <div className={cx('field')} style={{ maxWidth: '800px' }}>
-                <label className={cx('field-label')}>Mô tả ngắn gọn</label>
-                <input
-                  className={cx('itext-field')}
-                  value={userState.story?.shortDescription}
-                  onChange={handleChangeInputBasic}
-                  name="story/shortDescription"
-                />
-              </div>
               <div className={cx('field')} style={{ maxWidth: '600px' }}>
                 <label className={cx('field-label')}>Về tôi</label>
                 <textarea
                   className={cx('itext-field')}
-                  style={{ minHeight: '200px' }}
-                  value={userState.story?.aboutMe}
+                  style={{ minHeight: '100px', marginTop: '4px' }}
+                  value={userState.story}
                   onChange={handleChangeInputBasic}
-                  name="story/aboutMe"
+                  name="story"
                 />
               </div>
             </div>
@@ -230,30 +181,10 @@ function EditProfile() {
             <h1 className={cx('section-title')}>Ảnh của bạn</h1>
 
             <div style={{ marginTop: '24px' }}>
-              <div className={cx('field')} style={{ maxWidth: '800px' }}>
-                <label className={cx('field-label')}>Ảnh hồ sơ</label>
-                <div className={cx('img-wrapper')}>
-                  <img src={userState.profileImage?.url || defaultAvt} alt="avatar người dùng"></img>
-
-                  <input
-                    ref={elementInputProfileImage}
-                    type="file"
-                    onChange={handleChangeProfileImage}
-                    accept="image/jpg, image/jpeg, image/png"
-                  />
-                </div>
-                <div
-                  onClick={() => elementInputProfileImage.current.click()}
-                  className={cx('btn')}
-                  style={{ marginTop: '32px' }}
-                >
-                  {userState.profileImage?.url ? 'Đổi ảnh' : 'Thêm ảnh'}
-                </div>
-              </div>
               <div className={cx('field')} style={{ maxWidth: '800px', marginTop: '40px' }}>
                 <label className={cx('field-label')}>Ảnh đại diện</label>
                 <div className={cx('img-wrapper')} style={{ width: '150px', height: '150px' }}>
-                  <img src={userState.avatar?.url || defaultAvt} alt="avatar mặc định"></img>
+                  <img src={userState.avatar || defaultAvt} alt="avatar mặc định"></img>
 
                   <input
                     ref={elementInputProfileAvt}
@@ -281,9 +212,9 @@ function EditProfile() {
                 <label className={cx('field-label')}>Liên kết Facebook</label>
                 <input
                   className={cx('itext-field')}
-                  value={userState.linkFacebook}
+                  value={userState.facebookLink}
                   onChange={handleChangeInputBasic}
-                  name="linkFacebook"
+                  name="facebookLink"
                 />
               </div>
             </div>

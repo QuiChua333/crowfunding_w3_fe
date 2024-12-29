@@ -43,6 +43,7 @@ function PerkTable({
         <thead>
           <tr>
             <th className={cx('title')}>Tiêu đề</th>
+            <th className={cx('nft')}>NFT</th>
             <th className={cx('price')}>Trị giá</th>
             <th className={cx('type')}>Loại</th>
             <th className={cx('quantity')}>Số lượng yêu cầu</th>

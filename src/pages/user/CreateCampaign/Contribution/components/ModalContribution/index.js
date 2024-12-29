@@ -13,6 +13,7 @@ import formatMoney from '~/utils/formatMoney';
 import { toast } from 'react-toastify';
 import { convertDateFromString } from '~/utils';
 import { useEditContributionStatusMutation } from '~/hooks/api/mutations/user/contribution.mutation';
+import { FaExternalLinkAlt } from 'react-icons/fa';
 const cx = classNames.bind(styles);
 function ModalContribution({ setShowModal, contribution, handleChangeStatus, isEditComponent }) {
   console.log(contribution);
@@ -113,14 +114,10 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                     <div className={cx('info-value')}>{convertDateFromString(contribution.date, 'full')}</div>
                   </div>
                   <div className={cx('form-group')}>
-                    <label>Tiền đặc quyền: </label>
+                    <label>{contribution.perks?.length > 0 ? 'Tiền đặc quyền: ' : 'Tiền thanh toán: '} </label>
                     <div className={cx('info-value')}>
-                      {formatMoney(
-                        contribution.perks?.reduce((acc, cur) => {
-                          return acc + cur.price;
-                        }, 0),
-                      )}{' '}
-                      VNĐ
+                      {formatMoney(Number(contribution.amount))} VNĐ{' '}
+                      {contribution.method === 'crypto' && `(${contribution.amountCrypto} ETH)`}
                     </div>
                   </div>
                 </div>
@@ -152,6 +149,46 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                   )}
                 </div>
               </div>
+              {contribution.method === 'crypto' && (
+                <>
+                  <div style={{ display: 'flex', gap: '48px' }}>
+                    <div className={cx('form-group', 'single')}>
+                      <label>Mã giao dịch: </label>
+                      <div className={cx('info-value')}>{contribution.transactionHash}</div>
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${contribution.transactionHash}`}
+                        target="_blank"
+                        title="Khám phá"
+                        style={{ marginLeft: '8px' }}
+                      >
+                        <FaExternalLinkAlt className="text-[20px] cursor-pointer hover:opacity-80" />
+                      </a>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '48px' }}>
+                    <div className={cx('form-group', 'single')}>
+                      <label>Ví giao dịch: </label>
+                      <div className={cx('info-value')}>{contribution.customerWalletAddress}</div>
+                    </div>
+                  </div>
+                </>
+              )}
+              <div style={{ display: 'flex', gap: '48px' }}>
+                <div
+                  className={cx('form-group', 'single')}
+                  style={{ width: contribution.method !== 'crypto' ? '40%' : '100%' }}
+                >
+                  <label style={{ width: '200px' }}>Phương thức thanh toán: </label>
+                  <div className={cx('info-value')}>
+                    {contribution.method === 'momo'
+                      ? 'Momo'
+                      : contribution.method === 'stripe'
+                      ? 'Stripe'
+                      : 'Tiền ảo ETH'}{' '}
+                  </div>
+                </div>
+              </div>
               <div style={{ display: 'flex', overflow: 'hidden', marginTop: '16px' }}>
                 <div style={{ marginTop: '16px', width: '45%', marginRight: '32px' }}>
                   <label style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
@@ -159,7 +196,7 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                   </label>
                   <div className={cx('order-item-wrapper')}>
                     {contribution.perks?.map((item, index) => {
-                      return <ItemPayment key={index} index={index} item={item} />;
+                      return <ItemPayment key={index} index={index} item={item} modalContribution={true} />;
                     })}
                   </div>
                   <div></div>
