@@ -85,3 +85,5 @@ const privateUserRoutes = {
 };
 
 export { publicRoutes, privateUserRoutes, loginRoutes, adminRoutes };
+
+

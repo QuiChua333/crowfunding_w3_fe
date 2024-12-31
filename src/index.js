@@ -5,13 +5,12 @@ import reportWebVitals from './reportWebVitals';
 import GlobalStyles from '~/styles/GlobalStyles';
 import store from './redux/store';
 import { Provider } from 'react-redux';
-import ChatComponent from './components/ChatComponent';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <GlobalStyles>
-        <ChatComponent/>
         <App />
       </GlobalStyles>
     </Provider>

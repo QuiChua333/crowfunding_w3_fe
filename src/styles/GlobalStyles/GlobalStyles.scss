@@ -47,6 +47,27 @@
     color: var(--text-color);
     text-decoration: none;
   }
+  /* Chỉ áp dụng cho Webkit browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px; /* Độ rộng scrollbar dọc */
+  height: 6px; /* Độ cao scrollbar ngang */
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Màu nền track */
+  border-radius: 10px; /* Bo góc cho track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #aeaeae; /* Màu của thanh cuộn */
+  border-radius: 10px; /* Bo góc cho thanh cuộn */
+  border: 2px solid #f0f0f0; /* Tạo khoảng cách giữa track và thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Màu khi hover lên thanh cuộn */
+}
+
 }
 
 @layer utilities {
