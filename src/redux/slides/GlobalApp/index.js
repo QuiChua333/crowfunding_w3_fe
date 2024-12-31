@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
+    openChat: false,
     loading: false,
     messageBox: {
         title: '',
@@ -39,10 +40,13 @@ const slice = createSlice({
             state.filterExplore = {
                 ...action.payload
             }
+        },
+        setOpenChat: (state, action) => {
+            state.openChat = action.payload;
         }
     },
     
 })
 
 export default slice.reducer;
-export const {setLoading, setMessageBox, setPreviousLink, setFilterExplore} = slice.actions
+export const {setLoading, setMessageBox, setPreviousLink, setFilterExplore, setOpenChat} = slice.actions
