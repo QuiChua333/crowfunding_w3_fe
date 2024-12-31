@@ -32,6 +32,7 @@ import TemplateEmailVerify from '~/pages/common/EmailVerifySuccess';
 import ResetPassword from '~/pages/auth/ResetPassword';
 import ThankPayment from '~/pages/common/ThankPayment';
 import AboutUs from '~/pages/user/AboutUs';
+import SummaryCampaign from '~/pages/user/CreateCampaign/Summary';
 
 const loginRoutes = [
   { path: '/sign-up', component: SignUp, layout: null },
@@ -76,6 +77,7 @@ const privateUserRoutes = {
     { path: '/campaigns/:id/edit/funding', component: FundingCampaign, layout: CampaignLayout },
     { path: '/campaigns/:id/edit/settings', component: SettingCampaign, layout: CampaignLayout },
     { path: '/campaigns/:id/edit/contribution', component: ContributionCampaign, layout: CampaignLayout },
+    { path: '/campaigns/:id/edit/summary', component: SummaryCampaign, layout: CampaignLayout },
   ],
   individuals: [
     { path: '/individuals/:id/edit/profile', component: EditProfile, layout: NormalLayout },

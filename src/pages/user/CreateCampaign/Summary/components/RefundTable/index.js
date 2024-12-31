@@ -1,18 +1,18 @@
 import classNames from 'classnames/bind';
 
-import styles from './ContributionTable.module.scss';
-import ContributionRow from './ContributionRow';
+import styles from './RefundTable.module.scss';
+import RefundRow from './RefundRow';
 import { useState, useEffect } from 'react';
 import formatMoney from '~/utils/formatMoney';
 import { convertDateFromString } from '~/utils';
 
 const cx = classNames.bind(styles);
 
-function ContributionTable({ contributions, openDetailContribution }) {
-  const [listContributions, setlistContributions] = useState([]);
+function RefundTable({ refunds, openDetailRefund }) {
+  const [listRefunds, setlistRefunds] = useState([]);
   useEffect(() => {
-    setlistContributions((prev) => {
-      const state = [...contributions]?.map((item) => {
+    setlistRefunds((prev) => {
+      const state = [...refunds]?.map((item) => {
         return {
           id: item.id,
           userName: item.fullName || 'Khách vãng lai',
@@ -21,13 +21,13 @@ function ContributionTable({ contributions, openDetailContribution }) {
           perks: item.perks,
           money: formatMoney(Number(item.totalPayment)) + 'VNĐ',
           date: convertDateFromString(item.date),
-          status: item.isFinish ? 'Đã gửi' : 'Chưa gửi',
+          status: item.isRefund ? 'Đã hoàn trả' : 'Chưa hoàn trả',
           isChecked: false,
         };
       });
       return state;
     });
-  }, [contributions]);
+  }, [refunds]);
 
   return (
     <div className={cx('wrapper')}>
@@ -36,23 +36,14 @@ function ContributionTable({ contributions, openDetailContribution }) {
           <tr>
             <th className={cx('user')}>NGƯỜI ĐÓNG GÓP</th>
             <th className={cx('email')}>EMAIL HỆ THỐNG</th>
-            {/* <th className={cx('perks')}>ĐẶC QUYỀN</th> */}
             <th className={cx('money')}>TIỀN THANH TOÁN</th>
             <th className={cx('date')}>NGÀY ĐÓNG GÓP</th>
-            <th className={cx('date')}>NGÀY GIAO DỰ KIẾN</th>
             <th className={cx('status')}>TRẠNG THÁI</th>
           </tr>
         </thead>
         <tbody>
-          {listContributions?.map((item, index) => {
-            return (
-              <ContributionRow
-                key={index}
-                contribution={item}
-                index={index}
-                openDetailContribution={openDetailContribution}
-              />
-            );
+          {listRefunds?.map((item, index) => {
+            return <RefundRow key={index} refund={item} index={index} openDetailRefund={openDetailRefund} />;
           })}
         </tbody>
       </table>
@@ -60,4 +51,4 @@ function ContributionTable({ contributions, openDetailContribution }) {
   );
 }
 
-export default ContributionTable;
+export default RefundTable;

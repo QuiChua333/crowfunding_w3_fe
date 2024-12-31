@@ -93,25 +93,6 @@
     // overflow: hidden;
   }
 
-  .form-group {
-    display: flex;
-    width: 100%;
-    font-weight: 600;
-    padding: 10px 0 10px 0;
-
-    label {
-      width: 160px;
-    }
-
-    & + .form-group {
-      border-top: 1px solid #ddd;
-    }
-
-    &.single {
-      border-top: 1px solid #ddd;
-    }
-  }
-
   .product-category-select {
     position: relative;
     display: inline-flex;
@@ -136,7 +117,91 @@
       padding-bottom: 6px;
     }
   }
-  .editFile-icon {
+
+  .form-group {
+    display: flex;
+    width: 100%;
+    font-weight: 600;
+    padding: 10px 0 10px 0;
+
+    label {
+      width: 160px;
+    }
+
+    & + .form-group {
+      border-top: 1px solid #ddd;
+    }
+
+    &.single {
+      border-top: 1px solid #ddd;
+    }
+  }
+  .entreField-input-image {
+    margin-top: 12px;
+    border: 1px solid #c8c8c8;
+    background: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 400px;
+    height: 400px;
+    overflow: hidden;
+  }
+
+  .tertiaryAction {
+    display: flex;
+    align-items: center;
+  }
+
+  .tertiaryAction-icon {
+    width: 35px;
+    height: 35px;
+    background-color: #eee5f2;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tertiaryAction-text {
+    color: #7a69b3;
+    margin-left: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .container-image-upload {
+    position: relative;
+    object-fit: cover;
+    width: 400px;
+    height: 400px;
+  }
+
+  .editFile {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    gap: 8px;
+    display: flex;
+
+    .editFile-icon {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #eee5f2;
+      border-radius: 50%;
+
+      & + & {
+        margin-left: 8px;
+      }
+    }
+  }
+  .editFile-icon-modal {
     position: absolute;
     top: 20px;
     right: 20px;

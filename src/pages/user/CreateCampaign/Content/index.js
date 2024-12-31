@@ -328,7 +328,7 @@ function ContentCampaign() {
                         <HiCamera style={{ color: '#7A69B3', fontSize: '18px' }} />
                       </span>
 
-                      <span className={cx('tertiaryAction-text')}>Upload image</span>
+                      <span className={cx('tertiaryAction-text')}>Tải lên</span>
                     </div>
                   )}
 

@@ -15,6 +15,7 @@ function SidebarCampaign({ status, title, cardImage, id }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const tab = useSelector((state) => state.userCampaign.tab);
+  const currentUser = useSelector((state) => state.user.currentUser);
   const handleClickSection = function (event) {
     event.preventDefault();
     setDownEditor(!downEditor);
@@ -205,6 +206,23 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                         className={cx('navItem-link')}
                       >
                         <div>8. ĐÓNG GÓP</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {(status === 'Thất bại' || status === 'Đã hoàn thành' || true) && (
+                    <div
+                      className={cx('navItem--child', 'navItem', 'cursor-pointer', {
+                        'navItem--current': tab.number === 9,
+                      })}
+                    >
+                      <div
+                        onClick={() => {
+                          navigate(`/campaigns/${id}/edit/summary`);
+                        }}
+                        className={cx('navItem-link')}
+                      >
+                        <div>9. Tổng kết</div>
                       </div>
                     </div>
                   )}

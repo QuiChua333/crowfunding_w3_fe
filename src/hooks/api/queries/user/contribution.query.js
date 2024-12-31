@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   getAllContributionsByCampaign,
+  getAllRefundsByCampaign,
   getMoneyByCampaign,
   getQuantityContributionOfUser,
   getQuantityPeopleByCampaign,
@@ -70,6 +71,21 @@ export const useGetAllContributionsByCampaignQuery = ({
         status,
         sortMoney,
         sortContributionDate,
+        page,
+      }),
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetAllRefundsByCampaignQuery = ({ campaignId, searchString, status, sortMoney, page }) => {
+  return useQuery({
+    queryKey: ['useGetAllRefundsByCampaignQuery', searchString, status, sortMoney, page],
+    queryFn: () =>
+      getAllRefundsByCampaign({
+        campaignId,
+        searchString,
+        status,
+        sortMoney,
         page,
       }),
     refetchOnWindowFocus: false,

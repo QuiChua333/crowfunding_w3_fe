@@ -23,6 +23,7 @@ import {
 } from '~/hooks/api/queries/user/contribution.query';
 import { setTab } from '~/redux/slides/UserCampaign';
 import { useGetAllGiftssByCampaignQuery } from '~/hooks/api/queries/user/gift.query';
+import { useQueryClient } from '@tanstack/react-query';
 
 const cx = classNames.bind(styles);
 
@@ -99,6 +100,7 @@ function ContributionCampaign() {
     setFilterContribution((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
+  const queryClient = useQueryClient();
   const { data: dataGifts, refetch: refetchGifts } = useGetAllGiftssByCampaignQuery({
     ...filterGift,
     campaignId: id,
@@ -158,12 +160,27 @@ function ContributionCampaign() {
     setShowModalGift(true);
   };
   const handleChangeStatus = (id) => {
-    setContributions((prev) =>
-      [...prev].map((item) => {
-        if (item.id === id) {
-          return { ...item, isFinish: true };
-        } else return item;
-      }),
+    queryClient.setQueryData(
+      [
+        'useGetAllContributionsByCampaignQuery',
+        filterContribution.searchString,
+        filterContribution.status,
+        filterContribution.sortMoney,
+        filterContribution.sortContributionDate,
+        filterContribution.page,
+      ],
+      (oldData) => {
+        return [
+          ...oldData.map((item) => {
+            if (item.id === id) {
+              return {
+                ...item,
+                isFinish: true,
+              };
+            } else return item;
+          }),
+        ];
+      },
     );
   };
   const handleChangeStatusGift = (id) => {

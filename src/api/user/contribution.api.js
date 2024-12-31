@@ -26,6 +26,16 @@ export const editContributionStatus = async (body) => {
 };
 
 // handleAPI
+export const editRefundStatus = async (body) => {
+  const response = await CustomAxios.patch(`${baseUrl}/contribution/refund/${body.id}/status`, body.data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+// handleAPI
 export const getQuantityContributionOfUser = async (id) => {
   const response = await CustomAxios.get(`${baseUrl}/contribution/user/${id}/quantity`);
   return response.data;
@@ -85,5 +95,18 @@ export const getAllContributionsByCampaign = async ({
   };
   const queryString = new URLSearchParams(queryParams).toString();
   const response = await CustomAxios.get(`${baseUrl}/contribution/campaign/${campaignId}?${queryString}`);
+  return response.data;
+};
+
+export const getAllRefundsByCampaign = async ({ campaignId, searchString, status, sortMoney, page }) => {
+  const queryParams = {
+    campaignId,
+    searchString,
+    status,
+    sortMoney,
+    page,
+  };
+  const queryString = new URLSearchParams(queryParams).toString();
+  const response = await CustomAxios.get(`${baseUrl}/contribution/refund/campaign/${campaignId}?${queryString}`);
   return response.data;
 };
