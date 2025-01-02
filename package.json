@@ -60,6 +60,7 @@
     "redux-saga": "^1.2.3",
     "sass": "^1.68.0",
     "scrollreveal": "^4.0.9",
+    "socket.io-client": "^4.8.1",
     "tailwindcss-animate": "^1.0.7",
     "use-debounce": "^10.0.4",
     "web-vitals": "^2.1.4"
