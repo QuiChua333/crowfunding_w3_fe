@@ -70,7 +70,7 @@ function MessageBoard({userActive, indexActive, setIndexActive}) {
             socket.on('messagesList', (messagesList) => {
                 setMessages(messagesList);
             });
-        } else {
+        } else {    
             socket.emit('getMessages');
             socket.on('messagesList', (messagesList) => {
                 setMessages(messagesList);
@@ -80,7 +80,7 @@ function MessageBoard({userActive, indexActive, setIndexActive}) {
         // Dọn dẹp kết nối khi component unmount
         return () => {
             socket.off('newMessage');
-            socket.off('messagesList');
+            socket.off('messagesList'); 
         };
     }, [messages]);
 

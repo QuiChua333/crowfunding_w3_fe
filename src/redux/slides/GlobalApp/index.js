@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     openChat: false,
+    openGemini: false,
     loading: false,
     messageBox: {
         title: '',
@@ -43,10 +44,13 @@ const slice = createSlice({
         },
         setOpenChat: (state, action) => {
             state.openChat = action.payload;
+        },
+        setOpenGemini: (state, action) => {
+            state.openGemini = action.payload;
         }
     },
     
 })
 
 export default slice.reducer;
-export const {setLoading, setMessageBox, setPreviousLink, setFilterExplore, setOpenChat} = slice.actions
+export const {setLoading, setMessageBox, setPreviousLink, setFilterExplore, setOpenChat, setOpenGemini} = slice.actions
