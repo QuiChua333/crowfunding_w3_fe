@@ -14,6 +14,7 @@ import {
   useSubmitLoginMutation,
 } from '~/hooks/api/mutations/auth/auth.mutation';
 import axios from 'axios';
+import { connectSocket } from '~/services/socket/socket';
 
 const cx = classNames.bind(styles);
 
@@ -87,8 +88,9 @@ function Login() {
         onSuccess: (response) => {
           localStorage.setItem('accessToken', response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
+          // connectSocket();
           if (response.isAdmin) {
-            navigate('/admin');
+            window.location.href = '/';
           } else {
             window.location.href = '/';
           }

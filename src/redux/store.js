@@ -6,6 +6,7 @@ import paymentReducer from './slides/Payment';
 import commentReducer from './slides/Comment';
 import adminReducer from './slides/Admin';
 import metamaskReducer from './slides/Web3';
+import chatReducer from './slides/Chat';
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     comment: commentReducer,
     admin: adminReducer,
     metamask: metamaskReducer,
+    chat: chatReducer,
   },
 });
 export default store;

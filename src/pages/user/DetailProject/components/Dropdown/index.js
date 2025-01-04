@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
-function DropDown({ setIsOpenModalMember, setIsOpenModalReport, IsOpenModalReport, statusCampaign }) {
+function DropDown({ setIsOpenModalMember, setIsOpenModalReport, clickChat }) {
   const dispatch = useDispatch();
   const messageBox = useSelector((state) => state.globalApp.messageBox);
   const handleClickSeeMember = () => {
@@ -29,6 +29,24 @@ function DropDown({ setIsOpenModalMember, setIsOpenModalReport, IsOpenModalRepor
       setIsOpenModalReport(true);
     }
   };
+
+  const handleClickChat = () => {
+    const token = localStorage.getItem('accessToken') || false;
+    if (!token) {
+      dispatch(
+        setMessageBox({
+          title: 'Thông báo',
+          content: 'Bạn cần phải đăng nhập để sử dụng tính năng chat.',
+          contentOK: 'XÁC NHẬN',
+          contentCancel: 'HỦY',
+          isShow: true,
+          type: 'chatOwnerCampaign',
+        }),
+      );
+    } else {
+      clickChat();
+    }
+  };
   const navigate = useNavigate();
   useEffect(() => {
     if (messageBox.result) {
@@ -48,6 +66,9 @@ function DropDown({ setIsOpenModalMember, setIsOpenModalReport, IsOpenModalRepor
     <div className={cx('wrapper')}>
       <div onClick={handleClickSeeMember} className={cx('action')}>
         Xem thành viên
+      </div>
+      <div onClick={handleClickChat} className={cx('action')}>
+        Chat với chủ chiến dịch
       </div>
       <div style={{ height: '1px', background: '#ccc' }}></div>
       <div onClick={handleClickReport} className={cx('action', 'action-delete')}>

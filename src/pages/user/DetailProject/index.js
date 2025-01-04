@@ -30,6 +30,7 @@ import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-cam
 import { useGetPerksHasListItemsByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
 import { setFollowCampaigns } from '~/redux/slides/User';
 import { useGetQuantityFollowsOfCampaignQuery } from '~/hooks/api/queries/user/follow-campaign.query';
+import { setActiveChat, setActiveUser, setChatList, setListUser, setOpenChat } from '~/redux/slides/Chat';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -51,6 +52,7 @@ function DetailProject() {
   const [endDate, setEndDate] = useState('');
 
   const currentUser = useSelector((state) => state.user.currentUser);
+  const chatList = useSelector((state) => state.chat.chatList);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -164,6 +166,29 @@ function DetailProject() {
     var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     var match = linkURL.match(regExp);
     return match && match[7].length === 11 ? 'https://img.youtube.com/vi/' + match[7] + '/default.jpg' : false;
+  };
+
+  const handleClickChat = () => {
+    const isHasRoomChat = chatList.some((item) => item.user.id === ItemProject.owner.id);
+    if (!isHasRoomChat) {
+      const newChat = {
+        user: {
+          id: ItemProject.owner.id,
+          fullName: ItemProject.owner.fullName,
+          avatar: ItemProject.owner.avatar,
+        },
+        lastMessageTime: new Date(),
+        unreadMessageCount: 0,
+        chatRoomId: '',
+      };
+      dispatch(setChatList([newChat, ...chatList]));
+      dispatch(setActiveChat(newChat));
+    } else {
+      const chat = chatList.find((item) => item.user.id === ItemProject.owner.id);
+      dispatch(setActiveChat(chat));
+    }
+
+    dispatch(setOpenChat(true));
   };
 
   return (
@@ -375,6 +400,7 @@ function DetailProject() {
                   setIsOpenModalReport={setIsOpenModalReport}
                   IsOpenModalReport={isOpenModalReport}
                   statusCampaign={ItemProject.status}
+                  clickChat={handleClickChat}
                 />
               </div>
             </div>
