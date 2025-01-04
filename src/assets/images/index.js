@@ -31,6 +31,7 @@ export const verifyEmailSuccess = require('~/assets/images/png/verify-email-succ
 export const checkSuccess = require('~/assets/images/png/check-success.png');
 export const logoEmail = require('~/assets/images/png/logo-email.png');
 export const giveLove = require('~/assets/images/png/give-love.png');
+export const geminiLogo = require('~/assets/images/png/gemini_logo.png');
 
 export const audio = require('~/assets/images/svg/audio.svg').default;
 export const camera = require('~/assets/images/svg/camera.svg').default;
