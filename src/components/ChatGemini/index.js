@@ -17,6 +17,18 @@ function ChatGemini() {
   };
 
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const getMessagesFirst = async () => {
+    try {
+      setLoading(true);
+      const res = await CustomAxios.get(`${baseURL}/chat-gemini/${currentUser.id}`);
+      setMessages(res.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
   const getMessages = async () => {
     try {
       const res = await CustomAxios.get(`${baseURL}/chat-gemini/${currentUser.id}`);
@@ -36,7 +48,7 @@ function ChatGemini() {
   }, [messages]);
 
   useEffect(() => {
-    getMessages();
+    getMessagesFirst();
   }, []);
 
   const [textInput, setTextInput] = useState('');
@@ -85,18 +97,25 @@ function ChatGemini() {
         <div className="flex flex-col justify-between h-full gap-10 mt-5">
             <div ref={nestedElement} className='flex flex-col gap-5 h-auto max-h-[38vh] md:max-h-[40vh] overflow-y-scroll p-5'>
               {
-                messages.length !== 0 ?
-                  messages.map((item, index) => {
-                      return (
-                          <div className={`flex items-center`}>
-                              <ItemChat msg={item} key={index}/>
-                          </div>
-                      )
-                  }) : (
+                loading ? (
                     <div className="flex justify-center items-center space-x-2">
                       <div className="w-8 h-8 border-4 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
                       <span className="text-gray-600">Đang tải...</span>
                     </div>
+                  ) : (
+                    messages.length !== 0 ? (
+                        messages.map((item, index) => {
+                          return (
+                              <div className={`flex items-center`}>
+                                  <ItemChat msg={item} key={index}/>
+                              </div>
+                          )
+                        })
+                      ) : (
+                        <div className="flex justify-center items-center space-x-2">
+                          <span className="text-gray-600">Chưa có lịch sử chat</span>
+                        </div>
+                    )
                   )
               }
             </div>

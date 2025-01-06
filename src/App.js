@@ -20,7 +20,7 @@ import { setOpenGemini } from './redux/slides/GlobalApp';
 
 function App() {
   const client = new QueryClient();
-  const open = useSelector((state) => state.globalApp.openChat);
+  const open = useSelector((state) => state.chat.openChat);
   const openGemini = useSelector((state) => state.globalApp.openGemini);
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
@@ -33,7 +33,11 @@ function App() {
   };
 
   const handleOpenGemini = () => {
-    dispatch(setOpenGemini(true));
+    if (currentUser.id) {
+      dispatch(setOpenGemini(true));
+    } else {
+      window.location.assign('/login');
+    }
   };
 
   useEffect(() => {
