@@ -30,7 +30,7 @@ import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-cam
 import { useGetPerksHasListItemsByCampaignIdQuery } from '~/hooks/api/queries/user/perk.query';
 import { setFollowCampaigns } from '~/redux/slides/User';
 import { useGetQuantityFollowsOfCampaignQuery } from '~/hooks/api/queries/user/follow-campaign.query';
-import { setActiveChat, setActiveUser, setChatList, setListUser, setOpenChat } from '~/redux/slides/Chat';
+import { setActiveChat, setActiveUser, setChatList, setListUser, setNewChat, setOpenChat } from '~/redux/slides/Chat';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -181,7 +181,7 @@ function DetailProject() {
         unreadMessageCount: 0,
         chatRoomId: '',
       };
-      dispatch(setChatList([newChat, ...chatList]));
+      dispatch(setNewChat(newChat));
       dispatch(setActiveChat(newChat));
     } else {
       const chat = chatList.find((item) => item.user.id === ItemProject.owner.id);

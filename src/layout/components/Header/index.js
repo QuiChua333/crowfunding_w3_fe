@@ -6,7 +6,7 @@ import { FaAngleDown } from 'react-icons/fa6';
 import styles from './Header.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUser } from '~/redux/slides/User';
-import { HeaderDropdown } from './components';
+import { Bell, HeaderDropdown } from './components';
 import { RiMenu3Line } from 'react-icons/ri';
 import { IoMdClose } from 'react-icons/io';
 import MenuDropdown from './components/MenuDropdown';
@@ -130,34 +130,40 @@ function Header({ type = 'page' }) {
                   </div>
                 </>
               )}
+
               {dataUser && (
-                <div
-                  className={cx('user-section')}
-                  onClick={() => setShowDropdownUser((prev) => !prev)}
-                  ref={boxFilterElement}
-                >
-                  <img className={cx('user-avatar')} src={defaultAvt} />
-                  <span className={cx('user-name')}>
-                    {user.fullName} <FaAngleDown className={cx('icon', { active: showDropdownUser })} />
-                  </span>
-                  {showDropdownUser && (
-                    <div className={cx('dropdownBoxFilter')}>
-                      {!user.isAdmin && (
-                        <>
-                          <span onClick={() => navigate(`/individuals/${user.id}/campaigns`)}>Chiến dịch của tôi</span>
-                          <span onClick={() => navigate(`/individuals/${user.id}/contributions`)}>
-                            Đóng góp của tôi
-                          </span>
-                          <span onClick={() => navigate(`/individuals/${user.id}/profile`)}>Hồ sơ</span>
-                          <span onClick={() => navigate(`/individuals/${user.id}/edit/settings`)}>Cài đặt</span>
-                        </>
-                      )}
-                      {user.isAdmin && <span onClick={() => navigate(`/admin`)}>Đến trang quản lý</span>}
-                      <span onClick={handleClickLogout} style={{ paddingBottom: '16px' }}>
-                        Đăng xuất
-                      </span>
-                    </div>
-                  )}
+                <div className="flex items-center">
+                  <Bell />
+                  <div
+                    className={cx('user-section')}
+                    onClick={() => setShowDropdownUser((prev) => !prev)}
+                    ref={boxFilterElement}
+                  >
+                    <img className={cx('user-avatar')} src={defaultAvt} />
+                    <span className={cx('user-name')}>
+                      {user.fullName} <FaAngleDown className={cx('icon', { active: showDropdownUser })} />
+                    </span>
+                    {showDropdownUser && (
+                      <div className={cx('dropdownBoxFilter')}>
+                        {!user.isAdmin && (
+                          <>
+                            <span onClick={() => navigate(`/individuals/${user.id}/campaigns`)}>
+                              Chiến dịch của tôi
+                            </span>
+                            <span onClick={() => navigate(`/individuals/${user.id}/contributions`)}>
+                              Đóng góp của tôi
+                            </span>
+                            <span onClick={() => navigate(`/individuals/${user.id}/profile`)}>Hồ sơ</span>
+                            <span onClick={() => navigate(`/individuals/${user.id}/edit/settings`)}>Cài đặt</span>
+                          </>
+                        )}
+                        {user.isAdmin && <span onClick={() => navigate(`/admin`)}>Đến trang quản lý</span>}
+                        <span onClick={handleClickLogout} style={{ paddingBottom: '16px' }}>
+                          Đăng xuất
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

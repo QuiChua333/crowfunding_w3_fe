@@ -8,10 +8,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CustomAxios } from '~/config';
 import baseURL from '~/utils/baseURL';
 import { setChatList, setListUser, setOpenChat } from '~/redux/slides/Chat';
+import { socket } from '~/services/socket/socket';
 
 const ChatComponent = () => {
   const activeUsers = useSelector((state) => state.chat.activeUsers);
   const chatList = useSelector((state) => state.chat.chatList);
+  const activeChat = useSelector((state) => state.chat.activeChat);
+
+  const newChat = useSelector((state) => state.chat.newChat);
   const [activeUser, setActiveUser] = useState({});
   const dispatch = useDispatch();
   const handleCloseChat = () => {
@@ -24,20 +28,24 @@ const ChatComponent = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const getHistoryChatUsers = async () => {
     const response = await CustomAxios.get(`${baseURL}/chat/history/chat-list`);
-    const chatListResponse = response.data;
-
-    if (activeUsers.length > 0) {
-      prioritizeOnline([...chatList, ...chatListResponse]);
+    let chatListResponse = response.data;
+    if (newChat.user) {
+      chatListResponse = [newChat, ...chatListResponse];
     } else {
-      dispatch(setChatList([...chatList, ...chatListResponse]));
+      chatListResponse = chatListResponse.filter((item) => !!item.chatRoomId);
+    }
+    if (activeUsers.length > 0) {
+      prioritizeOnline(chatListResponse);
+    } else {
+      dispatch(setChatList(chatListResponse));
     }
   };
 
   const prioritizeOnline = (chatList) => {
-    console.log({ chatList });
     const onlines = chatList.filter((item) => activeUsers.includes(item.user.id));
     const offlines = chatList.filter((item) => !activeUsers.includes(item.user.id));
     const newList = [...onlines, ...offlines];
+
     dispatch(setChatList(newList));
   };
 
@@ -69,6 +77,27 @@ const ChatComponent = () => {
     getHistoryChatUsers();
   }, []);
 
+  useEffect(() => {
+    if (JSON.stringify(activeChat) === '{}') {
+      socket.on('newMessage', (newMessage) => {
+        const newChatList = chatList.map((chat) => {
+          if (newMessage.chatRoomId === chat.chatRoomId) {
+            return {
+              ...chat,
+              lastMessageTime: new Date(),
+              unreadMessageCount: chat.unreadMessageCount + 1,
+            };
+          } else return chat;
+        });
+        dispatch(setChatList(newChatList));
+      });
+    }
+    return () => {
+      if (JSON.stringify(activeChat) === '{}') {
+        socket.off('newMessage');
+      }
+    };
+  }, [chatList, activeChat]);
   return (
     <div
       className="fixed w-full h-full flex items-center justify-center inset-0 z-[1000] bg-black bg-opacity-50"

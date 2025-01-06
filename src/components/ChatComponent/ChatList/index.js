@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ItemChatList from './ItemChatList';
 
 function ChatList({ chatList, toggleChatList }) {

@@ -5,6 +5,8 @@ const initialState = {
   activeUsers: [],
   chatList: [],
   activeChat: {},
+  newChat: {},
+  totalUnreadMessage: 0,
 };
 
 const chatSlice = createSlice({
@@ -23,8 +25,15 @@ const chatSlice = createSlice({
     setActiveChat: (state, action) => {
       state.activeChat = action.payload;
     },
+    setNewChat: (state, action) => {
+      state.newChat = action.payload;
+    },
+    setTotalUnreadMessage: (state, action) => {
+      state.totalUnreadMessage = action.payload;
+    },
   },
 });
 
-export const { setActiveUsers, setOpenChat, setChatList, setActiveChat } = chatSlice.actions;
+export const { setActiveUsers, setOpenChat, setChatList, setActiveChat, setNewChat, setTotalUnreadMessage } =
+  chatSlice.actions;
 export default chatSlice.reducer;

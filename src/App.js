@@ -14,18 +14,21 @@ import { BiCommentDetail } from 'react-icons/bi';
 import ChatComponent from './components/ChatComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectSocket, disconnectSocket, socket } from './services/socket/socket';
-import { setOpenChat } from './redux/slides/Chat';
+import { setOpenChat, setTotalUnreadMessage } from './redux/slides/Chat';
 import ChatGemini from './components/ChatGemini';
 import { setOpenGemini } from './redux/slides/GlobalApp';
 
 function App() {
   const client = new QueryClient();
-  const open = useSelector((state) => state.globalApp.openChat);
+  const open = useSelector((state) => state.chat.openChat);
+  const totalUnreadMessage = useSelector((state) => state.chat.totalUnreadMessage);
+  const chatList = useSelector((state) => state.chat.chatList);
   const openGemini = useSelector((state) => state.globalApp.openGemini);
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const handleOpenChat = () => {
     if (currentUser.id) {
+      console.log(111);
       dispatch(setOpenChat(true));
     } else {
       window.location.assign('/login');
@@ -43,6 +46,13 @@ function App() {
       disconnectSocket();
     };
   }, []);
+
+  useEffect(() => {
+    const totalUnreadMessage = chatList.reduce((acc, cur) => {
+      return acc + cur.unreadMessageCount;
+    }, 0);
+    dispatch(setTotalUnreadMessage(totalUnreadMessage));
+  }, [chatList]);
 
   return (
     <QueryClientProvider client={client}>
@@ -73,12 +83,19 @@ function App() {
                           >
                             Chatbot
                           </button>
-                          <button
-                            onClick={handleOpenChat}
-                            className="fixed bottom-40 right-5 shadow-sm hover:opacity-90 hover:cursor-pointer text-white font-bold text-[22px] bg-[#299899] ring-[4px] ring-[#1c7e7f] w-20 h-20 rounded-full flex items-center justify-center"
-                          >
-                            <BiCommentDetail />
-                          </button>
+                          <div className="fixed bottom-40 right-5">
+                            {totalUnreadMessage > 0 && (
+                              <div className="text-[12px] z-[10] rounded-full absolute -top-[5px] text-white  bg-red-500 inline-flex w-7 h-7 items-center justify-center">
+                                {totalUnreadMessage}
+                              </div>
+                            )}
+                            <button
+                              onClick={handleOpenChat}
+                              className=" shadow-sm hover:opacity-90 hover:cursor-pointer text-white font-bold text-[22px] bg-[#299899] ring-[4px] ring-[#1c7e7f] w-20 h-20 rounded-full flex items-center justify-center"
+                            >
+                              <BiCommentDetail />
+                            </button>
+                          </div>
                         </>
                         <Page />
                       </Layout>
@@ -108,12 +125,19 @@ function App() {
                             >
                               Chatbot
                             </button>
-                            <button
-                              onClick={handleOpenChat}
-                              className="fixed bottom-40 right-5 shadow-sm hover:opacity-90 hover:cursor-pointer text-white font-bold text-[22px] bg-[#299899] ring-[4px] ring-[#1c7e7f] w-20 h-20 rounded-full flex items-center justify-center"
-                            >
-                              <BiCommentDetail />
-                            </button>
+                            <div className="fixed bottom-40 right-5">
+                              {totalUnreadMessage > 0 && (
+                                <div className="text-[12px] z-[10] rounded-full absolute -top-[5px] text-white  bg-red-500 inline-flex w-7 h-7 items-center justify-center">
+                                  {totalUnreadMessage}
+                                </div>
+                              )}
+                              <button
+                                onClick={handleOpenChat}
+                                className=" shadow-sm hover:opacity-90 hover:cursor-pointer text-white font-bold text-[22px] bg-[#299899] ring-[4px] ring-[#1c7e7f] w-20 h-20 rounded-full flex items-center justify-center"
+                              >
+                                <BiCommentDetail />
+                              </button>
+                            </div>
                           </>
                           <Page />
                         </Layout>
@@ -144,12 +168,19 @@ function App() {
                             >
                               Chatbot
                             </button>
-                            <button
-                              onClick={handleOpenChat}
-                              className="fixed bottom-40 right-5 shadow-sm hover:opacity-90 hover:cursor-pointer text-white font-bold text-[22px] bg-[#299899] ring-[4px] ring-[#1c7e7f] w-20 h-20 rounded-full flex items-center justify-center"
-                            >
-                              <BiCommentDetail />
-                            </button>
+                            <div className="fixed bottom-40 right-5">
+                              {totalUnreadMessage > 0 && (
+                                <div className="text-[12px] z-[10] rounded-full absolute -top-[5px] text-white  bg-red-500 inline-flex w-7 h-7 items-center justify-center">
+                                  {totalUnreadMessage}
+                                </div>
+                              )}
+                              <button
+                                onClick={handleOpenChat}
+                                className=" shadow-sm hover:opacity-90 hover:cursor-pointer text-white font-bold text-[22px] bg-[#299899] ring-[4px] ring-[#1c7e7f] w-20 h-20 rounded-full flex items-center justify-center"
+                              >
+                                <BiCommentDetail />
+                              </button>
+                            </div>
                           </>
                           <Page />
                         </Layout>
@@ -202,12 +233,19 @@ function App() {
                             >
                               Chat Gemini
                             </button>
-                            <button
-                              onClick={handleOpenChat}
-                              className="fixed bottom-40 right-5 shadow-sm hover:opacity-90 hover:cursor-pointer text-white font-bold text-[22px] bg-[#299899] ring-[4px] ring-[#1c7e7f] w-20 h-20 rounded-full flex items-center justify-center"
-                            >
-                              <BiCommentDetail />
-                            </button>
+                            <div className="fixed bottom-40 right-5">
+                              {totalUnreadMessage > 0 && (
+                                <div className="text-[8px] rounded-full text-white bg-red-500 inline-flex w-7 h-7 items-center justify-center">
+                                  {totalUnreadMessage}
+                                </div>
+                              )}
+                              <button
+                                onClick={handleOpenChat}
+                                className=" shadow-sm hover:opacity-90 hover:cursor-pointer text-white font-bold text-[22px] bg-[#299899] ring-[4px] ring-[#1c7e7f] w-20 h-20 rounded-full flex items-center justify-center"
+                              >
+                                <BiCommentDetail />
+                              </button>
+                            </div>
                           </>
                           <Page />
                         </Layout>

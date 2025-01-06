@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import 'moment/locale/vi';
 import classNames from 'classnames/bind';
 import LikeButton from '../LikeButton';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,6 +13,8 @@ import { useUpdateCommentMutation } from '~/hooks/api/mutations/user/comment.mut
 import { useLikeCommentMutation } from '~/hooks/api/mutations/user/comment-like.mutation';
 import { defaultAvt } from '~/assets/images';
 const cx = classNames.bind(styles);
+
+moment.locale('vi');
 const CommentCard = ({ children, comment, campaign, setComments, handleRemoveComment, members, commentParentId }) => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();

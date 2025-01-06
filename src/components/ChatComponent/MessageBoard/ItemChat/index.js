@@ -1,6 +1,7 @@
 import React from 'react';
 import { avatar } from '../../ChatList/ItemChatList';
 import { useSelector } from 'react-redux';
+import { formatDateTimeChat } from '~/utils/formatTimeChat';
 
 function ItemChat({ message, index, activeUser }) {
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -14,14 +15,16 @@ function ItemChat({ message, index, activeUser }) {
         />
       )}
       <div
-        className={`px-10 py-2 border text-white bg-[#299899] flex flex-col gap-2 ${
+        className={`px-10 py-2 border text-white  flex flex-col gap-2 ${
           message.senderId !== currentUser.id
-            ? 'rounded-e-[30px] rounded-s-[10px]'
-            : 'rounded-s-[30px] rounded-e-[10px]'
+            ? 'rounded-e-[30px] rounded-s-[10px]  bg-white border'
+            : 'rounded-s-[30px] rounded-e-[10px] bg-[#299899]'
         }`}
       >
-        <span className="">{message.content}</span>
-        <span className="text-sm self-end">11:00</span>
+        <span className={`${message.senderId !== currentUser.id && 'text-[#080809]'}`}>{message.content}</span>
+        <span className={`text-sm self-end ${message.senderId !== currentUser.id && 'text-[#080809]'}`}>
+          {formatDateTimeChat(message.createdAt)}
+        </span>
       </div>
     </div>
   );

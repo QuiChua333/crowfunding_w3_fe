@@ -8,87 +8,119 @@ import ItemChat from './ItemChat';
 import { logoCrowdfunding } from '~/assets/images';
 import { useDispatch, useSelector } from 'react-redux';
 import { socket } from '~/services/socket/socket';
-import { setActiveChat, setChatList, setOpenChat } from '~/redux/slides/Chat';
+import { setActiveChat, setChatList, setNewChat, setOpenChat, setTotalUnreadMessage } from '~/redux/slides/Chat';
+import { ClipLoader } from 'react-spinners';
 
 function MessageBoard({}) {
   const currentUser = useSelector((state) => state.user.currentUser);
   const activeChat = useSelector((state) => state.chat.activeChat);
   const chatList = useSelector((state) => state.chat.chatList);
+  const totalUnreadMessage = useSelector((state) => state.chat.totalUnreadMessage);
+  const chatListRef = useRef(chatList);
+  useEffect(() => {
+    chatListRef.current = chatList;
+  }, [chatList]);
+
+  const newChat = useSelector((state) => state.chat.newChat);
+  const [isLoadingSend, setLoadingSend] = useState(false);
+  const [isLoadingFirst, setLoadingFirst] = useState(false);
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
 
-  function selectFiles() {
-    fileInputRef.current.click();
-  }
-  function onFileSelect(event) {
-    const selectedFiles = Array.from(event.target.files); // Chuyển thành mảng thực
-    if (selectedFiles.length === 0) return;
-
-    const newFiles = [];
-    const formData = new FormData();
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i];
-
-      // Kiểm tra kích thước file (giới hạn 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`${file.name} vượt quá kích thước 5MB và sẽ không được thêm.`);
-        continue;
-      }
-
-      // Kiểm tra file đã tồn tại trong danh sách chưa
-      if (!files.some((e) => e.name === file.name)) {
-        formData.append('files', file); // Thêm file vào FormData
-        newFiles.push({
-          name: file.name,
-          url: URL.createObjectURL(file),
-          type: file.type, // Loại tệp
-        });
-      }
-    }
-
-    setFiles((prev) => [...prev, ...newFiles]);
-  }
-
-  function deleteFile(index) {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-  }
   const handleCloseChatBoard = () => {
     dispatch(setOpenChat(false));
+    dispatch(setActiveChat({}));
   };
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
 
   useEffect(() => {
     if (activeChat.user?.id) {
+      setLoadingFirst(true);
       socket.emit('getMessages', { chatRoomId: activeChat.chatRoomId });
       socket.on('messages', (messagesList) => {
+        setLoadingFirst(false);
         console.log(messagesList);
         setMessages(messagesList);
       });
 
+      if (activeChat.chatRoomId) {
+        const newChatList = chatListRef.current.map((chat) => {
+          if (chat.chatRoomId === activeChat.chatRoomId) {
+            return {
+              ...chat,
+              lastMessageTime: new Date(),
+              unreadMessageCount: 0,
+            };
+          } else return chat;
+        });
+        dispatch(setChatList(newChatList));
+        socket.emit('seenMessage', {
+          chatRoomId: activeChat.chatRoomId,
+        });
+      }
+
       socket.on('newMessage', (newMessage) => {
-        if (!activeChat.chatRoomId) {
-          dispatch(
-            setActiveChat({
-              ...activeChat,
-              chatRoomId: newMessage.chatRoomId,
-            }),
-          );
+        setLoadingSend(false);
+        console.log({ chatList: chatList.current });
+        console.log({ newMessage });
+        console.log({ activeChat });
+        const otherChat = chatListRef.current.some(
+          (item) => item.chatRoomId === newMessage.chatRoomId && activeChat.chatRoomId !== newMessage.chatRoomId,
+        );
 
-          const updateChatList = chatList.map((item) => {
-            if (item.user.id === activeChat.user.id) {
+        if (otherChat) {
+          const newChatList = chatListRef.current.map((chat) => {
+            if (chat.chatRoomId === newMessage.chatRoomId) {
               return {
-                ...item,
-                chatRoomId: newMessage.chatRoomId,
+                ...chat,
+                lastMessageTime: new Date(),
+                unreadMessageCount: chat.unreadMessageCount + 1,
               };
-            } else return item;
+            } else return chat;
           });
+          dispatch(setChatList(newChatList));
+        } else {
+          if (!activeChat.chatRoomId) {
+            dispatch(
+              setActiveChat({
+                ...activeChat,
+                chatRoomId: newMessage.chatRoomId,
+              }),
+            );
+            const updateChatList = chatListRef.current.map((item) => {
+              if (!item.chatRoomId) {
+                return {
+                  ...item,
+                  chatRoomId: newMessage.chatRoomId,
+                };
+              } else return item;
+            });
+            if (newChat.user) dispatch(setNewChat({}));
 
-          dispatch(setChatList(updateChatList));
+            dispatch(setChatList(updateChatList));
+          }
+
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+          if (activeChat.chatRoomId) {
+            socket.emit('seenMessage', {
+              chatRoomId: activeChat.chatRoomId,
+            });
+
+            const newChatList = chatListRef.current.map((chat) => {
+              if (chat.chatRoomId === activeChat.chatRoomId) {
+                return {
+                  ...chat,
+                  lastMessageTime: new Date(),
+                  unreadMessageCount: 0,
+                };
+              } else return chat;
+            });
+            dispatch(setChatList(newChatList));
+          }
         }
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
       });
     }
 
@@ -98,7 +130,7 @@ function MessageBoard({}) {
         socket.off('messages');
       }
     };
-  }, [activeChat.user]);
+  }, [activeChat]);
 
   const sendMessage = () => {
     if (inputMessage.trim()) {
@@ -108,14 +140,25 @@ function MessageBoard({}) {
         receiverId: activeChat.user.id,
         chatRoomId: activeChat.chatRoomId,
       };
+      setLoadingSend(true);
       socket.emit('sendMessage', messageData);
       setInputMessage('');
     }
   };
   const activeUsers = useSelector((state) => state.chat.activeUsers);
   const isOnline = activeUsers.includes(activeChat.user?.id);
+
+  const nestedElement = useRef(null);
+  useEffect(() => {
+    if (nestedElement.current) {
+      nestedElement.current.scrollTo({
+        top: nestedElement.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [messages]);
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-[#f5f5f5]">
       {activeChat.user?.id ? (
         <>
           <div className="h-[10%] border-b-[2px] flex items-center justify-between py-5 px-8">
@@ -144,69 +187,51 @@ function MessageBoard({}) {
             </button>
           </div>
           <div className="flex min-h-[90%] flex-col justify-between gap-10 px-12 py-8 relative">
-            <div className=" overflow-y-scroll flex flex-col gap-y-5 p-5">
-              {/* {
-                                Array.from({length: 25}).map((item, index) => {
-                                    return (
-                                        <div className={`flex items-center ${index % 2 === 0 ? "justify-start" : "justify-end"}`}>
-                                            <ItemChat index={index} key={index}/>
-                                        </div>
-                                    )
-                                })
-                            } */}
-              {messages.map((message, index) => {
-                return (
-                  <div
-                    className={`flex items-center ${
-                      message.senderId === currentUser.id ? 'justify-end' : 'justify-start'
-                    }`}
-                  >
-                    <ItemChat message={message} index={index} key={index} activeUser={activeChat.user} />
-                  </div>
-                );
-              })}
+            <div className=" overflow-y-scroll flex flex-col gap-y-5 p-5" ref={nestedElement}>
+              {!isLoadingFirst && (
+                <>
+                  {messages.map((message, index) => {
+                    return (
+                      <div
+                        className={`flex items-center ${
+                          message.senderId === currentUser.id ? 'justify-end' : 'justify-start'
+                        }`}
+                      >
+                        <ItemChat message={message} index={index} key={index} activeUser={activeChat.user} />
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+              {isLoadingFirst && (
+                <div className="flex justify-center items-center space-x-2">
+                  <div className="w-8 h-8 border-4 border-t-4 border-[#299899] border-solid rounded-full animate-spin"></div>
+                  <span className="text-gray-600">Đang tải...</span>
+                </div>
+              )}
             </div>
             <div className="flex flex-col border border-[#cccccc] rounded-2xl p-5">
-              <div className="w-full flex items-center flex-wrap">
-                {files.map((item, index) => (
-                  <div className="flex -ml-2 relative" key={index}>
-                    {item.type.startsWith('image/') ? (
-                      <img
-                        className="w-[60px] h-[60px] relative mx-4 border rounded-lg"
-                        src={item.url}
-                        alt={item.name}
-                      />
-                    ) : (
-                      <div className="relative mx-4 border rounded-lg flex flex-col items-center justify-center border-gray-200 p-2 hover:cursor-pointer hover:underline">
-                        <span className="text-[10px] italic truncate w-full text-center" title={item.name}>
-                          {item.name}
-                        </span>
-                      </div>
-                    )}
-                    <AiFillCloseCircle
-                      className="absolute -top-4 -right-1 text-[30px] cursor-pointer mt-1 h-6 font-bold"
-                      onClick={() => deleteFile(index)}
-                    />
-                  </div>
-                ))}
-              </div>
+              <div className="w-full flex items-center flex-wrap"></div>
               <div className={`${files.length > 0 && 'mt-4'} flex items-center justify-between gap-5`}>
                 <input
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   placeholder="Nhập tin nhắn"
-                  className="w-full text-[14px]"
+                  className="w-full text-[14px] bg-[#f5f5f5]"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && inputMessage.trim()) {
+                      sendMessage();
+                    }
+                  }}
                 />
                 <div className="gap-4 flex items-center">
-                  <FiFilePlus
-                    className="w-10 h-9 text-[#299899] hover:cursor-pointer hover:text-[#005759]"
-                    onClick={selectFiles}
-                  />
-                  <input type="file" name="file" multiple hidden ref={fileInputRef} onChange={onFileSelect} />
-                  <BsFillSendFill
-                    onClick={sendMessage}
-                    className="w-10 h-9 text-[#299899] hover:cursor-pointer hover:text-[#005759]"
-                  />
+                  {isLoadingSend === false && (
+                    <BsFillSendFill
+                      onClick={sendMessage}
+                      className="w-10 h-9 text-[#299899] hover:cursor-pointer hover:text-[#005759]"
+                    />
+                  )}
+                  {isLoadingSend === true && <ClipLoader size={20} color="#299899" />}
                 </div>
               </div>
             </div>

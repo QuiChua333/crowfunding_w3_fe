@@ -1,7 +1,7 @@
 // socket.js
 import { io } from 'socket.io-client';
 import { jwtDecode } from 'jwt-decode';
-import { setActiveUsers } from '~/redux/slides/Chat';
+import { setActiveUsers, setTotalUnreadMessage } from '~/redux/slides/Chat';
 
 export let socket;
 export let activeUsers;
@@ -18,8 +18,12 @@ export function connectSocket(dispatch) {
     });
 
     socket.on('activeUsers', (data) => {
-      console.log('Active user', data);
       dispatch(setActiveUsers(data));
+    });
+
+    socket.on('totalUnreadMessage', (totalUnreadMessage) => {
+      console.log({ totalUnreadMessage });
+      dispatch(setTotalUnreadMessage(totalUnreadMessage));
     });
   } catch (error) {
     console.log(error);
