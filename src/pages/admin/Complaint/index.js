@@ -9,6 +9,7 @@ import ModalDetailReport from './components/ModalDetailReport';
 import { setTabAdmin } from '~/redux/slides/Admin';
 import { useDispatch } from 'react-redux';
 import { useGetAllReportsQuery } from '~/hooks/api/queries/admin/admin.complaints.query';
+import { ClipLoader } from 'react-spinners';
 
 const cx = classNames.bind(styles);
 
@@ -36,7 +37,7 @@ function ComplaintManagement() {
     setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
-  const { data, refetch } = useGetAllReportsQuery(filter);
+  const { data, refetch, isLoading } = useGetAllReportsQuery(filter);
 
   const handleViewReport = (index) => {
     setIndexOfRow(index);
@@ -79,10 +80,15 @@ function ComplaintManagement() {
       </div>
       <div style={{ marginTop: '20px' }}>
         <div className={cx('table-wrapper')}>
-          {data?.reports?.length > 0 && (
+          {isLoading && (
+            <div className="text-center ">
+              <ClipLoader size={40} color="#299899" />
+            </div>
+          )}
+          {!isLoading && data?.reports?.length > 0 && (
             <ComplaintTable reports={data?.reports || []} handleViewReport={handleViewReport} />
           )}
-          {data?.reports?.length === 0 && (
+          {!isLoading && data?.reports?.length === 0 && (
             <div className="text-center text-gray-500 font-medium text-[20px] mt-[100px]">Dữ liệu trống</div>
           )}
         </div>

@@ -99,17 +99,12 @@ function EditProfile() {
     <div className={cx('wrapper')}>
       <div className={cx('navbar')}>
         <Link to={`/individuals/${id}/profile`} className={cx('nav-item')}>
-          <span>
-            <MdOutlineRemoveRedEye style={{ fontSize: '24px', marginRight: '8px' }} />
-            Xem hồ sơ
-          </span>
+          <MdOutlineRemoveRedEye style={{ fontSize: '24px', marginRight: '8px' }} />
+          <span>Xem hồ sơ</span>
         </Link>
         <Link to={`/individuals/${id}/edit/profile`} className={cx('nav-item', 'active')}>
-          <span>
-            {' '}
-            <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
-            Chỉnh sửa hồ sơ & Cài đặt
-          </span>
+          <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
+          <span>Chỉnh sửa hồ sơ & Cài đặt</span>
         </Link>
       </div>
 

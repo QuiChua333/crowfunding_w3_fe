@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
 import { useUserGetAllCampaignQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useQueryClient } from '@tanstack/react-query';
+import { ClipLoader } from 'react-spinners';
 const cx = classNames.bind(styles);
 
 function Explore() {
@@ -156,7 +157,11 @@ function Explore() {
     console.log(filter);
   }, [filter]);
 
-  const { data: dataCampaign } = useUserGetAllCampaignQuery({
+  const {
+    data: dataCampaign,
+    isLoading,
+    isFetching,
+  } = useUserGetAllCampaignQuery({
     field: filter.field || '',
     criteria: filter.criteria,
     searchString: filter.searchString,
@@ -282,10 +287,25 @@ function Explore() {
                   </span>
                 </label>
                 <label className={cx('inputRadioGroup-radio')}>
-                  <input type="radio" value={'Đã hoàn thành'} name="status" onChange={handleChangeStatus} />
+                  <input type="radio" value={'Thành công'} name="status" onChange={handleChangeStatus} />
                   <span className={cx('inputRadioGroup-radio-button')}></span>
                   <span className={cx('inputRadioGroup-radio-label')}>
-                    <span>Đã hoàn thành</span>
+                    <span>Thành công</span>
+                  </span>
+                </label>
+
+                <label className={cx('inputRadioGroup-radio')}>
+                  <input type="radio" value={'Tạm dừng'} name="status" onChange={handleChangeStatus} />
+                  <span className={cx('inputRadioGroup-radio-button')}></span>
+                  <span className={cx('inputRadioGroup-radio-label')}>
+                    <span>Tạm dừng</span>
+                  </span>
+                </label>
+                <label className={cx('inputRadioGroup-radio')}>
+                  <input type="radio" value={'Thất bại'} name="status" onChange={handleChangeStatus} />
+                  <span className={cx('inputRadioGroup-radio-button')}></span>
+                  <span className={cx('inputRadioGroup-radio-label')}>
+                    <span>Thất bại</span>
                   </span>
                 </label>
               </div>
@@ -346,10 +366,16 @@ function Explore() {
           </div>
 
           <div>
+            {isLoading && (
+              <div className="text-center ">
+                <ClipLoader size={40} color="#299899" />
+              </div>
+            )}
             <div className={cx('exploreSearchResults')}>
-              {dataCampaign?.campaigns?.map((item, index) => {
-                return <ProjectCardItem key={index} campaign={item} />;
-              })}
+              {!isLoading &&
+                dataCampaign?.campaigns?.map((item, index) => {
+                  return <ProjectCardItem key={index} campaign={item} />;
+                })}
             </div>
 
             {dataCampaign?.totalPages > 0 && (

@@ -5,10 +5,11 @@ import RefundRow from './RefundRow';
 import { useState, useEffect } from 'react';
 import formatMoney from '~/utils/formatMoney';
 import { convertDateFromString } from '~/utils';
+import { ClipLoader } from 'react-spinners';
 
 const cx = classNames.bind(styles);
 
-function RefundTable({ refunds, openDetailRefund }) {
+function RefundTable({ refunds, openDetailRefund, isLoading }) {
   const [listRefunds, setlistRefunds] = useState([]);
   useEffect(() => {
     setlistRefunds((prev) => {
@@ -31,22 +32,32 @@ function RefundTable({ refunds, openDetailRefund }) {
 
   return (
     <div className={cx('wrapper')}>
-      <table>
-        <thead>
-          <tr>
-            <th className={cx('user')}>NGƯỜI ĐÓNG GÓP</th>
-            <th className={cx('email')}>EMAIL HỆ THỐNG</th>
-            <th className={cx('money')}>TIỀN THANH TOÁN</th>
-            <th className={cx('date')}>NGÀY ĐÓNG GÓP</th>
-            <th className={cx('status')}>TRẠNG THÁI</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listRefunds?.map((item, index) => {
-            return <RefundRow key={index} refund={item} index={index} openDetailRefund={openDetailRefund} />;
-          })}
-        </tbody>
-      </table>
+      {isLoading && (
+        <div className="text-center ">
+          <ClipLoader size={40} color="#299899" />
+        </div>
+      )}
+      {!isLoading && listRefunds?.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th className={cx('user')}>NGƯỜI ĐÓNG GÓP</th>
+              <th className={cx('email')}>EMAIL HỆ THỐNG</th>
+              <th className={cx('money')}>TIỀN THANH TOÁN</th>
+              <th className={cx('date')}>NGÀY ĐÓNG GÓP</th>
+              <th className={cx('status')}>TRẠNG THÁI</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listRefunds?.map((item, index) => {
+              return <RefundRow key={index} refund={item} index={index} openDetailRefund={openDetailRefund} />;
+            })}
+          </tbody>
+        </table>
+      )}
+      {!isLoading && listRefunds?.length === 0 && (
+        <div className="text-center text-gray-500 font-medium text-[20px] mt-[100px]">Dữ liệu trống</div>
+      )}
     </div>
   );
 }

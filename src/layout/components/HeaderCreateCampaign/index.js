@@ -15,6 +15,7 @@ import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.
 import { useLogOutMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 import avt from '~/assets/images/png/default-avt.png';
 import { defaultAvt, logoHongNho, logoTrangNho, paypal } from '~/assets/images';
+import { Bell } from '../Header/components';
 const cx = classNames.bind(styles);
 // Component dùng chung
 function HeaderCreateCampaign() {
@@ -70,7 +71,7 @@ function HeaderCreateCampaign() {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         dispatch(setCurrentUser({}));
-        queryClient.removeQueries('getCurrentUser');
+        // queryClient.removeQueries('getCurrentUser');
       },
       onError(err) {
         console.log(err.response.data.message);
@@ -117,7 +118,7 @@ function HeaderCreateCampaign() {
               <div className={cx('create-campaign')}>
                 <Link to={!user.isAdmin ? '/start-a-campaign' : '/'}>Tạo chiến dịch</Link>
               </div>
-              {!userData && (
+              {!user && (
                 <>
                   <div className={cx('sign-in')}>
                     <Link href="/login">Đăng nhập</Link>
@@ -127,34 +128,39 @@ function HeaderCreateCampaign() {
                   </div>
                 </>
               )}
-              {userData && (
-                <div
-                  className={cx('user-section')}
-                  onClick={() => setShowDropdownUser((prev) => !prev)}
-                  ref={boxFilterElement}
-                >
-                  <img className={cx('user-avatar')} src={user.avatar || defaultAvt} />
-                  <span className={cx('user-name')}>
-                    {user.fullName} <FaAngleDown className={cx('icon', { active: showDropdownUser })} />
-                  </span>
-                  {showDropdownUser && (
-                    <div className={cx('dropdownBoxFilter')}>
-                      {!user.isAdmin && (
-                        <>
-                          <span onClick={() => navigate(`/individuals/${user.id}/campaigns`)}>Chiến dịch của tôi</span>
-                          <span onClick={() => navigate(`/individuals/${user.id}/contributions`)}>
-                            Đóng góp của tôi
-                          </span>
-                          <span onClick={() => navigate(`/individuals/${user.id}/profile`)}>Hồ sơ</span>
-                          <span onClick={() => navigate(`/individuals/${user.id}/edit/settings`)}>Cài đặt</span>
-                        </>
-                      )}
-                      {user.isAdmin && <span onClick={() => navigate(`/admin`)}>Đến trang quản lý</span>}
-                      <span onClick={handleClickLogout} style={{ paddingBottom: '16px' }}>
-                        Đăng xuất
-                      </span>
-                    </div>
-                  )}
+              {user && (
+                <div className="flex items-center">
+                  {!user.isAdmin && <Bell />}
+                  <div
+                    className={cx('user-section')}
+                    onClick={() => setShowDropdownUser((prev) => !prev)}
+                    ref={boxFilterElement}
+                  >
+                    <img className={cx('user-avatar')} src={user.avatar || defaultAvt} />
+                    <span className={cx('user-name')}>
+                      {user.fullName} <FaAngleDown className={cx('icon', { active: showDropdownUser })} />
+                    </span>
+                    {showDropdownUser && (
+                      <div className={cx('dropdownBoxFilter')}>
+                        {!user.isAdmin && (
+                          <>
+                            <span onClick={() => navigate(`/individuals/${user.id}/campaigns`)}>
+                              Chiến dịch của tôi
+                            </span>
+                            <span onClick={() => navigate(`/individuals/${user.id}/contributions`)}>
+                              Đóng góp của tôi
+                            </span>
+                            <span onClick={() => navigate(`/individuals/${user.id}/profile`)}>Hồ sơ</span>
+                            <span onClick={() => navigate(`/individuals/${user.id}/edit/settings`)}>Cài đặt</span>
+                          </>
+                        )}
+                        {user.isAdmin && <span onClick={() => navigate(`/admin`)}>Đến trang quản lý</span>}
+                        <span onClick={handleClickLogout} style={{ paddingBottom: '16px' }}>
+                          Đăng xuất
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

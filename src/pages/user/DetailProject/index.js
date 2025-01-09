@@ -31,6 +31,7 @@ import { useGetPerksHasListItemsByCampaignIdQuery } from '~/hooks/api/queries/us
 import { setFollowCampaigns } from '~/redux/slides/User';
 import { useGetQuantityFollowsOfCampaignQuery } from '~/hooks/api/queries/user/follow-campaign.query';
 import { setActiveChat, setActiveUser, setChatList, setListUser, setNewChat, setOpenChat } from '~/redux/slides/Chat';
+import { ClipLoader } from 'react-spinners';
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -74,7 +75,7 @@ function DetailProject() {
   };
 
   const { data: dataListPerksByCampaignId } = useGetPerksHasListItemsByCampaignIdQuery(id);
-  const { data: dataProjectById } = useGetCampaignByIdQuery(id);
+  const { data: dataProjectById, isLoading } = useGetCampaignByIdQuery(id);
   const { data: quantitySuccessCampaign } = useGetQuantitySuccessCampaignByCampaignId(id);
   const { data: dataQuantityFollowsOfCampaign, refetch: refetchGetQuantityFollow } =
     useGetQuantityFollowsOfCampaignQuery(id);
@@ -191,285 +192,303 @@ function DetailProject() {
     dispatch(setOpenChat(true));
   };
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }, []); // [] để chỉ gọi effect một lần khi component mount
+
   return (
     <div className={cx('container-main')}>
-      <div className={cx('container-1')}>
-        <div className={cx('container-left')}>
-          <div className={cx('container-list-big')}>
-            {ItemProject.listImageProject?.[indexImage].isImage ? (
-              <img
-                style={{ width: '100%', height: '100%', borderRadius: '6px' }}
-                src={ItemProject.listImageProject?.[indexImage].url}
-                alt="sp"
-              />
-            ) : (
-              <iframe
-                style={{ width: '100%', height: '100%', borderRadius: '6px' }}
-                src={ItemProject.listImageProject?.[indexImage].urlEmbedVideo}
-                alt="sp"
-                title="frame"
-              />
-            )}
-          </div>
-          <div className={cx('container-list-small')}>
-            <AiOutlineDoubleLeft
-              className={cx('icon-slider')}
-              style={{
-                display: ItemProject.listImageProject?.length < 6 && 'none',
-                opacity: indexImage === 0 && '0.6',
-                pointerEvents: indexImage === 0 && 'none',
-              }}
-              onClick={() => setIndexImage((prev) => prev - 1)}
-            />
-
-            <div style={{ overflow: 'hidden' }}>
-              <div
-                style={{
-                  flexWrap: 'nowrap',
-                  display: 'flex',
-                  alignItems: 'center',
-                  width: '100%',
-                  justifyContent: ItemProject.listImageProject?.length > 6 ? 'flex-start' : 'center',
-                  transform: indexImage - 5 > 0 ? 'translateX(-' + (indexImage - 5) * 80 + 'px)' : 'translateX(0px)',
-                }}
-              >
-                {ItemProject.listImageProject?.map((item, index) => {
-                  return (
-                    <img
-                      key={index}
-                      style={{
-                        width: '70px',
-                        height: '60px',
-                        borderRadius: '6px',
-                        margin: '0 4px',
-                        border: index === indexImage && '3px solid #000',
-                      }}
-                      src={item.isImage ? item.url : handleURLImage(item.url)}
-                      alt="sp"
-                      onClick={() => setIndexImage(index)}
-                      className={cx('noselect')}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-            <AiOutlineDoubleRight
-              className={cx('icon-slider')}
-              style={{
-                display: ItemProject.listImageProject?.length < 6 && 'none',
-                opacity: indexImage === ItemProject.listImageProject?.length - 1 && '0.6',
-                pointerEvents: indexImage === ItemProject.listImageProject?.length - 1 && 'none',
-              }}
-              onClick={() => setIndexImage((prev) => prev + 1)}
-            />
-          </div>
+      {isLoading && (
+        <div className="text-center mt-[100px] mb-[100px]">
+          <ClipLoader size={50} color="#299899" />
         </div>
-        <hr className={cx('sparate-2')} />
-        <div className={cx('container-right')}>
-          <p
-            className={cx('text-funding', {
-              dangGayQuy: ItemProject?.status === 'Đang gây quỹ',
-              daKetThuc: ItemProject?.status === 'Đã kết thúc' || ItemProject?.status === 'Đang tạm ngưng',
-            })}
-          >
-            {ItemProject.status}
-          </p>
-          <p className={cx('text-name')}>{ItemProject?.title}</p>
-          <p className={cx('text-des')}>{ItemProject?.tagline}</p>
-          <div className={cx('container-layout-info')}>
-            <img className={cx('avatar')} src={ItemProject.owner?.avatar || defaultAvt} alt="avt" />
-            <div className={cx('container-info')}>
-              <a href={`/individuals/${ItemProject.owner?.id}/profile`} className={cx('name-user')}>
-                {ItemProject.owner?.fullName}
-              </a>
-              <div style={{ display: 'flex' }}>
-                <span>{quantitySuccessCampaign || 0} chiến dịch thành công</span>
-                <div className={cx('seprate')}></div>
-                <span>{ItemProject.location}</span>
-              </div>
-            </div>
-          </div>
-          {ItemProject.status === 'Đang gây quỹ' && (
-            <div className={cx('container-layout-money')}>
-              <div className={cx('container-money')}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <b className={cx('text-current-money')}>{formatMoney(ItemProject.currentMoney)}</b>
-                  <span className={cx('label-money')}>VNĐ</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <span className={cx('container-people')}>{ItemProject.totalContributions}</span>
-                  <span className={cx('text-people')}>lượt đóng góp</span>
-                </div>
-              </div>
-              <ProgressBar
-                margin="6px 0"
-                labelAlignment="right"
-                labelColor="#fff"
-                labelSize="12px"
-                width="100%"
-                baseBgColor="#ccc"
-                bgColor="#34ca96"
-                borderRadius="10px"
-                height="16px"
-                customLabel={formatPercent((ItemProject.currentMoney / ItemProject.goal) * 100)}
-                isLabelVisible={false}
-                maxCompleted={ItemProject.goal}
-                completed={ItemProject.currentMoney}
-              />
-              <div className={cx('container-layout-deadline')}>
-                <div className={cx('container-deadline')}>
-                  <b className={cx('text-money-total')}>
-                    {formatPercent((ItemProject.currentMoney / ItemProject.goal) * 100) + '%'}
-                  </b>
-                  <span className={cx('text-of')}>của</span>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <b className={cx('text-money-total')}>{formatMoney(ItemProject.goal)}</b>
-                    <span className={cx('label-money')}>VNĐ</span>
-                  </div>
-                </div>
-
-                <b className={cx('container-people')}>
-                  {ItemProject.daysLeft} <span className={cx('text-people')}>còn lại</span>
-                </b>
-              </div>
-            </div>
-          )}
-          {ItemProject.status === 'Đã kết thúc' && (
-            <>
-              <div className={cx('end-status')}>
-                <div>Dự án đã kết thúc vào ngày: {endDate}</div>
-                <div>
-                  <span style={{ fontWeight: '700' }}>{formatMoney(ItemProject.currentMoney)}</span>VNĐ{' '}
-                  <span>bởi {ItemProject.totalContributions} lượt đóng góp</span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '24px' }}>
-                <span style={{ display: 'block', paddingBottom: '2px', borderBottom: '1px dashed #949494' }}>
-                  Gây quỹ:
-                </span>
-                {ItemProject.isSSuccessFunding && (
-                  <div style={{ padding: '4px 16px', background: '#34ca96', color: '#fff', borderRadius: '4px' }}>
-                    Thành công
-                  </div>
-                )}
-                {!ItemProject.isSSuccessFunding && (
-                  <div style={{ padding: '4px 16px', background: '#a8a8a8', color: '#fff', borderRadius: '8px' }}>
-                    Thất bại
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-
-          <div className={cx('container-button')}>
-            <div className={cx('container-btn-2')}>
-              <button
-                className={cx('hover-btn')}
-                type="button"
-                onClick={() => {
-                  setPerkInModal(true);
-                  setIsOpenModal(true);
-                }}
-                style={{ display: ItemProject.status === 'Đã kết thúc' && 'none' }}
-              >
-                XEM QUÀ TẶNG
-              </button>
-              <button className={cx('hover-btn-follow')} type="button" onClick={handleClickFollowCampaign}>
-                {favourite ? (
-                  <FaHeart style={{ color: 'red' }} className={cx('text-follow')} />
+      )}
+      {!isLoading && (
+        <>
+          <div className={cx('container-1')}>
+            <div className={cx('container-left')}>
+              <div className={cx('container-list-big')}>
+                {ItemProject.listImageProject?.[indexImage].isImage ? (
+                  <img
+                    style={{ width: '100%', height: '100%', borderRadius: '6px' }}
+                    src={ItemProject.listImageProject?.[indexImage].url}
+                    alt="sp"
+                  />
                 ) : (
-                  <FaRegHeart className={cx('text-follow')} />
+                  <iframe
+                    style={{ width: '100%', height: '100%', borderRadius: '6px' }}
+                    src={ItemProject.listImageProject?.[indexImage].urlEmbedVideo}
+                    alt="sp"
+                    title="frame"
+                  />
                 )}
-                <div>
-                  <span>{`${quantityFollowsOfCampaign} THEO DÕI`}</span>
+              </div>
+              <div className={cx('container-list-small')}>
+                <AiOutlineDoubleLeft
+                  className={cx('icon-slider')}
+                  style={{
+                    display: ItemProject.listImageProject?.length < 6 && 'none',
+                    opacity: indexImage === 0 && '0.6',
+                    pointerEvents: indexImage === 0 && 'none',
+                  }}
+                  onClick={() => setIndexImage((prev) => prev - 1)}
+                />
+
+                <div style={{ overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      flexWrap: 'nowrap',
+                      display: 'flex',
+                      alignItems: 'center',
+                      width: '100%',
+                      justifyContent: ItemProject.listImageProject?.length > 6 ? 'flex-start' : 'center',
+                      transform:
+                        indexImage - 5 > 0 ? 'translateX(-' + (indexImage - 5) * 80 + 'px)' : 'translateX(0px)',
+                    }}
+                  >
+                    {ItemProject.listImageProject?.map((item, index) => {
+                      return (
+                        <img
+                          key={index}
+                          style={{
+                            width: '70px',
+                            height: '60px',
+                            borderRadius: '6px',
+                            margin: '0 4px',
+                            border: index === indexImage && '3px solid #000',
+                          }}
+                          src={item.isImage ? item.url : handleURLImage(item.url)}
+                          alt="sp"
+                          onClick={() => setIndexImage(index)}
+                          className={cx('noselect')}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-              </button>
-            </div>
-            <div
-              className={cx('action-doc')}
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenDropDown((prev) => !prev);
-              }}
-              ref={docElement}
-            >
-              <PiDotsThreeBold style={{ fontSize: '20px', color: '#000' }} />
-              <div className={cx('dropdown-wrapper')} style={{ display: openDropDown && 'block' }}>
-                <DropDown
-                  setIsOpenModalMember={setIsOpenModalMember}
-                  setIsOpenModalReport={setIsOpenModalReport}
-                  IsOpenModalReport={isOpenModalReport}
-                  statusCampaign={ItemProject.status}
-                  clickChat={handleClickChat}
+                <AiOutlineDoubleRight
+                  className={cx('icon-slider')}
+                  style={{
+                    display: ItemProject.listImageProject?.length < 6 && 'none',
+                    opacity: indexImage === ItemProject.listImageProject?.length - 1 && '0.6',
+                    pointerEvents: indexImage === ItemProject.listImageProject?.length - 1 && 'none',
+                  }}
+                  onClick={() => setIndexImage((prev) => prev + 1)}
                 />
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+            <hr className={cx('sparate-2')} />
+            <div className={cx('container-right')}>
+              <p
+                className={cx('text-funding', {
+                  dangGayQuy: ItemProject?.status === 'Đang gây quỹ',
+                  daKetThuc: ItemProject?.status === 'Đã kết thúc' || ItemProject?.status === 'Đang tạm ngưng',
+                })}
+              >
+                {ItemProject.status}
+              </p>
+              <p className={cx('text-name')}>{ItemProject?.title}</p>
+              <p className={cx('text-des')}>{ItemProject?.tagline}</p>
+              <div className={cx('container-layout-info')}>
+                <img className={cx('avatar')} src={ItemProject.owner?.avatar || defaultAvt} alt="avt" />
+                <div className={cx('container-info')}>
+                  <a href={`/individuals/${ItemProject.owner?.id}/profile`} className={cx('name-user')}>
+                    {ItemProject.owner?.fullName}
+                  </a>
+                  <div style={{ display: 'flex' }}>
+                    <span>{quantitySuccessCampaign || 0} chiến dịch thành công</span>
+                    <div className={cx('seprate')}></div>
+                    <span>{ItemProject.location}</span>
+                  </div>
+                </div>
+              </div>
+              {ItemProject.status === 'Đang gây quỹ' && (
+                <div className={cx('container-layout-money')}>
+                  <div className={cx('container-money')}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <b className={cx('text-current-money')}>{formatMoney(ItemProject.currentMoney)}</b>
+                      <span className={cx('label-money')}>VNĐ</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <span className={cx('container-people')}>{ItemProject.totalContributions}</span>
+                      <span className={cx('text-people')}>lượt đóng góp</span>
+                    </div>
+                  </div>
+                  <ProgressBar
+                    margin="6px 0"
+                    labelAlignment="right"
+                    labelColor="#fff"
+                    labelSize="12px"
+                    width="100%"
+                    baseBgColor="#ccc"
+                    bgColor="#34ca96"
+                    borderRadius="10px"
+                    height="16px"
+                    customLabel={formatPercent((ItemProject.currentMoney / ItemProject.goal) * 100)}
+                    isLabelVisible={false}
+                    maxCompleted={ItemProject.goal}
+                    completed={ItemProject.currentMoney}
+                  />
+                  <div className={cx('container-layout-deadline')}>
+                    <div className={cx('container-deadline')}>
+                      <b className={cx('text-money-total')}>
+                        {formatPercent((ItemProject.currentMoney / ItemProject.goal) * 100) + '%'}
+                      </b>
+                      <span className={cx('text-of')}>của</span>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <b className={cx('text-money-total')}>{formatMoney(ItemProject.goal)}</b>
+                        <span className={cx('label-money')}>VNĐ</span>
+                      </div>
+                    </div>
 
-      <div className={cx('container-under')}>
-        <div className={cx('container-under-left')}>
-          <div className={cx('container-items-tab')}>
-            <span
-              className={cx('item-tab-header', { 'item-tab-header-clicked': indexTabHeader === 1 })}
-              onClick={() => setIndexTabHeader(1)}
-            >
-              CÂU CHUYỆN
-            </span>
-            <span
-              className={cx('item-tab-header', { 'item-tab-header-clicked': indexTabHeader === 2 })}
-              onClick={() => setIndexTabHeader(2)}
-            >
-              FAQ
-            </span>
-            <div
-              className={cx('item-tab-header', { 'item-tab-header-clicked': indexTabHeader === 3 })}
-              onClick={() => setIndexTabHeader(3)}
-            >
-              <span>THẢO LUẬN</span>
-            </div>
-          </div>
+                    <b className={cx('container-people')}>
+                      {ItemProject.daysLeft} <span className={cx('text-people')}>còn lại</span>
+                    </b>
+                  </div>
+                </div>
+              )}
+              {ItemProject.status === 'Đã kết thúc' && (
+                <>
+                  <div className={cx('end-status')}>
+                    <div>Dự án đã kết thúc vào ngày: {endDate}</div>
+                    <div>
+                      <span style={{ fontWeight: '700' }}>{formatMoney(ItemProject.currentMoney)}</span>VNĐ{' '}
+                      <span>bởi {ItemProject.totalContributions} lượt đóng góp</span>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '24px' }}>
+                    <span style={{ display: 'block', paddingBottom: '2px', borderBottom: '1px dashed #949494' }}>
+                      Gây quỹ:
+                    </span>
+                    {ItemProject.isSSuccessFunding && (
+                      <div style={{ padding: '4px 16px', background: '#34ca96', color: '#fff', borderRadius: '4px' }}>
+                        Thành công
+                      </div>
+                    )}
+                    {!ItemProject.isSSuccessFunding && (
+                      <div style={{ padding: '4px 16px', background: '#a8a8a8', color: '#fff', borderRadius: '8px' }}>
+                        Thất bại
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
 
-          <div>
-            {indexTabHeader === 1 && <StorySection story={ItemProject.story} />}
-            {indexTabHeader === 2 && <FAQSection faqs={ItemProject.faqs} />}
-            {indexTabHeader === 3 && <CommentSection campaign={ItemProject} members={members} />}
-          </div>
-        </div>
-
-        <div className={cx('container-under-right')}>
-          <div style={{ position: 'sticky', top: '20px' }}>
-            <p style={{ fontSize: '18px', marginLeft: '10px', fontWeight: 'bold', marginBottom: '20px' }}>
-              Chọn đặc quyền
-            </p>
-            <div style={{ maxHeight: '920px', overflowY: 'scroll' }}>
-              {listPerkByCampaignId.map((item, index) => {
-                return (
-                  <div
-                    style={{
-                      pointerEvents:
-                        (ItemProject.status === 'Thất bại' || ItemProject.status === 'Đã hoàn thành') && 'none',
+              <div className={cx('container-button')}>
+                <div className={cx('container-btn-2')}>
+                  <button
+                    className={cx('hover-btn')}
+                    type="button"
+                    onClick={() => {
+                      setPerkInModal(true);
+                      setIsOpenModal(true);
                     }}
+                    style={{ display: ItemProject.status === 'Đã kết thúc' && 'none' }}
                   >
-                    <PerkItem
-                      setItemPerkSelected={setItemPerkSelected}
-                      index={index}
-                      item={item}
-                      key={index}
-                      isPage={true}
-                      cryptocurrencyMode={ItemProject.cryptocurrencyMode}
-                      setIsOpenModalOption={setIsOpenModalOption}
-                      closePerkModal={() => setIsOpenModal(false)}
-                      setPerkInModal={setPerkInModal}
+                    XEM QUÀ TẶNG
+                  </button>
+                  <button className={cx('hover-btn-follow')} type="button" onClick={handleClickFollowCampaign}>
+                    {favourite ? (
+                      <FaHeart style={{ color: 'red' }} className={cx('text-follow')} />
+                    ) : (
+                      <FaRegHeart className={cx('text-follow')} />
+                    )}
+                    <div>
+                      <span>{`${quantityFollowsOfCampaign} THEO DÕI`}</span>
+                    </div>
+                  </button>
+                </div>
+                <div
+                  className={cx('action-doc')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenDropDown((prev) => !prev);
+                  }}
+                  ref={docElement}
+                >
+                  <PiDotsThreeBold style={{ fontSize: '20px', color: '#000' }} />
+                  <div className={cx('dropdown-wrapper')} style={{ display: openDropDown && 'block' }}>
+                    <DropDown
+                      setIsOpenModalMember={setIsOpenModalMember}
+                      setIsOpenModalReport={setIsOpenModalReport}
+                      IsOpenModalReport={isOpenModalReport}
+                      statusCampaign={ItemProject.status}
+                      clickChat={handleClickChat}
                     />
                   </div>
-                );
-              })}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+
+          <div className={cx('container-under')}>
+            <div className={cx('container-under-left')}>
+              <div className={cx('container-items-tab')}>
+                <span
+                  className={cx('item-tab-header', { 'item-tab-header-clicked': indexTabHeader === 1 })}
+                  onClick={() => setIndexTabHeader(1)}
+                >
+                  CÂU CHUYỆN
+                </span>
+                <span
+                  className={cx('item-tab-header', { 'item-tab-header-clicked': indexTabHeader === 2 })}
+                  onClick={() => setIndexTabHeader(2)}
+                >
+                  FAQ
+                </span>
+                <div
+                  className={cx('item-tab-header', { 'item-tab-header-clicked': indexTabHeader === 3 })}
+                  onClick={() => setIndexTabHeader(3)}
+                >
+                  <span>THẢO LUẬN</span>
+                </div>
+              </div>
+
+              <div>
+                {indexTabHeader === 1 && <StorySection story={ItemProject.story} />}
+                {indexTabHeader === 2 && <FAQSection faqs={ItemProject.faqs} />}
+                {indexTabHeader === 3 && <CommentSection campaign={ItemProject} members={members} />}
+              </div>
+            </div>
+
+            <div className={cx('container-under-right')}>
+              <div style={{ position: 'sticky', top: '20px' }}>
+                <p style={{ fontSize: '18px', marginLeft: '10px', fontWeight: 'bold', marginBottom: '20px' }}>
+                  Chọn đặc quyền
+                </p>
+                <div style={{ maxHeight: '920px', overflowY: 'scroll' }}>
+                  {listPerkByCampaignId.map((item, index) => {
+                    return (
+                      <div
+                        style={{
+                          pointerEvents:
+                            (ItemProject.status === 'Thất bại' || ItemProject.status === 'Thành công') && 'none',
+                        }}
+                      >
+                        <PerkItem
+                          setItemPerkSelected={setItemPerkSelected}
+                          index={index}
+                          item={item}
+                          key={index}
+                          isPage={true}
+                          cryptocurrencyMode={ItemProject.cryptocurrencyMode}
+                          setIsOpenModalOption={setIsOpenModalOption}
+                          closePerkModal={() => setIsOpenModal(false)}
+                          setPerkInModal={setPerkInModal}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       {isOpenModalOption && (
         <ModalOptionPerk
           itemPerk={{

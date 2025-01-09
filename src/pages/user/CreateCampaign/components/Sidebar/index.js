@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import { FaAngleDown, FaAngleUp, FaBars, FaArrowCircleLeft } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import styles from './Sidebar.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
@@ -80,11 +80,11 @@ function SidebarCampaign({ status, title, cardImage, id }) {
           </div>
 
           <div className={cx('navItems')}>
-            <div className={cx('navItem')}>
+            {/* <div className={cx('navItem')}>
               <a href="#" className={cx('navItem-link')}>
                 <div>Preview Campaign</div>
               </a>
-            </div>
+            </div> */}
             <div className={cx('navSection')}>
               <a href="#" className={cx('navSection-title')} onClick={handleClickSection}>
                 <div>Nhập chiến dịch</div>
@@ -210,7 +210,7 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                     </div>
                   )}
 
-                  {(status === 'Thất bại' || status === 'Đã hoàn thành' || true) && (
+                  {(status === 'Thất bại' || status === 'Thành công' || true) && (
                     <div
                       className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                         'navItem--current': tab.number === 9,
@@ -231,9 +231,9 @@ function SidebarCampaign({ status, title, cardImage, id }) {
             </div>
 
             <div className={cx('navItem')}>
-              <a href="/" className={cx('navItem-link')}>
+              <Link to="/" className={cx('navItem-link')}>
                 <div>TRANG CHỦ</div>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

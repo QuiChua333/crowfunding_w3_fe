@@ -53,8 +53,8 @@ function ProjectCardItem({ campaign, refreshCampaign }) {
           <div className={cx('card-status')}>
             <span
               className={cx('status', {
-                dangGayQuy: campaign?.status === 'Đang gây quỹ',
-                daKetThuc: campaign?.status === 'Đã hoàn thành' || campaign?.status === 'Tạm dừng',
+                dangGayQuy: campaign?.status === 'Đang gây quỹ' || campaign?.status === 'Thành công',
+                daKetThuc: campaign?.status === 'Thất bại' || campaign?.status === 'Tạm dừng',
               })}
             >
               {campaign?.status}
@@ -82,7 +82,9 @@ function ProjectCardItem({ campaign, refreshCampaign }) {
           </div>
           <div className={cx('progressbar')}>
             <div
-              className={cx('progressbar-value')}
+              className={cx('progressbar-value', {
+                daKetThuc: campaign?.status === 'Thất bại' || campaign?.status === 'Tạm dừng',
+              })}
               style={{ width: campaign.percentProgress >= 100 ? '100%' : `${campaign.percentProgress}%` }}
             ></div>
           </div>

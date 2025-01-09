@@ -9,6 +9,7 @@ import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 import { useDispatch } from 'react-redux';
 import { setTabAdmin } from '~/redux/slides/Admin';
 import { useGetAllCampaignsQuery } from '~/hooks/api/queries/admin/admin.campaigns.query';
+import { ClipLoader } from 'react-spinners';
 
 const cx = classNames.bind(styles);
 function CampaignManagement() {
@@ -37,7 +38,7 @@ function CampaignManagement() {
     setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
-  const { data, refetch } = useGetAllCampaignsQuery(filter);
+  const { data, refetch, isLoading } = useGetAllCampaignsQuery(filter);
 
   const handleChangStateListCampaign = (listCampaign) => {
     setNumberSelected((prev) => {
@@ -95,7 +96,7 @@ function CampaignManagement() {
                   'Chờ xác nhận',
                   'Đang gây quỹ',
                   'Tạm dừng',
-                  'Đã hoàn thành',
+                  'Thành công',
                   'Thất bại',
                   'Bản nháp',
                 ]}
@@ -108,14 +109,19 @@ function CampaignManagement() {
 
       <div style={{ marginTop: '40px' }}>
         <div className={cx('table-wrapper')}>
-          {data?.campaigns?.length > 0 && (
+          {isLoading && (
+            <div className="text-center ">
+              <ClipLoader size={40} color="#299899" />
+            </div>
+          )}
+          {!isLoading && data?.campaigns?.length > 0 && (
             <CampaignTable
               campaigns={data?.campaigns || []}
               onCampaignTableChange={handleChangStateListCampaign}
               getAllCampaigns={refetch}
             />
           )}
-          {data?.campaigns?.length === 0 && (
+          {!isLoading && data?.campaigns?.length === 0 && (
             <div className="text-center text-gray-500 font-medium text-[20px] mt-[100px]">Dữ liệu trống</div>
           )}
         </div>

@@ -86,7 +86,7 @@ function ContributionCampaign() {
     }
   }, [campaignData]);
 
-  const { data: dataContributions } = useGetAllContributionsByCampaignQuery({
+  const { data: dataContributions, isLoading: isLoadingContribution } = useGetAllContributionsByCampaignQuery({
     ...filterContribution,
     campaignId: id,
   });
@@ -101,7 +101,11 @@ function ContributionCampaign() {
   };
 
   const queryClient = useQueryClient();
-  const { data: dataGifts, refetch: refetchGifts } = useGetAllGiftssByCampaignQuery({
+  const {
+    data: dataGifts,
+    refetch: refetchGifts,
+    isLoading: isLoadingGift,
+  } = useGetAllGiftssByCampaignQuery({
     ...filterGift,
     campaignId: id,
   });
@@ -305,7 +309,7 @@ function ContributionCampaign() {
                       <span style={{ display: 'block', paddingBottom: '2px', borderBottom: '1px dashed #949494' }}>
                         Gây quỹ:
                       </span>
-                      {campaign.status === 'Đã hoàn thành' && (
+                      {campaign.status === 'Thành công' && (
                         <div
                           style={{
                             padding: '4px 16px',
@@ -321,7 +325,7 @@ function ContributionCampaign() {
                         <div
                           style={{
                             padding: '4px 16px',
-                            background: '#a8a8a8',
+                            background: 'rgb(249, 96, 20)',
                             color: '#fff',
                             borderRadius: '8px',
                           }}
@@ -335,6 +339,7 @@ function ContributionCampaign() {
                     contributions={dataContributions?.contributions || []}
                     onContributionTableChange={handleChangStateListContributions}
                     openDetailContribution={openDetailContribution}
+                    isLoading={isLoadingContribution}
                   />
                   {dataContributions?.totalPages > 0 && (
                     <div className={cx('pagination-wrapper')}>
@@ -446,7 +451,7 @@ function ContributionCampaign() {
 
               <div style={{ marginTop: '40px' }}>
                 <div className={cx('table-wrapper')}>
-                  <GiftTable gifts={dataGifts?.gifts || []} openDetailGift={openDetailGift} />
+                  <GiftTable gifts={dataGifts?.gifts || []} openDetailGift={openDetailGift} isLoading={isLoadingGift} />
                 </div>
                 {dataGifts?.totalPages > 0 && (
                   <div className={cx('pagination-wrapper')}>

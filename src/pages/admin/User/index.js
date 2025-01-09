@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { setCurrentUser } from '~/redux/slides/User';
 import { useGetAllUsersQuery } from '~/hooks/api/queries/admin/admin.users.query';
 import { setTabAdmin } from '~/redux/slides/Admin';
+import { ClipLoader } from 'react-spinners';
 
 const cx = classNames.bind(styles);
 
@@ -96,7 +97,7 @@ function UserManagement() {
     handleChangeStatus();
   }, [messageBox.result]);
 
-  const { data, refetch } = useGetAllUsersQuery(filter);
+  const { data, refetch, isLoading } = useGetAllUsersQuery(filter);
 
   useEffect(() => {
     dispatch(
@@ -141,14 +142,19 @@ function UserManagement() {
       </div>
       <div style={{ marginTop: '40px' }}>
         <div className={cx('table-wrapper')}>
-          {data?.users?.length > 0 && (
+          {isLoading && (
+            <div className="text-center ">
+              <ClipLoader size={40} color="#299899" />
+            </div>
+          )}
+          {!isLoading && data?.users?.length > 0 && (
             <UserTable
               allUsers={data?.users || []}
               handleStatusUser={handleStatusUser}
               handlVerifyUser={handlVerifyUser}
             />
           )}
-          {data?.users?.length === 0 && (
+          {!isLoading && data?.users?.length === 0 && (
             <div className="text-center text-gray-500 font-medium text-[20px] mt-[100px]">Dữ liệu trống</div>
           )}
         </div>

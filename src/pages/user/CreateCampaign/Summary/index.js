@@ -40,7 +40,7 @@ function SummaryCampaign() {
     );
   }, []);
 
-  const { data: dataRefunds } = useGetAllRefundsByCampaignQuery({
+  const { data: dataRefunds, isLoading } = useGetAllRefundsByCampaignQuery({
     ...filterRefund,
     campaignId: id,
   });
@@ -125,20 +125,38 @@ function SummaryCampaign() {
                 <span className="text-[#6a6a6a] text-[14px]">VNĐ</span>
               </div>
             </div>
-            <div className={cx('entreField')}>
-              <div className="flex items-center gap-3">
-                <span className="text-[16px] font-[600]">Số tiền gây quỹ: </span>
-                <div>
-                  <span className="text-[#6a6a6a] font-[600]">{formatMoney(campaign.currentMoney)}</span>
-                  <span className="text-[#6a6a6a] text-[14px]">VNĐ</span>
-                </div>
+          </div>
+          <div className={cx('entreField')}>
+            <div className="flex items-center gap-3">
+              <span className="text-[16px] font-[600]">Số tiền gây quỹ: </span>
+              <div>
+                <span className="text-[#6a6a6a] font-[600]">{formatMoney(campaign.currentMoney)}</span>
+                <span className="text-[#6a6a6a] text-[14px]">VNĐ</span>
+              </div>
+            </div>
+          </div>
+          <div className={cx('entreField')}>
+            <div className="flex items-center gap-3">
+              <span className="text-[16px] font-[600]">Phí nền tảng: </span>
+              <div>
+                <span className="text-[#6a6a6a] font-[600]">5</span>
+                <span className="text-[#6a6a6a] text-[14px]">%</span>
+              </div>
+            </div>
+          </div>
+          <div className={cx('entreField')}>
+            <div className="flex items-center gap-3">
+              <span className="text-[16px] font-[600]">Thực nhận: </span>
+              <div>
+                <span className="text-[#6a6a6a] font-[600]">{formatMoney((campaign.currentMoney * 95) / 100)}</span>
+                <span className="text-[#6a6a6a] text-[14px]">VNĐ</span>
               </div>
             </div>
           </div>
           <div className={cx('entreField')}>
             <div className="flex items-center gap-3">
               <span className="text-[16px] font-[600]">Trạng thái: </span>
-              {campaign.status === 'Đã hoàn thành' && (
+              {campaign.status === 'Thành công' && (
                 <div
                   style={{
                     padding: '2px 8px',
@@ -153,8 +171,8 @@ function SummaryCampaign() {
               {campaign.status === 'Thất bại' && (
                 <div
                   style={{
-                    padding: '2px 8px',
-                    background: '#a8a8a8',
+                    padding: '4px 16px',
+                    background: 'rgb(249, 96, 20)',
                     color: '#fff',
                     borderRadius: '8px',
                   }}
@@ -167,73 +185,92 @@ function SummaryCampaign() {
           <div style={{ margin: '30px 0', borderTop: '1px solid #C8C8C8', textAlign: 'right' }}></div>
         </div>
 
-        <div className={cx('entreSection')}>
-          <div className={cx('entreField-header')}>Danh sách hoàn trả</div>
+        {campaign.status === 'Thất bại' && (
+          <>
+            <div className={cx('entreSection')}>
+              <div className={cx('entreField-header')}>Danh sách hoàn trả</div>
 
-          <div style={{ marginBottom: '24px', maxWidth: '600px', marginTop: '20px' }}>
-            <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm đóng góp, tên, email'} />
-          </div>
+              <div style={{ marginBottom: '24px', maxWidth: '600px', marginTop: '20px' }}>
+                <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm đóng góp, tên, email'} />
+              </div>
 
-          <div className={cx('filter-wrapper')}>
-            <div>
-              <label style={{ marginBottom: '4px' }}>Trạng thái</label>
-              <Filter
-                listConditions={['Tất cả', 'Đã hoàn trả', 'Chưa hoàn trả']}
-                handleClickItem={handleClickItemFilterRefundStatus}
-                valueShow={filterRefund.status}
-              />
-            </div>
-            <div>
-              <label style={{ marginBottom: '4px' }}>Tiền</label>
-              <Filter
-                listConditions={['Tất cả', 'Tăng dần', 'Giảm dần']}
-                handleClickItem={handleClickItemFilterRefundMoney}
-                valueShow={filterRefund.sortMoney}
-              />
-            </div>
-          </div>
-        </div>
-        <div style={{ marginTop: '40px' }}>
-          <div className={cx('table-wrapper')}>
-            <RefundTable refunds={dataRefunds?.refunds || []} openDetailRefund={openDetailRefund} />
-            {dataRefunds?.totalPages > 0 && (
-              <div className={cx('pagination-wrapper')}>
-                <div className={cx('pagination')}>
-                  <span
-                    className={cx(
-                      'icon',
-                      `${
-                        filterRefund.page <= dataRefunds?.totalPages &&
-                        dataRefunds.totalPages !== 1 &&
-                        filterRefund.page > 1 &&
-                        'hover:bg-[#ebe8f1] hover:cursor-pointer'
-                      }`,
-                    )}
-                    onClick={handleClickPreviousPageRefund}
-                  >
-                    <FaAngleLeft style={{ color: '#7a69b3', opacity: filterRefund.page === 1 ? '0.3' : '1' }} />
-                  </span>
-
-                  <span className={cx('curent')}>{`${filterRefund.page} của ${dataRefunds?.totalPages}`}</span>
-                  <span
-                    className={cx(
-                      'icon',
-                      `${filterRefund.page < dataRefunds?.totalPages && 'hover:bg-[#ebe8f1] hover:cursor-pointer'}`,
-                    )}
-                    onClick={handleClickNextPageRefund}
-                  >
-                    <FaAngleRight
-                      style={{
-                        color: '#7a69b3',
-                        opacity: filterRefund.page === dataRefunds?.totalPages ? '0.3' : '1',
-                      }}
-                    />
-                  </span>
+              <div className={cx('filter-wrapper')}>
+                <div>
+                  <label style={{ marginBottom: '4px' }}>Trạng thái</label>
+                  <Filter
+                    listConditions={['Tất cả', 'Đã hoàn trả', 'Chưa hoàn trả']}
+                    handleClickItem={handleClickItemFilterRefundStatus}
+                    valueShow={filterRefund.status}
+                  />
+                </div>
+                <div>
+                  <label style={{ marginBottom: '4px' }}>Tiền</label>
+                  <Filter
+                    listConditions={['Tất cả', 'Tăng dần', 'Giảm dần']}
+                    handleClickItem={handleClickItemFilterRefundMoney}
+                    valueShow={filterRefund.sortMoney}
+                  />
                 </div>
               </div>
-            )}
-          </div>
-        </div>
+            </div>
+            <div style={{ marginTop: '40px' }}>
+              <div className={cx('table-wrapper')}>
+                <RefundTable
+                  refunds={dataRefunds?.refunds || []}
+                  openDetailRefund={openDetailRefund}
+                  isLoading={isLoading}
+                />
+                {dataRefunds?.totalPages > 0 && (
+                  <div className={cx('pagination-wrapper')}>
+                    <div className={cx('pagination')}>
+                      <span
+                        className={cx(
+                          'icon',
+                          `${
+                            filterRefund.page <= dataRefunds?.totalPages &&
+                            dataRefunds.totalPages !== 1 &&
+                            filterRefund.page > 1 &&
+                            'hover:bg-[#ebe8f1] hover:cursor-pointer'
+                          }`,
+                        )}
+                        onClick={handleClickPreviousPageRefund}
+                      >
+                        <FaAngleLeft style={{ color: '#7a69b3', opacity: filterRefund.page === 1 ? '0.3' : '1' }} />
+                      </span>
+
+                      <span className={cx('curent')}>{`${filterRefund.page} của ${dataRefunds?.totalPages}`}</span>
+                      <span
+                        className={cx(
+                          'icon',
+                          `${filterRefund.page < dataRefunds?.totalPages && 'hover:bg-[#ebe8f1] hover:cursor-pointer'}`,
+                        )}
+                        onClick={handleClickNextPageRefund}
+                      >
+                        <FaAngleRight
+                          style={{
+                            color: '#7a69b3',
+                            opacity: filterRefund.page === dataRefunds?.totalPages ? '0.3' : '1',
+                          }}
+                        />
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+        {campaign.status === 'Thành công' && (
+          <>
+            <div className={cx('entreSection')}>
+              <div className={cx('entreField-header')}>Gửi chuyển đặc quyền</div>
+              <div className={cx('entreField-subHeader')}>
+                Khi chiến dịch tạo ra sản phẩm, vui lòng chuyển đặc quyền đến những người đã quyên góp đúng hạn ở phần
+                "ĐÓNG GÓP"
+              </div>
+            </div>
+          </>
+        )}
       </div>
       {showModal && (
         <ModalRefund

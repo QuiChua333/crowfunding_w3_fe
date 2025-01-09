@@ -15,6 +15,9 @@ import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.
 import { useQueryClient } from '@tanstack/react-query';
 import { useLogOutMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 import { defaultAvt, logoTrangNho } from '~/assets/images';
+import { CustomAxios } from '~/config';
+import baseURL from '~/utils/baseURL';
+import { setNotifications } from '~/redux/slides/Notification';
 const cx = classNames.bind(styles);
 // Component dùng chung
 function Header({ type = 'page' }) {
@@ -80,6 +83,7 @@ function Header({ type = 'page' }) {
   };
 
   const [showMenu, setShowMenu] = useState(false);
+
   return (
     <div className={cx('responsive')}>
       <div
@@ -133,7 +137,7 @@ function Header({ type = 'page' }) {
 
               {dataUser && (
                 <div className="flex items-center">
-                  <Bell />
+                  {!user.isAdmin && <Bell />}
                   <div
                     className={cx('user-section')}
                     onClick={() => setShowDropdownUser((prev) => !prev)}

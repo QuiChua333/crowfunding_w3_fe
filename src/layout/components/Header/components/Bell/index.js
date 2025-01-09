@@ -33,6 +33,7 @@ function Bell({}) {
     socket.on('newNotification', ({ id, content, url, isRead, to }) => {
       console.log(content, to);
       if (to === currentUser.id) {
+        console.log('vào');
         dispatch(
           setNotifications([
             {
@@ -94,15 +95,16 @@ function Bell({}) {
           {notifications.length > 0 &&
             notifications.map((notification) => {
               return (
-                <span
+                <div
                   onClick={() => handleClickNotification(notification)}
                   key={notification.id}
                   className={cx('item', {
                     notRead: !notification.isRead,
                   })}
                 >
-                  {notification.content}
-                </span>
+                  {!notification.isRead && <div className={cx('un-read')}></div>}
+                  <span className="flex-1">{notification.content}</span>
+                </div>
               );
             })}
           {notifications.length === 0 && <div>Không có thông báo</div>}

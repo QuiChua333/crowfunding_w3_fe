@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { publicRoutes, privateUserRoutes, loginRoutes, adminRoutes } from '~/routes';
+// import { publicRoutes, privateUserRoutes, loginRoutes, AdminRoutes } from '';
 import { CustomLayout, NormalLayout } from '~/layout';
 import {
   AdminRoutes,
@@ -17,6 +17,10 @@ import { connectSocket, disconnectSocket, socket } from './services/socket/socke
 import { setOpenChat, setTotalUnreadMessage } from './redux/slides/Chat';
 import ChatGemini from './components/ChatGemini';
 import { setOpenGemini } from './redux/slides/GlobalApp';
+import { setNotifications } from './redux/slides/Notification';
+import { CustomAxios } from './config';
+import baseURL from './utils/baseURL';
+import { privateUserRoutes, publicRoutes, loginRoutes, adminRoutes } from '~/routes';
 
 function App() {
   const client = new QueryClient();
@@ -28,7 +32,6 @@ function App() {
   const dispatch = useDispatch();
   const handleOpenChat = () => {
     if (currentUser.id) {
-      console.log(111);
       dispatch(setOpenChat(true));
     } else {
       window.location.assign('/login');
@@ -36,7 +39,11 @@ function App() {
   };
 
   const handleOpenGemini = () => {
-    dispatch(setOpenGemini(true));
+    if (currentUser.id) {
+      dispatch(setOpenGemini(true));
+    } else {
+      window.location.assign('/login');
+    }
   };
 
   useEffect(() => {
@@ -53,6 +60,22 @@ function App() {
     }, 0);
     dispatch(setTotalUnreadMessage(totalUnreadMessage));
   }, [chatList]);
+
+  const getNotification = async () => {
+    try {
+      const response = await CustomAxios.get(`${baseURL}/notification/me`);
+      const notifications = response.data;
+      dispatch(setNotifications(notifications));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken') || false;
+    if (token) {
+      getNotification();
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={client}>

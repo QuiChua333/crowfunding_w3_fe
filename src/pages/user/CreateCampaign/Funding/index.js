@@ -38,7 +38,7 @@ function FundingCampaign() {
 
       setCampaignState({ ...infoBasic });
 
-      if (campaign.status === 'Đang gây quỹ') {
+      if (campaign.status !== 'Bản nháp') {
         setEditComponent(false);
       }
     }

@@ -68,6 +68,14 @@ function CampaignLayout({ children, item = false }) {
     }
   }, [isEditAll]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }, [tab.number]);
+
   return (
     <div className={cx('wrapper')}>
       <SidebarCampaign status={campaign?.status} title={campaign?.title} cardImage={campaign?.cardImage} id={id} />

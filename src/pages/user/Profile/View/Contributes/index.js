@@ -57,7 +57,7 @@ function ViewContributes() {
     setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
-  const { data, refetch } = useGetAllContributesOfUserQuery({
+  const { data, refetch, isLoading } = useGetAllContributesOfUserQuery({
     ...filter,
     userId: id,
   });
@@ -73,17 +73,12 @@ function ViewContributes() {
     <div className={cx('wrapper')}>
       <div className={cx('navbar')}>
         <Link to={`/individuals/${id}/profile`} className={cx('nav-item', 'active')}>
-          <span>
-            <MdOutlineRemoveRedEye style={{ fontSize: '24px', marginRight: '8px' }} />
-            Xem hồ sơ cá nhân
-          </span>
+          <MdOutlineRemoveRedEye style={{ fontSize: '24px', marginRight: '8px' }} />
+          <span>Xem hồ sơ</span>
         </Link>
         <Link to={`/individuals/${id}/edit/profile`} className={cx('nav-item')}>
-          <span>
-            {' '}
-            <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
-            Chỉnh sửa hồ sơ & Cài đặt
-          </span>
+          <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
+          <span>Chỉnh sửa hồ sơ & Cài đặt</span>
         </Link>
       </div>
 
@@ -163,6 +158,7 @@ function ViewContributes() {
                     <ContributeTable
                       contributesOfUer={data?.contributions || []}
                       handleViewContribution={handleViewContribution}
+                      isLoading={isLoading}
                     />
                   </div>
 

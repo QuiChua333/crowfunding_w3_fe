@@ -48,12 +48,17 @@
           background-color: #a8a8a8;
         }
         &.choXacNhan {
-          color: #2a2a2a;
-          background-color: #fdde86;
+          background-color: #e51075;
+          color: #fff;
         }
 
         &.dangGayQuy {
           background-color: #34ca96;
+          color: #fff;
+        }
+
+        &.thatBai {
+          background-color: rgb(232 136 89);
           color: #fff;
         }
       }

@@ -75,9 +75,10 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
             </h2>{' '}
             <span
               className={cx({
-                banNhap: item.status === 'Bản nháp' || item.status === 'Đã hoàn thành' || item.status === 'Thất bại',
+                banNhap: item.status === 'Bản nháp',
                 choXacNhan: item.status === 'Chờ xác nhận',
-                dangGayQuy: item.status === 'Đang gây quỹ',
+                thatBai: item.status === 'Thất bại',
+                dangGayQuy: item.status === 'Đang gây quỹ' || item.status === 'Thành công',
               })}
             >
               {' '}
@@ -109,9 +110,9 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
                     item.teamMembers?.some((x) => {
                       return x.user.id === currentUser.id && x.confirmStatus === 'Đã xác nhận' && x.isEdit === true;
                     })) && (
-                    <a className={cx('item-dropdown')} href={`/campaigns/${item.id}/edit/basic`}>
+                    <Link className={cx('item-dropdown')} to={`/campaigns/${item.id}/edit/basic`}>
                       Chỉnh sửa chiến dịch
-                    </a>
+                    </Link>
                   )}
 
                 {currentUser.id &&
@@ -119,9 +120,9 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
                     item.teamMembers?.some((x) => {
                       return x.user.id === currentUser.id && x.confirmStatus === 'Đã xác nhận';
                     })) && (
-                    <a className={cx('item-dropdown')} href={`/campaigns/${item.id}/edit/basic`}>
+                    <Link className={cx('item-dropdown')} to={`/campaigns/${item.id}/edit/basic`}>
                       Xem chiến dịch
-                    </a>
+                    </Link>
                   )}
                 <div style={{ height: '1px', background: '#ccc' }}></div>
                 {currentUser.id && item.ownerIid === currentUser.id && (

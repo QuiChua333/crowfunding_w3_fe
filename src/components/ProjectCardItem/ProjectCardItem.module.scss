@@ -128,9 +128,13 @@
 }
 
 .progressbar-value {
-  background: #34ca96;
+  background-color: #34ca96;
   height: 100%;
   border-radius: 5px;
+
+  &.daKetThuc {
+    background-color: #bebebe;
+  }
 }
 .days-left {
   margin-top: 8px;

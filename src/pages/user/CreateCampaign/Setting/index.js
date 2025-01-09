@@ -106,7 +106,14 @@ function SettingCampaign() {
         <div className={cx('entreField-header')}>Cài đặt</div>
         <div className={cx('entreField-subHeader')}>Phát hành chiến dịch của bạn tại đây!</div>
         <div className={cx('entreField-subHeader')}>
-          Lưu ý: Bạn phải đạt được mục tiêu gây quỹ thì chiến dịch của bạn mới được xem là thành công!
+          <span className="underline">Lưu ý:</span>
+        </div>
+        <div>
+          <div>- Bạn phải đạt được mục tiêu gây quỹ thì chiến dịch của bạn mới được xem là thành công!</div>
+          <div>
+            - Bạn phải chịu một khoảng phí nền tảng. Số tiền phí nền tảng của chúng tôi là 5% tổng số tiền bạn quyên góp
+            được nếu chiến dịch thành công
+          </div>
         </div>
       </div>
 
@@ -115,6 +122,13 @@ function SettingCampaign() {
           <div className={cx('container-btn text-left')}>
             <a onClick={handleClickLaunchCampaign} className={cx('btn', 'btn-ok')} style={{ marginLeft: '0' }}>
               PHÁT HÀNH CHIẾN DỊCH
+            </a>
+          </div>
+        )}
+        {campaign.status === 'Chờ xác nhận' && (
+          <div className={cx('container-btn text-left')}>
+            <a className={cx('btn-ok')} style={{ marginLeft: '0' }}>
+              CHIẾN DỊCH ĐANG CHỜ XÁC NHẬN
             </a>
           </div>
         )}
@@ -132,10 +146,17 @@ function SettingCampaign() {
             </a>
           </div>
         )}
-        {campaign.status === 'Đã kết thúc' && (
+        {campaign.status === 'Thất bại' && (
           <div className={cx('container-btn')}>
-            <a className={cx('btn')} style={{ marginLeft: '0', background: '#a8a8a8', color: '#fff' }}>
-              CHIẾN DỊCH ĐÃ KẾT THÚC
+            <a className={cx('btn-ok')} style={{ marginLeft: '0', background: '#a8a8a8', color: '#fff' }}>
+              CHIẾN DỊCH ĐÃ THẤT BẠI
+            </a>
+          </div>
+        )}
+        {campaign.status === 'Thành công' && (
+          <div className={cx('container-btn')}>
+            <a className={cx('btn-ok')} style={{ marginLeft: '0', background: '#34ca96', color: '#fff' }}>
+              CHIẾN DỊCH ĐÃ THÀNH CÔNG
             </a>
           </div>
         )}

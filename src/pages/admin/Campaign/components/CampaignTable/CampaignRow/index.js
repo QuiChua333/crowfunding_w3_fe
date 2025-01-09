@@ -39,10 +39,10 @@ function CampaignRow({ index, campaign, setChecked, getAllCampaigns }) {
         <span
           className={cx('campaign-status', {
             choXacNhan: campaign.status === 'Chờ xác nhận',
-            dangGayQuy: campaign.status === 'Đang gây quỹ',
+            dangGayQuy: campaign.status === 'Đang gây quỹ' || campaign.status === 'Thành công',
             banNhap: campaign.status === 'Bản nháp',
-            dangTamNgung:
-              campaign.status === 'Tạm dừng' || campaign.status === 'Đã hoàn thành' || campaign.status === 'Thất bại',
+            dangTamNgung: campaign.status === 'Tạm dừng',
+            thatBai: campaign.status === 'Thất bại',
           })}
         >
           {campaign.status}
