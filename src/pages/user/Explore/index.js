@@ -10,6 +10,7 @@ import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.
 import { useUserGetAllCampaignQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useQueryClient } from '@tanstack/react-query';
 import { ClipLoader } from 'react-spinners';
+import { useDebouncedCallback } from 'use-debounce';
 const cx = classNames.bind(styles);
 
 function Explore() {
@@ -17,6 +18,7 @@ function Explore() {
   // const queryClient = useQueryClient();
   // queryClient.invalidateQueries([`getCurrentUser`]);
   const [listFieldGrouByname, setListFieldGrouByname] = useState([]);
+  const [search, setSearch] = useState('');
   const [filter, setFilter] = useState(() => {
     const state = {
       searchString: '',
@@ -34,9 +36,6 @@ function Explore() {
   };
   const handleClickItemFilterUserStatus = (item) => {
     setFilter((prev) => ({ ...prev, userStatus: item }));
-  };
-  const handleChangeSearchInput = (value) => {
-    setFilter((prev) => ({ ...prev, searchString: value }));
   };
 
   const handleClickPreviousPage = () => {
@@ -207,6 +206,20 @@ function Explore() {
       status: e.target.value,
     }));
   };
+
+  const handleChangeInputSearch = (e) => {
+    const value = e.target.value;
+    setSearch(e.target.value);
+    debounced(value);
+  };
+  const debounced = useDebouncedCallback(
+    // function
+    (value) => {
+      setFilter((prev) => ({ ...prev, searchString: value }));
+    },
+    500,
+  );
+
   return (
     <div className={cx('wrapper')}>
       {/* <div className={cx('subHeader')}>
@@ -321,8 +334,8 @@ function Explore() {
               type="text"
               placeholder="Tìm kiếm chiến dịch"
               className={cx('exploreLayout-main-input')}
-              value={filter.searchString}
-              onChange={(e) => handleChangeSearchInput(e.target.value)}
+              value={search}
+              onChange={handleChangeInputSearch}
             />
             <span
               onClick={() => setFilter((prev) => ({ ...prev, searchString: '' }))}
