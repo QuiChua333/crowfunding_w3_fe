@@ -3,9 +3,9 @@ import styles from './VerifyUser.module.scss';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import { MdEdit } from 'react-icons/md';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { setLoading } from '~/redux/slides/GlobalApp';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { TiTick } from 'react-icons/ti';
 import { toast } from 'react-toastify';
 import { logoTrangNho } from '~/assets/images';
@@ -18,9 +18,7 @@ import {
 const cx = classNames.bind(styles);
 
 function VerifyUser() {
-  const previousLink = useSelector((state) => state.globalApp.previousLink);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const inputElementFront = useRef(null);
   const inputElementBack = useRef(null);
   const [fileIdentifyCardImageFront, setFileIdentifyCardImageFront] = useState();

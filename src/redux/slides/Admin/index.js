@@ -12,7 +12,6 @@ const slice = createSlice({
   initialState,
   reducers: {
     setTabAdmin: (state, action) => {
-      console.log('1111');
       state.tabAdmin = action.payload;
     },
   },

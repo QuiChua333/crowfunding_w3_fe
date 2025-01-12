@@ -94,7 +94,7 @@ export const getCampainsExplore = async ({ page, status, searchString, criteria,
     fieldGroup,
   };
   const queryString = new URLSearchParams(queryParams).toString();
-  const response = await CustomAxios.get(`${baseUrl}/campaign/explore?${queryString}`);
+  const response = await CustomAxios.get(`${baseUrl}/campaign/explore2?${queryString}`);
   return response.data;
 };
 
