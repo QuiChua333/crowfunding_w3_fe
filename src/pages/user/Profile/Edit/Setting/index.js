@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from '../../Profile.module.scss';
-import { MdOutlineRemoveRedEye } from 'react-icons/md';
+import { MdAddchart, MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -82,6 +82,10 @@ function EditSetting() {
         <Link to={`/individuals/${id}/edit/profile`} className={cx('nav-item', 'active')}>
           <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
           <span>Chỉnh sửa hồ sơ & Cài đặt</span>
+        </Link>
+        <Link to={`/individuals/${id}/statistic`} className={cx('nav-item')}>
+          <MdAddchart  style={{ fontSize: '24px', marginRight: '8px' }} />
+          <span>Thống kê</span>
         </Link>
       </div>
 

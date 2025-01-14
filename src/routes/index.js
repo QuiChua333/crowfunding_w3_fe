@@ -33,6 +33,8 @@ import ResetPassword from '~/pages/auth/ResetPassword';
 import ThankPayment from '~/pages/common/ThankPayment';
 import AboutUs from '~/pages/user/AboutUs';
 import SummaryCampaign from '~/pages/user/CreateCampaign/Summary';
+import Statiscal from '~/pages/user/Profile/Statiscal';
+import StatiscalAdmin from '~/pages/admin/StatiscalAdmin';
 
 const loginRoutes = [
   { path: '/sign-up', component: SignUp, layout: null },
@@ -64,6 +66,7 @@ const adminRoutes = [
   { path: '/admin/users', component: UserManagement, layout: AdminLayout },
   { path: '/admin/complaint', component: ComplaintManagement, layout: AdminLayout },
   { path: '/admin', component: CampaignManagement, layout: AdminLayout },
+  { path: '/admin/statistic', component: StatiscalAdmin, layout: AdminLayout },
 ];
 const privateUserRoutes = {
   campaigns: [
@@ -83,6 +86,7 @@ const privateUserRoutes = {
     { path: '/individuals/:id/edit/profile', component: EditProfile, layout: NormalLayout },
     { path: '/individuals/:id/edit/settings', component: EditSetting, layout: NormalLayout },
     { path: '/individuals/:id/contributions', component: ViewContributes, layout: NormalLayout },
+    { path: '/individuals/:id/statistic', component: Statiscal, layout: NormalLayout },
   ],
 };
 

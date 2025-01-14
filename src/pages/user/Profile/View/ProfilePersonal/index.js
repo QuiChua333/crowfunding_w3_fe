@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from '../../Profile.module.scss';
 import { Link, useParams } from 'react-router-dom';
-import { MdOutlineRemoveRedEye } from 'react-icons/md';
+import { MdAddchart, MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
 import { BsFillQuestionCircleFill } from 'react-icons/bs';
 import { IoMdMail } from 'react-icons/io';
@@ -68,6 +68,10 @@ function ProfilePersonal() {
           <Link to={`/individuals/${id}/edit/profile`} className={cx('nav-item')}>
             <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
             <span>Chỉnh sửa hồ sơ & Cài đặt</span>
+          </Link>
+          <Link to={`/individuals/${id}/statistic`} className={cx('nav-item')}>
+            <MdAddchart  style={{ fontSize: '24px', marginRight: '8px' }} />
+            <span>Thống kê</span>
           </Link>
         </div>
       )}

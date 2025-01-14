@@ -69,24 +69,6 @@ function CampaignManagement() {
           <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm tên chiến dịch, chủ sở hữu'} />
         </div>
         <div className={cx('table-action')}>
-          {/* <div style={{ opacity: numberSelected == 0 && '0' }}>
-            <span>
-              <strong style={{ display: 'inline-block', minWidth: '12px' }}>{numberSelected}</strong> dự án đang được
-              chọn
-            </span>
-            <div style={{ display: 'inline-block', marginLeft: '24px', position: 'relative' }}>
-              <a
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpenDropdownAction((prev) => !prev);
-                }}
-                href="#"
-                className={cx('btn', 'btn-ok')}
-              >
-                Xóa
-              </a>
-            </div>
-          </div> */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
             <div>
               <label style={{ marginBottom: '4px' }}>Trạng thái</label>

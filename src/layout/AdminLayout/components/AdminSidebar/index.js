@@ -75,6 +75,17 @@ function AdminSidebar() {
                   <div>3. Báo cáo vi phạm</div>
                 </div>
               </Link>
+
+              <Link
+                to="/admin/statistic"
+                className={cx('navItem--child', 'navItem', {
+                  'navItem--current': tabAdmin.number === 4,
+                })}
+              >
+                <div className={cx('navItem-link')}>
+                  <div>4. Thống kê</div>
+                </div>
+              </Link>
             </div>
           </div>
 

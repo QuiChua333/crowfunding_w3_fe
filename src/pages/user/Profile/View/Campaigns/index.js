@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from '../../Profile.module.scss';
-import { MdOutlineRemoveRedEye } from 'react-icons/md';
+import { MdAddchart, MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -10,7 +10,6 @@ import { useGetCampaignsFollowedQuery } from '~/hooks/api/queries/user/follow-ca
 import { useGetCampaignsOfMemberQuery, useGetCampaignsOfOwnerQuery } from '~/hooks/api/queries/user/campaign.query';
 const cx = classNames.bind(styles);
 function ViewCampaigns() {
-  const [isHasCampaignMember, setHasCampaignMember] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
   const { id } = useParams();
   const [campaignsOfUser, setCampaignOfUser] = useState([]);
@@ -46,6 +45,10 @@ function ViewCampaigns() {
             <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
             <span>Chỉnh sửa hồ sơ & Cài đặt</span>
           </Link>
+          <Link to={`/individuals/${id}/statistic`} className={cx('nav-item')}>
+                    <MdAddchart  style={{ fontSize: '24px', marginRight: '8px' }} />
+                    <span>Thống kê</span>
+                  </Link>
         </div>
       )}
 

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from '../../Profile.module.scss';
 import { Link, useParams } from 'react-router-dom';
-import { MdOutlineRemoveRedEye } from 'react-icons/md';
+import { MdAddchart, MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
-import baseURL from '~/utils/baseURL';
 import { useSelector } from 'react-redux';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
 import ContributeTable from './components/ContributeTable';
@@ -19,8 +18,6 @@ function ViewContributes() {
   const { id } = useParams();
   const [user, setUser] = useState({});
   const currentUser = useSelector((state) => state.user.currentUser);
-
-  const [date, setDate] = useState();
 
   const { data: dataUser } = useGetInfoUserQuery(id);
   useEffect(() => {
@@ -57,7 +54,7 @@ function ViewContributes() {
     setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
-  const { data, refetch, isLoading } = useGetAllContributesOfUserQuery({
+  const { data, isLoading } = useGetAllContributesOfUserQuery({
     ...filter,
     userId: id,
   });
@@ -80,6 +77,10 @@ function ViewContributes() {
           <FaRegEdit style={{ fontSize: '24px', marginRight: '8px' }} />
           <span>Chỉnh sửa hồ sơ & Cài đặt</span>
         </Link>
+        <Link to={`/individuals/${id}/statistic`} className={cx('nav-item')}>
+                  <MdAddchart  style={{ fontSize: '24px', marginRight: '8px' }} />
+                  <span>Thống kê</span>
+                </Link>
       </div>
 
       <div className={cx('body')}>
