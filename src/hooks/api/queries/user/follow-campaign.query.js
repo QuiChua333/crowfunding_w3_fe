@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { getCampaignsFollowed, getQuantityFollowsOfCampaign } from '~/api/user/follow-campaign';
 
-export const useGetCampaignsFollowedQuery = (id) => {
+export const useGetCampaignsFollowedQuery = ({ id, searchString, status, page }) => {
   return useQuery({
-    queryKey: [`useGetCampaignsFollowedQuery`],
-    queryFn: () => getCampaignsFollowed(id),
+    queryKey: [`useGetCampaignsFollowedQuery`, id, searchString, status, page],
+    queryFn: () => getCampaignsFollowed({ id, searchString, status, page }),
     refetchOnWindowFocus: false,
   });
 };

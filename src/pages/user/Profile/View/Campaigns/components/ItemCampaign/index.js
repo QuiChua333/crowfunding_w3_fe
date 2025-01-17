@@ -86,11 +86,10 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
             </span>
           </div>
           <span className={cx('campaign-author')}>
-            by <Link to={`/individuals/${item.ownerId}/profile`}>{item.owner?.fullName}</Link>
+            tạo bởi <Link to={`/individuals/${item.ownerId}/profile`}>{item.owner?.fullName}</Link>
           </span>
 
           <p className={cx('campaign-tagline')}>{item.title}</p>
-          <span className={cx('campaign-id')}>Mã chiến dịch: {item.id?.substring(10)}</span>
         </div>
       </div>
       <div>

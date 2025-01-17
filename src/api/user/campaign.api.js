@@ -54,14 +54,26 @@ export const deleteCampaign = async (id) => {
 };
 
 // handleAPI
-export const getCampaignsOfOwner = async (userId) => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/owner/${userId}`);
+export const getCampaignsOfOwner = async ({ id, searchString, status, page }) => {
+  const queryParams = {
+    page,
+    searchString,
+    status,
+  };
+  const queryString = new URLSearchParams(queryParams).toString();
+  const response = await CustomAxios.get(`${baseUrl}/campaign/owner/${id}?${queryString}`);
   return response.data;
 };
 
 // handleAPI
-export const getCampaignsOfMember = async (userId) => {
-  const response = await CustomAxios.get(`${baseUrl}/campaign/member/${userId}`);
+export const getCampaignsOfMember = async ({ id, searchString, status, page }) => {
+  const queryParams = {
+    page,
+    searchString,
+    status,
+  };
+  const queryString = new URLSearchParams(queryParams).toString();
+  const response = await CustomAxios.get(`${baseUrl}/campaign/member/${id}?${queryString}`);
   return response.data;
 };
 

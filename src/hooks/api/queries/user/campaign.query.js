@@ -31,19 +31,19 @@ export const useGetQuantitySuccessCampaignByCampaignId = (id) => {
 };
 
 // handleAPI
-export const useGetCampaignsOfOwnerQuery = (id) => {
+export const useGetCampaignsOfOwnerQuery = ({ id, searchString, status, page }) => {
   return useQuery({
-    queryKey: [`useGetCampaignsOfOwnerQuery`],
-    queryFn: () => getCampaignsOfOwner(id),
+    queryKey: [`useGetCampaignsOfOwnerQuery`, id, searchString, status, page],
+    queryFn: () => getCampaignsOfOwner({ id, searchString, status, page }),
     refetchOnWindowFocus: false,
   });
 };
 
 // handleAPI
-export const useGetCampaignsOfMemberQuery = (id) => {
+export const useGetCampaignsOfMemberQuery = ({ id, searchString, status, page }) => {
   return useQuery({
-    queryKey: [`useGetCampaignsOfMemberQuery`],
-    queryFn: () => getCampaignsOfMember(id),
+    queryKey: [`useGetCampaignsOfMemberQuery`, id, searchString, status, page],
+    queryFn: () => getCampaignsOfMember({ id, searchString, status, page }),
     refetchOnWindowFocus: false,
   });
 };

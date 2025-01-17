@@ -9,6 +9,11 @@ import { useSelector } from 'react-redux';
 import { useGetCampaignsFollowedQuery } from '~/hooks/api/queries/user/follow-campaign.query';
 import { useGetCampaignsOfMemberQuery, useGetCampaignsOfOwnerQuery } from '~/hooks/api/queries/user/campaign.query';
 import { useGetInfoUserQuery } from '~/hooks/api/queries/user/user.query';
+import Filter from '~/pages/admin/components/Filter';
+import Search from '~/pages/admin/components/Search';
+import OwnerCampaignTab from './components/OwnerCampaignTab';
+import MemberCampaignTab from './components/MemberCampaignTab';
+import FollowCampaignTab from './components/FollowCampaignTab';
 const cx = classNames.bind(styles);
 function ViewCampaigns() {
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -17,27 +22,13 @@ function ViewCampaigns() {
   const [campaignsFollowed, setCampaignsFollowed] = useState([]);
   const [user, setUser] = useState({});
   const { data: dataUser } = useGetInfoUserQuery(id);
+  const [tabActive, setTabActive] = useState(1);
+
   useEffect(() => {
     if (dataUser) {
       setUser(dataUser);
     }
   }, [dataUser]);
-
-  const { data: dataCampaigns, isLoading: isLoadingOwnerCampaign } = useGetCampaignsOfOwnerQuery(id);
-  useEffect(() => {
-    if (dataCampaigns) {
-      console.log(dataCampaigns);
-      setCampaignOfUser(dataCampaigns);
-    }
-  }, [dataCampaigns]);
-
-  const { data: dataCampaignsFollowed, refetch } = useGetCampaignsFollowedQuery(id);
-  const { data: dataCampaignsMember } = useGetCampaignsOfMemberQuery(id);
-  useEffect(() => {
-    if (dataCampaignsFollowed) {
-      setCampaignsFollowed(dataCampaignsFollowed);
-    }
-  }, [dataCampaignsFollowed]);
 
   return (
     <div className={cx('wrapper')}>
@@ -81,104 +72,39 @@ function ViewCampaigns() {
             )}
           </div>
 
-          <div style={{ marginTop: '32px' }}>
-            <div style={{ fontSize: '24px', fontWeight: '500', lineHeight: '35px', marginBottom: '16px' }}>
-              <span
-                className={cx('titleCampaign')}
-                style={{
-                  display: 'inline-block',
-                  padding: '8px 16px',
-                  backgroundColor: '#ccc',
-                  borderRadius: '4px',
-                  color: '#212121',
-                }}
-              >
-                Dự án là chủ sở hữu
-              </span>
+          <div className={cx('tabpanel')} style={{ marginTop: '10px' }}>
+            <div
+              onClick={() => setTabActive(1)}
+              className={cx('tab', {
+                'active-green': tabActive === 1,
+              })}
+            >
+              Dự án là chủ sở hữu
             </div>
-            {campaignsOfUser.map((item, index) => {
-              return <ItemCampaign key={index} item={item} getCampaignsFollowed={refetch} />;
-            })}
-            {!isLoadingOwnerCampaign && campaignsOfUser.length === 0 && id !== currentUser.id && (
-              <p>Hiện người này chưa có chiến dịch nào được công khai!</p>
-            )}
-            {!isLoadingOwnerCampaign && campaignsOfUser.length === 0 && id === currentUser.id && (
-              <p>Hiện bạn chưa có chiến dịch nào</p>
-            )}
+            <div
+              onClick={() => setTabActive(2)}
+              className={cx('tab', {
+                'active-green': tabActive === 2,
+              })}
+            >
+              Dự án là thành viên
+            </div>
+
+            <div
+              onClick={() => setTabActive(3)}
+              className={cx('tab', {
+                'active-green': tabActive === 3,
+              })}
+            >
+              Dự án đang theo dõi
+            </div>
           </div>
 
-          <div style={{ marginTop: '32px' }}>
-            <div style={{ fontSize: '24px', fontWeight: '500', lineHeight: '35px', marginBottom: '16px' }}>
-              <span
-                className={cx('titleCampaign')}
-                style={{
-                  display: 'inline-block',
-                  padding: '8px 16px',
-                  backgroundColor: '#ccc',
-                  borderRadius: '4px',
-                  color: '#212121',
-                }}
-              >
-                Dự án là thành viên
-              </span>
-            </div>
-
-            {dataCampaignsMember?.length === 0 && !currentUser.id && (
-              <p>Hiện người này chưa là thành viên của chiến dịch gây quỹ chính thức nào!</p>
-            )}
-            {dataCampaignsMember?.length === 0 && currentUser.id && currentUser.id === id && (
-              <p>Hiện bạn chưa chưa là thành viên của chiến dịch gây quỹ chính thức nào!</p>
-            )}
-            {dataCampaignsMember?.length === 0 && currentUser.id && currentUser.id !== id && (
-              <p>Hiện người này chưa là thành viên của chiến dịch gây quỹ chính thức nào!</p>
-            )}
-            {dataCampaignsMember?.length > 0 &&
-              currentUser.id &&
-              currentUser.id === id &&
-              dataCampaignsMember?.map((item, index) => {
-                return <ItemCampaign key={index} item={item} />;
-              })}
-
-            {dataCampaignsMember?.length > 0 &&
-              currentUser.id &&
-              currentUser.id !== id &&
-              dataCampaignsMember
-                ?.filter((campaign) => campaign.status !== 'Bản nháp')
-                .map((item, index) => {
-                  return <ItemCampaign key={index} item={item} />;
-                })}
-
-            {dataCampaignsMember?.length > 0 &&
-              !currentUser.id &&
-              dataCampaignsMember
-                ?.filter((campaign) => campaign.status !== 'Bản nháp')
-                .map((item, index) => {
-                  return <ItemCampaign key={index} item={item} />;
-                })}
+          <div className="mt-[20px]">
+            {tabActive === 1 && <OwnerCampaignTab />}
+            {tabActive === 2 && <MemberCampaignTab />}
+            {tabActive === 3 && <FollowCampaignTab />}
           </div>
-
-          {currentUser.id && currentUser.id === id && (
-            <div style={{ marginTop: '32px' }}>
-              <div style={{ fontSize: '24px', fontWeight: '500', lineHeight: '35px', marginBottom: '16px' }}>
-                <span
-                  className={cx('titleCampaign')}
-                  style={{
-                    display: 'inline-block',
-                    padding: '8px 16px',
-                    backgroundColor: '#ccc',
-                    borderRadius: '4px',
-                    color: '#212121',
-                  }}
-                >
-                  Dự án đang theo dõi
-                </span>
-              </div>
-              {campaignsFollowed?.length === 0 && <p>Bạn hiện chưa theo dõi chiến dịch nào!</p>}
-              {campaignsFollowed?.map((item, index) => {
-                return <ItemCampaign key={index} item={item} />;
-              })}
-            </div>
-          )}
         </div>
       </div>
     </div>
