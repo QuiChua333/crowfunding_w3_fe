@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import {
   getStatisticCampaignByTimeOfCurrentUser,
+  getStatisticMoneyByTimeOfCurrentUser,
   getStatisticTotalCampaignOfCurrentUser,
 } from '~/api/user/statistic.api';
 
@@ -18,6 +19,15 @@ export const useGetStatisticCampaignByTimeOfCurrentUserQuery = ({ quarter, year 
   return useQuery({
     queryKey: ['useGetStatisticCampaignByTimeOfCurrentUserQuery', quarter, year],
     queryFn: () => getStatisticCampaignByTimeOfCurrentUser({ quarter, year }),
+    refetchOnWindowFocus: false,
+  });
+};
+
+// handleAPI
+export const useGetStatisticMoneyByTimeOfCurrentUserQuery = ({ year }) => {
+  return useQuery({
+    queryKey: ['useGetStatisticMoneyByTimeOfCurrentUserQuery', year],
+    queryFn: () => getStatisticMoneyByTimeOfCurrentUser({ year }),
     refetchOnWindowFocus: false,
   });
 };

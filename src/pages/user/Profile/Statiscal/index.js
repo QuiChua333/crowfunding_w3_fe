@@ -13,10 +13,12 @@ import { pieArcLabelClasses, PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import {
   useGetStatisticCampaignByTimeOfCurrentUserQuery,
+  useGetStatisticMoneyByTimeOfCurrentUserQuery,
   useGetStatisticTotalCampaignOfCurrentUserQuery,
 } from '~/hooks/api/queries/user/statistic.query';
 import { ClipLoader } from 'react-spinners';
 import Filter from '~/pages/admin/components/Filter';
+import { formatMoney } from '~/utils';
 const cx = classNames.bind(styles);
 
 const Statiscal = () => {
@@ -24,7 +26,7 @@ const Statiscal = () => {
   const user = useSelector((state) => state.user.currentUser);
   const [itemsFilterYearCampaign, setItemsFilterYearCampaign] = useState([2025, 2024]);
   const [itemsFilterQuarterCampaign, setItemsFilterQuarterCampaign] = useState([1, 2, 3]);
-
+  const [initMoneyData, setInitMoneyData] = useState(Array(12).fill(0));
   const [monthsInQuarter, setMonthsInQuarter] = useState({
     1: [1, 2, 3, 4],
     2: [5, 6, 7, 8],
@@ -39,9 +41,14 @@ const Statiscal = () => {
       year: now.getFullYear(),
     };
   });
+  const [filterTimeMoney, setFilterTimeMoney] = useState(() => {
+    const now = new Date();
+    return {
+      year: now.getFullYear(),
+    };
+  });
 
   const handleSelectedQuarterCampaign = (quarter) => {
-    console.log({ quarter: quarter.split });
     setFilterTimeCampaign((prev) => ({
       ...prev,
       quarter: Number(quarter.split(' ')[1]),
@@ -53,16 +60,16 @@ const Statiscal = () => {
       year: Number(year.split(' ')[1]),
     }));
   };
-
-  const handleSelectedMonthHistory = (month) => {
-    console.log(month);
+  const handleSelectedYearMoney = (year) => {
+    setFilterTimeMoney((prev) => ({
+      ...prev,
+      year: Number(year.split(' ')[1]),
+    }));
   };
-  const handleSelectedYearHistory = (year) => {
-    console.log(year);
-  };
 
-  const { data: dataTotalCampaign, isLoading } = useGetStatisticTotalCampaignOfCurrentUserQuery();
+  const { data: dataTotalCampaign } = useGetStatisticTotalCampaignOfCurrentUserQuery();
   const { data: dataCampaignByTime } = useGetStatisticCampaignByTimeOfCurrentUserQuery(filterTimeCampaign);
+  const { data: dataMoneyByTime, isLoading } = useGetStatisticMoneyByTimeOfCurrentUserQuery(filterTimeMoney);
 
   useEffect(() => {
     console.log(dataCampaignByTime);
@@ -98,18 +105,18 @@ const Statiscal = () => {
               <div className="grid grid-cols-5 gap-10">
                 <ItemStatiscal
                   label="Tổng số chiến dịch"
-                  value={dataTotalCampaign.total}
+                  value={dataTotalCampaign?.total}
                   className="border-[#e51075] text-[#e51075]"
                 />
 
                 <ItemStatiscal
                   label="Thành công"
-                  value={dataTotalCampaign.success}
+                  value={dataTotalCampaign?.success}
                   className="border-[#34ca96] text-[#34ca96]"
                 />
                 <ItemStatiscal
                   label="Thất bại"
-                  value={dataTotalCampaign.failed}
+                  value={dataTotalCampaign?.failed}
                   className="border-[#e9895a] text-[#e9895a]"
                 />
               </div>
@@ -118,7 +125,7 @@ const Statiscal = () => {
             <hr className="mt-14 mb-5" />
             <div className="flex flex-col gap-10">
               <div className="flex items-center justify-between">
-                <span className="font-semibold">Thống kê chiến dịch của bạn:</span>
+                <span className="font-semibold">Biểu đồ:</span>
                 <div className="flex items-center gap-10">
                   <div className="flex flex-col gap-5">
                     <span className="font-medium">Theo quý</span>
@@ -200,35 +207,34 @@ const Statiscal = () => {
             <hr className="my-10" />
             <div className="flex flex-col gap-10">
               <div className="flex justify-between items-center">
-                <span className="font-semibold">Lịch sử giao dịch của bạn:</span>
+                <span className="font-semibold">Thống kê nguồn tiền:</span>
                 <div className="flex items-center gap-10">
                   <div className="flex flex-col gap-5">
-                    <span className="font-medium">Theo tháng</span>
-
-                    <DropDown items={itemsFilterQuarterCampaign} onSelected={handleSelectedMonthHistory} />
-                    <Filter
-                      listConditions={itemsFilterQuarterCampaign.map((item) => `Quý ${item}`)}
-                      handleClickItem={handleSelectedQuarterCampaign}
-                      valueShow={`Quý ${filterTimeCampaign.quarter}`}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-5">
                     <span className="font-medium">Theo năm</span>
-                    <DropDown items={itemsFilterYearCampaign} onSelected={handleSelectedYearHistory} />
+                    <Filter
+                      listConditions={itemsFilterYearCampaign.map((item) => `Năm ${item}`)}
+                      handleClickItem={handleSelectedYearMoney}
+                      valueShow={`Năm ${filterTimeMoney.year}`}
+                    />
                   </div>
                 </div>
               </div>
               <div className="flex flex-col justify-between gap-10">
                 <div className="flex justify-evenly items-center italic">
-                  <span>
-                    Tổng số dự án tham gia đóng góp: <b>14 chiến dịch</b>
-                  </span>
-                  <span>
-                    Tổng tiền đóng góp: <b>23.762.000 VND</b>
-                  </span>
-                  <span>
-                    Tổng tiền được giải ngân: <b>14.462.000 VND</b>
-                  </span>
+                  <div className="flex flex-col">
+                    <span>Tổng tiền đóng góp:</span> <b>{formatMoney(dataMoneyByTime?.sumContributed || 0)} VND</b>
+                  </div>
+                  <div className="flex flex-col">
+                    <span>Tổng tiền được mọi người đóng góp:</span>{' '}
+                    <b>{formatMoney(dataMoneyByTime?.sumReceivedFromOthers || 0)} VND</b>
+                  </div>
+                  <div className="flex flex-col">
+                    <span>Tổng tiền được nhận từ dự án:</span>{' '}
+                    <b>{formatMoney(dataMoneyByTime?.sumProjectEarnings || 0)} VND</b>
+                  </div>
+                  <div className="flex flex-col">
+                    <span>Tổng tiền được hoàn trả:</span> <b>{formatMoney(dataMoneyByTime?.sumRefunded || 0)} VND</b>
+                  </div>
                 </div>
                 <LineChart
                   xAxis={[
@@ -250,14 +256,37 @@ const Statiscal = () => {
                       ],
                     },
                   ]}
+                  yAxis={[
+                    {
+                      valueFormatter: (value) => `${value / 1_000_000}`, // Định dạng thành triệu đồng
+                    },
+                  ]}
                   series={[
                     {
-                      data: [2, 5.5, 2, 8.5, 1.5, 5, 2, 5.5, 2, 8.5, 1.5, 5],
-                      valueFormatter: (value) => (value == null ? 'NaN' : value.toString()),
+                      data: dataMoneyByTime?.contributed || initMoneyData,
+                      label: 'Tiền đóng góp',
+                      valueFormatter: (value) =>
+                        value == null ? 'NaN' : `${(value / 1_000_000).toFixed(2)} triệu đồng`,
                     },
                     {
-                      data: [4, 8.5, 3, 2.5, 6.5, 5, 2, 7.5, 6, 1, 1.5, 9],
-                      valueFormatter: (value) => (value == null ? 'NaN' : value.toString()),
+                      data: dataMoneyByTime?.receivedFromOthers || initMoneyData,
+                      label: 'Tiền được mọi người đóng góp',
+                      valueFormatter: (value) =>
+                        value == null ? 'NaN' : `${(value / 1_000_000).toFixed(2)} triệu đồng`,
+                    },
+                    {
+                      data: dataMoneyByTime?.projectEarnings || initMoneyData,
+                      label: 'Tiền nhận từ dự án',
+
+                      valueFormatter: (value) =>
+                        value == null ? 'NaN' : `${(value / 1_000_000).toFixed(2)} triệu đồng`,
+                    },
+                    {
+                      data: dataMoneyByTime?.refunded || initMoneyData,
+                      label: 'Tiền được hoàn trả',
+
+                      valueFormatter: (value) =>
+                        value == null ? 'NaN' : `${(value / 1_000_000).toFixed(2)} triệu đồng`,
                     },
                   ]}
                   height={400}
