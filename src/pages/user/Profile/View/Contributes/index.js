@@ -78,9 +78,9 @@ function ViewContributes() {
           <span>Chỉnh sửa hồ sơ & Cài đặt</span>
         </Link>
         <Link to={`/individuals/${id}/statistic`} className={cx('nav-item')}>
-                  <MdAddchart  style={{ fontSize: '24px', marginRight: '8px' }} />
-                  <span>Thống kê</span>
-                </Link>
+          <MdAddchart style={{ fontSize: '24px', marginRight: '8px' }} />
+          <span>Thống kê</span>
+        </Link>
       </div>
 
       <div className={cx('body')}>
@@ -97,6 +97,11 @@ function ViewContributes() {
             {currentUser.id && currentUser.id === id && (
               <Link to={`/individuals/${id}/contributions`} className={cx('tab', 'active')}>
                 Đóng góp của tôi
+              </Link>
+            )}
+            {currentUser.id && currentUser.id === id && (
+              <Link to={`/individuals/${id}/complaints`} className={cx('tab')}>
+                Báo cáo vi phạm
               </Link>
             )}
           </div>

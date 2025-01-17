@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { avatar } from '../ChatList/ItemChatList';
 import { FiX } from 'react-icons/fi';
-import { AiFillCloseCircle } from 'react-icons/ai';
-import { FiFilePlus } from 'react-icons/fi';
 import { BsFillSendFill } from 'react-icons/bs';
 import ItemChat from './ItemChat';
 import { logoCrowdfunding } from '~/assets/images';
@@ -89,6 +87,7 @@ function MessageBoard({}) {
                 chatRoomId: newMessage.chatRoomId,
               }),
             );
+
             const updateChatList = chatListRef.current.map((item) => {
               if (!item.chatRoomId) {
                 return {
@@ -181,7 +180,9 @@ function MessageBoard({}) {
             </div>
             <button
               className="hover:bg-gray-200 transition-all p-4 rounded-full"
-              onClick={() => dispatch(setActiveChat({}))}
+              onClick={() => {
+                dispatch(setActiveChat({}));
+              }}
             >
               <FiX className="text-gray-400 text-[20px]" />
             </button>

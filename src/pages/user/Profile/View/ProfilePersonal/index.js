@@ -4,7 +4,6 @@ import styles from '../../Profile.module.scss';
 import { Link, useParams } from 'react-router-dom';
 import { MdAddchart, MdOutlineRemoveRedEye } from 'react-icons/md';
 import { FaRegEdit } from 'react-icons/fa';
-import { BsFillQuestionCircleFill } from 'react-icons/bs';
 import { IoMdMail } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
@@ -19,23 +18,9 @@ function ProfilePersonal() {
   const { id } = useParams();
   const [user, setUser] = useState({});
   const currentUser = useSelector((state) => state.user.currentUser);
-  const [showModalCampaigns, setShowModalCampaigns] = useState(false);
-  const [showModalContributes, setShowModalContributes] = useState(false);
   const [quantityCampaignOfUser, setQuantityCampaignOfUser] = useState(0);
   const [quantityContributeOfUser, setQuantityContributeOfUser] = useState(0);
 
-  const handleShowModalOverCampaigns = () => {
-    setShowModalCampaigns(true);
-  };
-  const handleShowModalOutCampaigns = () => {
-    setShowModalCampaigns(false);
-  };
-  const handleShowModalOverContributes = () => {
-    setShowModalContributes(true);
-  };
-  const handleShowModalOutContributes = () => {
-    setShowModalContributes(false);
-  };
   const { data: dataUser } = useGetInfoUserQuery(id);
   useEffect(() => {
     if (dataUser) {
@@ -70,7 +55,7 @@ function ProfilePersonal() {
             <span>Chỉnh sửa hồ sơ & Cài đặt</span>
           </Link>
           <Link to={`/individuals/${id}/statistic`} className={cx('nav-item')}>
-            <MdAddchart  style={{ fontSize: '24px', marginRight: '8px' }} />
+            <MdAddchart style={{ fontSize: '24px', marginRight: '8px' }} />
             <span>Thống kê</span>
           </Link>
         </div>
@@ -92,6 +77,11 @@ function ProfilePersonal() {
                 Đóng góp của tôi
               </Link>
             )}
+            {currentUser.id && currentUser.id === id && (
+              <Link to={`/individuals/${id}/complaints`} className={cx('tab')}>
+                Báo cáo vi phạm
+              </Link>
+            )}
           </div>
 
           <div className={cx('container-body-profile')}>
@@ -106,34 +96,11 @@ function ProfilePersonal() {
                 <div className={cx('container-campaigns')}>
                   <span className={cx('quantity-campaigns')}>{quantityCampaignOfUser || 0} </span>
                   <span className={cx('title-campaigns')}>Chiến dịch thành công</span>
-                  <BsFillQuestionCircleFill
-                    onMouseOver={handleShowModalOverCampaigns}
-                    onMouseOut={handleShowModalOutCampaigns}
-                    className={cx('icon-campaigns')}
-                  />
-                  {showModalCampaigns && (
-                    <div className={cx('modal-hover')}>
-                      Đây là số lượng chiến dịch mà tôi đã kêu gọi trên nền tảng GiveFun. Những ý tưởng mới mẽ và niềm
-                      đam mê khởi nghiệp, sáng tạo đã thúc đẩy tôi thực hiện nhưng chiến dịch này.
-                    </div>
-                  )}
                 </div>
 
                 <div className={cx('container-campaigns')}>
                   <span className={cx('quantity-campaigns')}>{quantityContributeOfUser || 0}</span>
                   <span className={cx('title-campaigns')}>Đóng góp</span>
-                  <BsFillQuestionCircleFill
-                    onMouseOver={handleShowModalOverContributes}
-                    onMouseOut={handleShowModalOutContributes}
-                    className={cx('icon-campaigns')}
-                  />
-                  {showModalContributes && (
-                    <div className={cx('modal-hover')}>
-                      Đây là số lượt đóng góp của tôi trên nền tảng GiveFun. Tôi nhìn thấy được những ý tưởng hay từ
-                      nhưng chiến dịch của những người dùng khác và tôi đã ủng hộ họ thực hiện và nhậ được rất nhiều đặc
-                      quyền và quà tặng hấp dẫn. Nó có ý nghĩa với bản thân tôi.
-                    </div>
-                  )}
                 </div>
               </div>
               <div style={{ height: '1.5px', backgroundColor: '#ccc', marginTop: '25px' }}></div>
@@ -174,7 +141,7 @@ function ProfilePersonal() {
                 </div>
               </div>
 
-              {user.linkFacebook && (
+              {user.facebookLink && (
                 <>
                   <div style={{ height: '1.5px', backgroundColor: '#ccc', marginTop: '25px' }}></div>
                   <div style={{ marginTop: '15px' }}>
@@ -195,10 +162,10 @@ function ProfilePersonal() {
                           margin: '5px 10px',
                         }}
                       >
-                        <a href={user.linkFacebook}>
+                        <a href={user.facebookLink} target="_blank" className="flex items-center">
                           <FaFacebook className={cx('icon-facebook')} />
+                          <span style={{ marginLeft: '10px', fontWeight: '500' }}>Facebook</span>
                         </a>
-                        <span style={{ marginLeft: '10px', fontWeight: '500' }}>Facebook</span>
                       </div>
                     </div>
                   </div>

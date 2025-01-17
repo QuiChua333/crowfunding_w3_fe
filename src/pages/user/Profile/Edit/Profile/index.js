@@ -10,6 +10,8 @@ import { toast } from 'react-toastify';
 import { defaultAvt } from '~/assets/images';
 import { useUpdateProfileUserMutation } from '~/hooks/api/mutations/user/user.mutation';
 import { useQueryClient } from '@tanstack/react-query';
+import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
+import { setCurrentUser } from '~/redux/slides/User';
 const cx = classNames.bind(styles);
 function EditProfile() {
   const { id } = useParams();
@@ -19,6 +21,12 @@ function EditProfile() {
   const refetchUserData = () => {
     queryClient.invalidateQueries('getCurrentUser'); // Key của query
   };
+  const { data: dataUser, refetch } = useGetCurrentUserQuery();
+  useEffect(() => {
+    if (dataUser) {
+      dispatch(setCurrentUser(dataUser));
+    }
+  }, [dataUser]);
   const [file, setFile] = useState();
   const [userState, setUserState] = useState({});
   useEffect(() => {
@@ -80,7 +88,8 @@ function EditProfile() {
       { formData },
       {
         onSuccess(response) {
-          refetchUserData();
+          console.log(response);
+          refetch();
           toast.success('Cập nhật thông tin thành công');
         },
         onError(err) {
@@ -105,7 +114,7 @@ function EditProfile() {
           <span>Chỉnh sửa hồ sơ & Cài đặt</span>
         </Link>
         <Link to={`/individuals/${id}/statistic`} className={cx('nav-item')}>
-          <MdAddchart  style={{ fontSize: '24px', marginRight: '8px' }} />
+          <MdAddchart style={{ fontSize: '24px', marginRight: '8px' }} />
           <span>Thống kê</span>
         </Link>
       </div>

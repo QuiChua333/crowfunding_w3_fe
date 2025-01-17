@@ -57,11 +57,10 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
         },
         {
           onSuccess(data) {
-            console.log(data.data);
-            handleChangeStatus(contribution.id);
-            dispatch(setLoading(false));
-            setShowModal(false);
             toast.success('Thay đổi trạng thái gửi đặc quyền thành công!');
+            setShowModal(false);
+            dispatch(setLoading(false));
+            handleChangeStatus(contribution.id);
           },
           onError() {
             dispatch(setLoading(false));

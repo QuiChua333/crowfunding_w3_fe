@@ -150,7 +150,7 @@ function FundingCampaign() {
         },
         {
           onSuccess(data) {
-            queryClient.invalidateQueries([`getCampaignById`, id]);
+            // queryClient.invalidateQueries([`getCampaignById`, id]);
             navigate(`/campaigns/${id}/edit/settings`);
           },
           onError(error) {

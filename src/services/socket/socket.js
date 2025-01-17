@@ -5,6 +5,7 @@ import { setActiveUsers, setTotalUnreadMessage } from '~/redux/slides/Chat';
 
 export let socket;
 export let activeUsers;
+
 export function connectSocket(dispatch) {
   const accessToken = localStorage.getItem('accessToken') || null;
   if (!accessToken) return;

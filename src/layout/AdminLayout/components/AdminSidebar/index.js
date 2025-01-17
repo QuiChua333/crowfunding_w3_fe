@@ -32,7 +32,7 @@ function AdminSidebar() {
       <div>
         <div className={cx('campaignInfo')}>
           <div className={cx('campaignPhase')}>
-            <span>Welcome to admin page</span>
+            <span>Trang quản trị</span>
           </div>
         </div>
 
@@ -77,13 +77,24 @@ function AdminSidebar() {
               </Link>
 
               <Link
-                to="/admin/statistic"
+                to="/admin/send-refund"
                 className={cx('navItem--child', 'navItem', {
                   'navItem--current': tabAdmin.number === 4,
                 })}
               >
                 <div className={cx('navItem-link')}>
-                  <div>4. Thống kê</div>
+                  <div>4. Gửi - Trả</div>
+                </div>
+              </Link>
+
+              <Link
+                to="/admin/statistic"
+                className={cx('navItem--child', 'navItem', {
+                  'navItem--current': tabAdmin.number === 5,
+                })}
+              >
+                <div className={cx('navItem-link')}>
+                  <div>5. Thống kê</div>
                 </div>
               </Link>
             </div>

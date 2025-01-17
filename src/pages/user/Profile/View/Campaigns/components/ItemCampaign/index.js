@@ -29,12 +29,12 @@ function ItemCampaign({ item, getCampaignsFollowed }) {
     };
   }, [dropdownElement]);
   const handleClickTitleCampaign = () => {
-    if (item.status !== 'Bản nháp' && item.status !== 'Đang tạm ngưng' && item.status !== 'Chờ xác nhận') {
+    if (item.status !== 'Bản nháp' && item.status !== 'Tạm dừng' && item.status !== 'Chờ xác nhận') {
       navigate(`/project/${item.id}/detail`);
     }
   };
   const handleClickImg = () => {
-    if (item.status !== 'Bản nháp' && item.status !== 'Đang tạm ngưng' && item.status !== 'Chờ xác nhận') {
+    if (item.status !== 'Bản nháp' && item.status !== 'Tạm dừng' && item.status !== 'Chờ xác nhận') {
       navigate(`/project/${item.id}/detail`);
     }
   };

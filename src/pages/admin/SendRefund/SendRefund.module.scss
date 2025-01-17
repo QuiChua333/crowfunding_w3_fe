@@ -1,0 +1,21 @@
+.wrapper {
+  min-height: 100vh;
+
+  .tabpanel {
+    display: flex;
+    border-bottom: 1px solid #dddddd;
+    gap: 8px;
+
+    .tab {
+      padding: 10px;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+
+      cursor: pointer;
+      &.active {
+        border-color: #e51075;
+        color: #e51075;
+      }
+    }
+  }
+}

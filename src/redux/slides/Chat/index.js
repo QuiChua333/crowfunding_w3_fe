@@ -29,7 +29,14 @@ const chatSlice = createSlice({
       state.newChat = action.payload;
     },
     setTotalUnreadMessage: (state, action) => {
-      state.totalUnreadMessage = action.payload;
+      if (!state.activeChat?.chatRoomId) {
+        state.totalUnreadMessage = action.payload;
+      } else {
+        const totalUnreadMessage = state.chatList.reduce((acc, cur) => {
+          return acc + cur.unreadMessageCount;
+        }, 0);
+        state.totalUnreadMessage = totalUnreadMessage;
+      }
     },
   },
 });

@@ -39,8 +39,12 @@ function PerkItem({
       setIsOpenModalOption(true);
     } else {
       // chưa xử lý
+      const state = {
+        perkSelected: item,
+        cryptocurrencyMode,
+      };
       navigate(`/project/${id}/perk/detail`, {
-        state: item,
+        state,
       });
     }
   };

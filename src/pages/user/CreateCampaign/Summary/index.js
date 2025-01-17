@@ -22,6 +22,7 @@ function SummaryCampaign() {
   const { id } = useParams();
 
   const campaign = useSelector((state) => state.userCampaign.campaign);
+  const currentUser = useSelector((state) => state.user.currentUser);
   const [showModal, setShowModal] = useState(false);
   const [indexRefundActive, setIndexRefundActive] = useState(-1);
   const [filterRefund, setFilterRefund] = useState({
@@ -108,8 +109,9 @@ function SummaryCampaign() {
         <div className={cx('entreSection')}>
           <div className={cx('entreField-header')}>Tổng kết</div>
           <div className={cx('entreField-subHeader')}>
-            Xem lại danh sách đóng góp của chiến dịch. Thực hiện việc chuyển tiền cho chủ chiến dịch hoặc hoàn trả cho
-            người đóng góp.
+            {currentUser.isAdmin
+              ? ' Xem lại danh sách đóng góp của chiến dịch. Nếu chiến dịch thất bại, hãy hoàn trả cho người đóng góp.'
+              : 'Quản trị viên sẽ chuyển tiền chiến dịch cho bạn nếu chiến dịch thành công hoặc hoàn trả tiền cho người đóng góp nếu chiến dịch thất bại.'}
           </div>
           <div style={{ margin: '30px 0', borderTop: '1px solid #C8C8C8', textAlign: 'right' }}></div>
         </div>
@@ -214,7 +216,7 @@ function SummaryCampaign() {
               </div>
             </div>
             <div style={{ marginTop: '40px' }}>
-              <div className={cx('table-wrapper')}>
+              <div className={cx('table-wrapper')} style={{ pointerEvents: !currentUser.isAdmin && 'none' }}>
                 <RefundTable
                   refunds={dataRefunds?.refunds || []}
                   openDetailRefund={openDetailRefund}

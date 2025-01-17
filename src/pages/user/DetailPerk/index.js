@@ -17,6 +17,7 @@ function DetailPerk() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
   const itemPerkSelectedFirst = location.state.perkSelected;
+  console.log({ itemPerkSelectedFirst });
   const cryptocurrencyMode = location.state.cryptocurrencyMode;
   const [quantityContribute, setQuantityContribute] = useState(0);
   const [listSelected, setListSelected] = useState([]);
@@ -47,7 +48,7 @@ function DetailPerk() {
           })),
         };
       });
-
+      console.log({ newData });
       let arr = newData.map((item) => {
         if (item.id === itemPerkSelectedFirst.id) {
           return {
@@ -90,11 +91,12 @@ function DetailPerk() {
         }
       });
 
-      if (cryptocurrencyMode) {
-        setListPerkByCampaignId(arr);
-      } else {
-        setListPerkByCampaignId(arr.filter((perk) => !perk.isNFT));
-      }
+      // if (cryptocurrencyMode) {
+      //   setListPerkByCampaignId(arr);
+      // } else {
+      //   setListPerkByCampaignId(arr.filter((perk) => !perk.isNFT));
+      // }
+      setListPerkByCampaignId(arr);
     }
   }, [data]);
 

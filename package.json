@@ -29,7 +29,7 @@
     ]
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^44.1.0",
+    "@ckeditor/ckeditor5-build-classic": "^40.0.0",
     "@ckeditor/ckeditor5-react": "^6.1.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",

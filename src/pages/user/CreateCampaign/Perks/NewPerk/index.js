@@ -163,11 +163,11 @@ function NewPerk() {
 
       if (response.isNFT) {
         setNFTData({
-          nftName: response.nftCreation.name,
-          nftSymbol: response.nftCreation.symbol,
-          nftAddress: response.nftCreation.nftContractAddress,
-          nftTransactionHash: response.nftCreation.transactionHash,
-          nftContractAddress: response.nftCreation.nftContractAddress,
+          nftName: response.nftCreation?.name,
+          nftSymbol: response.nftCreation?.symbol,
+          nftAddress: response.nftCreation?.nftContractAddress,
+          nftTransactionHash: response.nftCreation?.transactionHash,
+          nftContractAddress: response.nftCreation?.nftContractAddress,
         });
       } else {
         setNFTData({});
@@ -1127,7 +1127,7 @@ function NewPerk() {
                         />
 
                         <a
-                          href={`https://sepolia.etherscan.io/tx/0x3634b65be53cfb400cabdb3635652918f1932a029cee9e00ff3ecb6db5fa2595`}
+                          href={`https://sepolia.etherscan.io/address/${nftData.nftContractAddress}`}
                           target="_blank"
                           title="Khám phá"
                         >

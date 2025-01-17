@@ -4,12 +4,16 @@ import { FaArrowRightLong } from 'react-icons/fa6';
 import { indemand, prepost } from '~/assets/images';
 import { useStartCampaignMutation } from '~/hooks/api/mutations/user/campaign.mutation';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setMessageBox } from '~/redux/slides/GlobalApp';
 
 const cx = classNames.bind(styles);
 
 function PrefixCampaign() {
   const createCampaign = useStartCampaignMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
   const handleClickStartCampaign = async () => {
     const token = localStorage.getItem('accessToken') || false;
     if (!token) {
@@ -19,6 +23,17 @@ function PrefixCampaign() {
       return;
     }
 
+    if (currentUser.userStatus === 'Tạm khóa') {
+      dispatch(
+        setMessageBox({
+          title: 'Thông báo',
+          content: 'Rất tiếc, tài khoản của bạn đang bị hạn chế. Vui lòng liên hệ với Givefun để được hỗ trợ',
+          contentCancel: 'HỦY',
+          isShow: true,
+        }),
+      );
+      return;
+    }
     createCampaign.mutate(
       {},
       {

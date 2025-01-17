@@ -19,7 +19,7 @@ function CampaignLayout({ children, item = false }) {
   const dispatch = useDispatch();
   const [currentUser, setCurrentUser] = useState({});
   const tab = useSelector((state) => state.userCampaign.tab);
-  const { data: dataCampaign, isLoading } = useGetCampaignByIdQuery(id);
+  const { data: dataCampaign, isLoading, refetch } = useGetCampaignByIdQuery(id);
   const { data: dataUser } = useGetCurrentUserQuery();
   const campaign = useSelector((state) => state.userCampaign.campaign);
   useEffect(() => {
@@ -60,7 +60,9 @@ function CampaignLayout({ children, item = false }) {
       dispatch(setEditAll(edit));
     }
   }, [campaign, currentUser]);
-
+  useEffect(() => {
+    refetch();
+  }, [tab]);
   useEffect(() => {
     if (!isEditAll) {
       dispatch(setShowErrorDelete(true));

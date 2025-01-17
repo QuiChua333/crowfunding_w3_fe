@@ -32,6 +32,7 @@ import { setFollowCampaigns } from '~/redux/slides/User';
 import { useGetQuantityFollowsOfCampaignQuery } from '~/hooks/api/queries/user/follow-campaign.query';
 import { setActiveChat, setActiveUser, setChatList, setListUser, setNewChat, setOpenChat } from '~/redux/slides/Chat';
 import { ClipLoader } from 'react-spinners';
+
 const cx = classNames.bind(styles);
 
 function DetailProject() {
@@ -119,11 +120,12 @@ function DetailProject() {
       });
 
       if (dataListPerksByCampaignId) {
-        if (dataProjectById.cryptocurrencyMode) {
-          setListPerkByCampaignId(dataListPerksByCampaignId);
-        } else {
-          setListPerkByCampaignId(dataListPerksByCampaignId.filter((item) => !item.isNFT));
-        }
+        // if (dataProjectById.cryptocurrencyMode) {
+        //   setListPerkByCampaignId(dataListPerksByCampaignId);
+        // } else {
+        //   setListPerkByCampaignId(dataListPerksByCampaignId.filter((item) => !item.isNFT));
+        // }
+        setListPerkByCampaignId(dataListPerksByCampaignId);
       }
     }
   }, [dataProjectById, dataListPerksByCampaignId]);
@@ -157,7 +159,7 @@ function DetailProject() {
   };
 
   useEffect(() => {
-    let startDateTime = new Date(ItemProject.startDate);
+    let startDateTime = new Date(ItemProject.publishedAt);
     let endDateTime = new Date();
     endDateTime = endDateTime.setDate(startDateTime.getDate() + ItemProject.duration);
     setEndDate(convertDateFromString(endDateTime));
@@ -182,10 +184,12 @@ function DetailProject() {
         unreadMessageCount: 0,
         chatRoomId: '',
       };
+
       dispatch(setNewChat(newChat));
       dispatch(setActiveChat(newChat));
     } else {
       const chat = chatList.find((item) => item.user.id === ItemProject.owner.id);
+
       dispatch(setActiveChat(chat));
     }
 
@@ -285,8 +289,8 @@ function DetailProject() {
             <div className={cx('container-right')}>
               <p
                 className={cx('text-funding', {
-                  dangGayQuy: ItemProject?.status === 'Đang gây quỹ',
-                  daKetThuc: ItemProject?.status === 'Đã kết thúc' || ItemProject?.status === 'Đang tạm ngưng',
+                  dangGayQuy: ItemProject?.status === 'Đang gây quỹ' || ItemProject?.status === 'Thành công',
+                  daKetThuc: ItemProject?.status === 'Thất bại' || ItemProject?.status === 'Tạm dừng',
                 })}
               >
                 {ItemProject.status}
@@ -351,7 +355,7 @@ function DetailProject() {
                   </div>
                 </div>
               )}
-              {ItemProject.status === 'Đã kết thúc' && (
+              {(ItemProject.status === 'Thất bại' || ItemProject.status === 'Thành công') && (
                 <>
                   <div className={cx('end-status')}>
                     <div>Dự án đã kết thúc vào ngày: {endDate}</div>
@@ -364,12 +368,12 @@ function DetailProject() {
                     <span style={{ display: 'block', paddingBottom: '2px', borderBottom: '1px dashed #949494' }}>
                       Gây quỹ:
                     </span>
-                    {ItemProject.isSSuccessFunding && (
+                    {ItemProject.status === 'Thành công' && (
                       <div style={{ padding: '4px 16px', background: '#34ca96', color: '#fff', borderRadius: '4px' }}>
                         Thành công
                       </div>
                     )}
-                    {!ItemProject.isSSuccessFunding && (
+                    {ItemProject.status === 'Thất bại' && (
                       <div style={{ padding: '4px 16px', background: '#a8a8a8', color: '#fff', borderRadius: '8px' }}>
                         Thất bại
                       </div>
@@ -387,7 +391,13 @@ function DetailProject() {
                       setPerkInModal(true);
                       setIsOpenModal(true);
                     }}
-                    style={{ display: ItemProject.status === 'Đã kết thúc' && 'none' }}
+                    style={{
+                      display:
+                        (ItemProject.status === 'Thất bại' ||
+                          ItemProject.status === 'Thành công' ||
+                          ItemProject.status === 'Tạm dừng') &&
+                        'none',
+                    }}
                   >
                     XEM QUÀ TẶNG
                   </button>
@@ -466,7 +476,10 @@ function DetailProject() {
                       <div
                         style={{
                           pointerEvents:
-                            (ItemProject.status === 'Thất bại' || ItemProject.status === 'Thành công') && 'none',
+                            (ItemProject.status === 'Thất bại' ||
+                              ItemProject.status === 'Thành công' ||
+                              ItemProject.status === 'Tạm dừng') &&
+                            'none',
                         }}
                       >
                         <PerkItem

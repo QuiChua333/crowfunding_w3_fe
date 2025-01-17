@@ -107,7 +107,7 @@ function Bell({}) {
                 </div>
               );
             })}
-          {notifications.length === 0 && <div>Không có thông báo</div>}
+          {notifications.length === 0 && <div className="p-3">Không có thông báo</div>}
         </div>
       )}
     </div>

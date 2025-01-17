@@ -34,7 +34,11 @@ function CampaignRow({ index, campaign, setChecked, getAllCampaigns }) {
       {/* <Link to='/campaigns/:id/edit/perks/new' style={{position: 'relative', zIndex: '10'}}></Link> */}
 
       <td className={cx('title')}>{campaign.title}</td>
+      <td className={cx('owner')}>{campaign.ownerName}</td>
+      <td className={cx('endDate')}>{campaign.endDate}</td>
       <td className={cx('goal')}>{campaign.goal}</td>
+
+      <td className={cx('startDate')}>{campaign.currentMoney}</td>
       <td className={cx('status')}>
         <span
           className={cx('campaign-status', {
@@ -48,10 +52,6 @@ function CampaignRow({ index, campaign, setChecked, getAllCampaigns }) {
           {campaign.status}
         </span>
       </td>
-
-      <td className={cx('endDate')}>{campaign.endDate}</td>
-      <td className={cx('startDate')}>{campaign.currentMoney}</td>
-      <td className={cx('owner')}>{campaign.ownerName}</td>
       <td className={cx('action')}>
         <div
           className={cx('action-doc')}

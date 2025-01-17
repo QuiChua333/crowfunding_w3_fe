@@ -86,7 +86,11 @@ function ContributionCampaign() {
     }
   }, [campaignData]);
 
-  const { data: dataContributions, isLoading: isLoadingContribution } = useGetAllContributionsByCampaignQuery({
+  const {
+    data: dataContributions,
+    isLoading: isLoadingContribution,
+    refetch,
+  } = useGetAllContributionsByCampaignQuery({
     ...filterContribution,
     campaignId: id,
   });
@@ -164,37 +168,10 @@ function ContributionCampaign() {
     setShowModalGift(true);
   };
   const handleChangeStatus = (id) => {
-    queryClient.setQueryData(
-      [
-        'useGetAllContributionsByCampaignQuery',
-        filterContribution.searchString,
-        filterContribution.status,
-        filterContribution.sortMoney,
-        filterContribution.sortContributionDate,
-        filterContribution.page,
-      ],
-      (oldData) => {
-        return [
-          ...oldData.map((item) => {
-            if (item.id === id) {
-              return {
-                ...item,
-                isFinish: true,
-              };
-            } else return item;
-          }),
-        ];
-      },
-    );
+    refetch();
   };
   const handleChangeStatusGift = (id) => {
-    setGifts((prev) =>
-      [...prev].map((item) => {
-        if (item.id === id) {
-          return { ...item, isFinish: true };
-        } else return item;
-      }),
-    );
+    refetchGifts();
   };
   const { data: dataTopContributions } = useGetTopUserContributionByCampaignQuery(id);
 

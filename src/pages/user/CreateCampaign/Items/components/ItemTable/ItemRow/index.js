@@ -36,7 +36,7 @@ function ItemRow({ index, item }) {
       {/* <Link to='/campaigns/:id/edit/perks/new' style={{position: 'relative', zIndex: '10'}}></Link> */}
 
       <td className={cx('name')}>{item.name}</td>
-      <td className={cx('option')}>{options} </td>
+      <td className={cx('option')}>{item.options?.length > 0 && options} </td>
       <td className={cx('associated')}>{containPerks} </td>
     </tr>
   );

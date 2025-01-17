@@ -210,7 +210,7 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                     </div>
                   )}
 
-                  {(status === 'Thất bại' || status === 'Thành công' || true) && (
+                  {(status === 'Thất bại' || status === 'Thành công') && (
                     <div
                       className={cx('navItem--child', 'navItem', 'cursor-pointer', {
                         'navItem--current': tab.number === 9,

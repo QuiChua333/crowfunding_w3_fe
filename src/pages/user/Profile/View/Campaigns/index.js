@@ -8,12 +8,20 @@ import ItemCampaign from './components/ItemCampaign';
 import { useSelector } from 'react-redux';
 import { useGetCampaignsFollowedQuery } from '~/hooks/api/queries/user/follow-campaign.query';
 import { useGetCampaignsOfMemberQuery, useGetCampaignsOfOwnerQuery } from '~/hooks/api/queries/user/campaign.query';
+import { useGetInfoUserQuery } from '~/hooks/api/queries/user/user.query';
 const cx = classNames.bind(styles);
 function ViewCampaigns() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const { id } = useParams();
   const [campaignsOfUser, setCampaignOfUser] = useState([]);
   const [campaignsFollowed, setCampaignsFollowed] = useState([]);
+  const [user, setUser] = useState({});
+  const { data: dataUser } = useGetInfoUserQuery(id);
+  useEffect(() => {
+    if (dataUser) {
+      setUser(dataUser);
+    }
+  }, [dataUser]);
 
   const { data: dataCampaigns, isLoading: isLoadingOwnerCampaign } = useGetCampaignsOfOwnerQuery(id);
   useEffect(() => {
@@ -22,8 +30,6 @@ function ViewCampaigns() {
       setCampaignOfUser(dataCampaigns);
     }
   }, [dataCampaigns]);
-
-  // const { data: dataUser } = useGetInfoUserQuery(id);
 
   const { data: dataCampaignsFollowed, refetch } = useGetCampaignsFollowedQuery(id);
   const { data: dataCampaignsMember } = useGetCampaignsOfMemberQuery(id);
@@ -46,14 +52,14 @@ function ViewCampaigns() {
             <span>Chỉnh sửa hồ sơ & Cài đặt</span>
           </Link>
           <Link to={`/individuals/${id}/statistic`} className={cx('nav-item')}>
-                    <MdAddchart  style={{ fontSize: '24px', marginRight: '8px' }} />
-                    <span>Thống kê</span>
-                  </Link>
+            <MdAddchart style={{ fontSize: '24px', marginRight: '8px' }} />
+            <span>Thống kê</span>
+          </Link>
         </div>
       )}
 
       <div className={cx('body')}>
-        <h1 className={cx('header-name')}>{currentUser.fullName}</h1>
+        <h1 className={cx('header-name')}>{user.fullName}</h1>
 
         <div className={cx('content')}>
           <div className={cx('tabpanel')}>
@@ -66,6 +72,11 @@ function ViewCampaigns() {
             {currentUser.id && currentUser.id === id && (
               <Link to={`/individuals/${id}/contributions`} className={cx('tab')}>
                 Đóng góp của tôi
+              </Link>
+            )}
+            {currentUser.id && currentUser.id === id && (
+              <Link to={`/individuals/${id}/complaints`} className={cx('tab')}>
+                Báo cáo vi phạm
               </Link>
             )}
           </div>

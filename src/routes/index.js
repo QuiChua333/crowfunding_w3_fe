@@ -35,6 +35,8 @@ import AboutUs from '~/pages/user/AboutUs';
 import SummaryCampaign from '~/pages/user/CreateCampaign/Summary';
 import Statiscal from '~/pages/user/Profile/Statiscal';
 import StatiscalAdmin from '~/pages/admin/StatiscalAdmin';
+import SendRefund from '~/pages/admin/SendRefund';
+import ViewComplaints from '~/pages/user/Profile/View/Complaints';
 
 const loginRoutes = [
   { path: '/sign-up', component: SignUp, layout: null },
@@ -67,6 +69,7 @@ const adminRoutes = [
   { path: '/admin/complaint', component: ComplaintManagement, layout: AdminLayout },
   { path: '/admin', component: CampaignManagement, layout: AdminLayout },
   { path: '/admin/statistic', component: StatiscalAdmin, layout: AdminLayout },
+  { path: '/admin/send-refund', component: SendRefund, layout: AdminLayout },
 ];
 const privateUserRoutes = {
   campaigns: [
@@ -87,9 +90,8 @@ const privateUserRoutes = {
     { path: '/individuals/:id/edit/settings', component: EditSetting, layout: NormalLayout },
     { path: '/individuals/:id/contributions', component: ViewContributes, layout: NormalLayout },
     { path: '/individuals/:id/statistic', component: Statiscal, layout: NormalLayout },
+    { path: '/individuals/:id/complaints', component: ViewComplaints, layout: NormalLayout },
   ],
 };
 
 export { publicRoutes, privateUserRoutes, loginRoutes, adminRoutes };
-
-
