@@ -1,32 +1,34 @@
 import classNames from 'classnames/bind';
-import styles from './Campaign.module.scss';
+import styles from './FieldGroup.module.scss';
 import { useEffect, useState } from 'react';
-import CampaignTable from './components/CampaignTable';
-import Filter from '../components/Filter';
-import Search from '../components/Search';
+import Search from '../../components/Search';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6';
-
 import { useDispatch } from 'react-redux';
 import { setTabAdmin } from '~/redux/slides/Admin';
-import { useGetAllCampaignsQuery } from '~/hooks/api/queries/admin/admin.campaigns.query';
 import { ClipLoader } from 'react-spinners';
+import FieldGroupTable from './components/FieldGroupTable';
+import { useGetAllFieldGroupQuery } from '~/hooks/api/queries/admin/admin.fieldGroup.query';
+import ModalAdd from './components/ModalAdd';
 
 const cx = classNames.bind(styles);
-function CampaignManagement() {
+function FieldGroupManagement() {
+  const [openModal, setOpenModal] = useState(false);
   const dispatch = useDispatch();
-  const [isOpenDropdownAction, setOpenDropdownAction] = useState(false);
-  const [numberSelected, setNumberSelected] = useState(0);
+      useEffect(() => {
+          dispatch(
+            setTabAdmin({
+              number: 1,
+              content: 'Quản lý lĩnh vực chiến dịch',
+            }),
+          );
+        }, [dispatch]);
   const [filter, setFilter] = useState({
-    searchString: '',
-    status: 'Tất cả',
+    textSearch: '',
     page: 1,
   });
-  const handleClickItemFilter = (item) => {
-    setFilter((prev) => ({ ...prev, status: item }));
-  };
 
   const handleChangeSearchInput = (value) => {
-    setFilter((prev) => ({ ...prev, searchString: value }));
+    setFilter((prev) => ({ ...prev, textSearch: value }));
   };
   const handleClickPreviousPage = () => {
     if (filter.page === 1) return;
@@ -38,55 +40,18 @@ function CampaignManagement() {
     setFilter((prev) => ({ ...prev, page: prev.page + 1 }));
   };
 
-  const { data, refetch, isLoading } = useGetAllCampaignsQuery(filter);
+  const { data, refetch, isLoading } = useGetAllFieldGroupQuery(filter);
 
-  const handleChangStateListCampaign = (listCampaign) => {
-    setNumberSelected((prev) => {
-      const num = listCampaign.reduce((acc, cur) => (acc + cur.isChecked ? 1 : 0), 0);
-      return num;
-    });
-  };
-  useEffect(() => {
-    dispatch(
-      setTabAdmin({
-        number: 2,
-        content: 'Quản lý chiến dịch',
-      }),
-    );
-  }, []);
   return (
+    <>
     <div className={cx('wrapper')}>
-      <div
-        style={{
-          marginBottom: '24px',
-          display: 'flex',
-          alignItems: 'flex-end',
-          width: '100%',
-          justifyContent: 'space-between',
-        }}
-      >
+      <span className='font-semibold'>Nhóm các lĩnh vực:</span>
+      <div className='mb-6 flex w-full justify-between mt-10 items-center'>
         <div className="w-[600px] max-w-[600px]">
-          <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm tên chiến dịch, chủ sở hữu'} />
+          <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm tên nhóm lĩnh vực'} />
         </div>
-        <div className={cx('table-action')}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-            <div>
-              <label style={{ marginBottom: '4px' }}>Trạng thái</label>
-              <Filter
-                listConditions={[
-                  'Tất cả',
-                  'Chờ xác nhận',
-                  'Đang gây quỹ',
-                  'Tạm dừng',
-                  'Thành công',
-                  'Thất bại',
-                  'Bản nháp',
-                ]}
-                handleClickItem={handleClickItemFilter}
-              />
-            </div>
-          </div>
-        </div>
+
+        <div onClick={() => setOpenModal(true)} className='p-5 border text-white text-[14px] bg-[#7a69b3] rounded hover:cursor-pointer hover:opacity-90'>Thêm mới</div>
       </div>
 
       <div style={{ marginTop: '40px' }}>
@@ -96,14 +61,13 @@ function CampaignManagement() {
               <ClipLoader size={40} color="#299899" />
             </div>
           )}
-          {!isLoading && data?.campaigns?.length > 0 && (
-            <CampaignTable
-              campaigns={data?.campaigns || []}
-              onCampaignTableChange={handleChangStateListCampaign}
-              getAllCampaigns={refetch}
+          {!isLoading && data?.data?.length > 0 && (
+            <FieldGroupTable
+              getAllFieldGroup={refetch}
+              fieldGroup={data?.data}
             />
           )}
-          {!isLoading && data?.campaigns?.length === 0 && (
+          {!isLoading && data?.data?.length === 0 && (
             <div className="text-center text-gray-500 font-medium text-[20px] mt-[100px]">Dữ liệu trống</div>
           )}
         </div>
@@ -137,7 +101,11 @@ function CampaignManagement() {
         )}
       </div>
     </div>
+    {
+      openModal && <ModalAdd getAllFieldGroup={refetch} setOpenModal={setOpenModal}/>
+    }
+    </>
   );
 }
 
-export default CampaignManagement;
+export default FieldGroupManagement;

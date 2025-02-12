@@ -37,6 +37,8 @@ import Statiscal from '~/pages/user/Profile/Statiscal';
 import StatiscalAdmin from '~/pages/admin/StatiscalAdmin';
 import SendRefund from '~/pages/admin/SendRefund';
 import ViewComplaints from '~/pages/user/Profile/View/Complaints';
+import FieldGroupManagement from '~/pages/admin/Fields/FieldGroup';
+import FieldManagement from '~/pages/admin/Fields/Field';
 
 const loginRoutes = [
   { path: '/sign-up', component: SignUp, layout: null },
@@ -64,10 +66,12 @@ const publicRoutes = [
   { path: '/not-found', component: PageNotFound, layout: null },
 ];
 const adminRoutes = [
+  { path: '/admin/fields/field-group', component: FieldGroupManagement, layout: AdminLayout },
+  { path: '/admin/fields/field-group/:id', component: FieldManagement, layout: AdminLayout },
   { path: '/admin/campaigns', component: CampaignManagement, layout: AdminLayout },
   { path: '/admin/users', component: UserManagement, layout: AdminLayout },
   { path: '/admin/complaint', component: ComplaintManagement, layout: AdminLayout },
-  { path: '/admin', component: CampaignManagement, layout: AdminLayout },
+  { path: '/admin', component: FieldGroupManagement, layout: AdminLayout },
   { path: '/admin/statistic', component: StatiscalAdmin, layout: AdminLayout },
   { path: '/admin/send-refund', component: SendRefund, layout: AdminLayout },
 ];

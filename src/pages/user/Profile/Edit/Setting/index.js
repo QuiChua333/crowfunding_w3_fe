@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slides/GlobalApp';
 import { toast } from 'react-toastify';
 import { useUpdatePasswordMutation } from '~/hooks/api/mutations/user/user.mutation';
+import { RiErrorWarningLine } from 'react-icons/ri';
+import { FaEye, FaEyeSlash } from 'react-icons/fa6';
+
 const cx = classNames.bind(styles);
 function EditSetting() {
   const dispatch = useDispatch();
@@ -27,18 +30,64 @@ function EditSetting() {
       return state;
     });
   }, [user]);
-  const [password, setPassword] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  });
-  const handleChangeInputPassword = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setPassword((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [msgValidateCurrentPass, setMsgValidateCurrentPass] = useState('');
+  const [msgValidateNewPass, setMsgValidateNewPass] = useState('');
+  const [msgValidateConfirmNewPass, setMsgValidateConfirmNewPass] = useState('');
+
+  const validatePass = (pass) => {
+    const value = pass?.trim();
+    return value.length >= 6;
+  }
+
+  const validateConfirmPass = (newPass, confirmPass) => {
+    return (newPass?.trim() === confirmPass?.trim());
+  }
+
+  const setMsgValidate = () => {
+    if (!validatePass(currentPassword)) {
+      setMsgValidateCurrentPass("Mật khẩu phải có tối thiểu 6 ký tự.");
+    } else {
+      setMsgValidateCurrentPass("");
+    }
+
+    if (!validatePass(newPassword)) {
+      setMsgValidateNewPass("Mật khẩu mới phải có tối thiểu 6 ký tự.");
+    } else {
+      setMsgValidateNewPass("");
+    }
+
+    if (confirmNewPassword?.toString().trim().length > 0) {
+      if (!validateConfirmPass(newPassword, confirmNewPassword)) {
+        setMsgValidateConfirmNewPass("Xác nhận mật khẩu mới không trùng khớp.");
+      } else {
+        setMsgValidateConfirmNewPass("")
+      }
+    } else {
+      if (confirmNewPassword?.toString().trim().length === 0) {
+        setMsgValidateConfirmNewPass("Vui lòng xác nhận mật khẩu mới.");
+      }
+    }
+
+  }
+  
+  const handleChangeInputCurrentPassword = (e) => {
+    const value = e.target.value.trim();
+    setCurrentPassword(value);
+  };
+  const handleChangeInputNewPassword = (e) => {
+    const value = e.target.value.trim();
+    setNewPassword(value);
+  };
+  const handleChangeInputConfirmNewPassword = (e) => {
+    const value = e.target.value.trim();
+    setConfirmNewPassword(value);
   };
 
   const handleClickVerify = async () => {
@@ -47,24 +96,27 @@ function EditSetting() {
 
   const updatePasswordUser = useUpdatePasswordMutation();
   const handleClickSavePassword = async () => {
+    setMsgValidate();
+    if (validatePass(currentPassword) && validatePass(newPassword) && validateConfirmPass(newPassword, confirmNewPassword)) {
+      savePassword();
+    }
+  }
+  const savePassword = async () => {
     dispatch(setLoading(true));
     const body = {
-      currentPassword: password.currentPassword,
-      newPassword: password.newPassword,
+      currentPassword: currentPassword,
+      newPassword: newPassword,
     };
     updatePasswordUser.mutate(body, {
       onSuccess: (res) => {
-        localStorage.setItem('accessToken', res.data.data.accessToken);
-        localStorage.setItem('refreshToken', res.data.data.refreshToken);
+        localStorage.setItem('accessToken', res.accessToken); 
+        localStorage.setItem('refreshToken', res.refreshToken);
         toast.success('Cập nhật mật khẩu thành công!');
-        setPassword({
-          currentPassword: '',
-          newPassword: '',
-          confirmNewPassword: '',
-        });
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmNewPassword('');
       },
       onError: (error) => {
-        setPassword((prev) => ({ ...prev, currentPassword: '' }));
         toast.error(error.response.data.message);
       },
       onSettled: () => {
@@ -197,30 +249,72 @@ function EditSetting() {
             <div style={{ marginTop: '24px' }}>
               <div className={cx('field')} style={{ maxWidth: '400px' }}>
                 <label className={cx('field-label')}>Mật khẩu hiện tại</label>
-                <input
-                  className={cx('itext-field')}
-                  name="currentPassword"
-                  onChange={handleChangeInputPassword}
-                  value={password.currentPassword}
-                />
+                <div className="flex items-center gap-4 bg-white border border-[#c8c8c8] px-4 py-3 focus-within:border-[#767272]">
+                  <input
+                    className="border-none w-full flex flex-grow outline-none"
+                    name="currentPassword"
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    onChange={handleChangeInputCurrentPassword}
+                    value={currentPassword}
+                  />
+                  {
+                    showCurrentPassword ? <FaEye onClick={() => setShowCurrentPassword(prev => !prev)} className='hover:cursor-pointer' /> : <FaEyeSlash onClick={() => setShowCurrentPassword(prev => !prev)} className='hover:cursor-pointer' />
+                  }
+                </div>
+                {
+                  msgValidateCurrentPass.length > 0 && (
+                    <div className='flex items-center gap-2 text-red-500 mt-2'>
+                      <RiErrorWarningLine/>
+                      <span className='text-sm'>{msgValidateCurrentPass}</span>
+                    </div>
+                  )
+                }
               </div>
               <div className={cx('field')} style={{ maxWidth: '400px' }}>
                 <label className={cx('field-label')}>Mật khẩu mới</label>
-                <input
-                  className={cx('itext-field')}
-                  name="newPassword"
-                  onChange={handleChangeInputPassword}
-                  value={password.newPassword}
-                />
+                <div className="flex items-center gap-4 bg-white border border-[#c8c8c8] px-4 py-3 focus-within:border-[#767272]">
+                  <input
+                    className="border-none w-full flex flex-grow outline-none"
+                    name="newPassword"
+                    type={showNewPassword ? 'text' : 'password'}
+                    onChange={handleChangeInputNewPassword}
+                    value={newPassword}
+                  />
+                  {
+                    showNewPassword ? <FaEye onClick={() => setShowNewPassword(prev => !prev)} className='hover:cursor-pointer' /> : <FaEyeSlash onClick={() => setShowNewPassword(prev => !prev)} className='hover:cursor-pointer' />
+                  }
+                </div>
+                {
+                  msgValidateNewPass.length > 0 && (
+                    <div className='flex items-center gap-2 text-red-500 mt-2'>
+                      <RiErrorWarningLine/>
+                      <span className='text-sm'>{msgValidateNewPass}</span>
+                    </div>
+                  )
+                }
               </div>
               <div className={cx('field')} style={{ maxWidth: '400px' }}>
                 <label className={cx('field-label')}>Nhập lại mật khẩu mới</label>
-                <input
-                  className={cx('itext-field')}
-                  name="confirmNewPassword"
-                  onChange={handleChangeInputPassword}
-                  value={password.confirmNewPassword}
-                />
+                <div className="flex items-center gap-4 bg-white border border-[#c8c8c8] px-4 py-3 focus-within:border-[#767272]">
+                  <input
+                    className="border-none w-full flex flex-grow outline-none"
+                    name="confirmNewPassword"
+                    type={showConfirmNewPassword ? 'text' : 'password'}
+                    onChange={handleChangeInputConfirmNewPassword}
+                    value={confirmNewPassword}
+                  />
+                  {
+                    showConfirmNewPassword ? <FaEye onClick={() => setShowConfirmNewPassword(prev => !prev)} className='hover:cursor-pointer' /> : <FaEyeSlash onClick={() => setShowConfirmNewPassword(prev => !prev)} className='hover:cursor-pointer' />
+                  }
+                </div>
+                {
+                  msgValidateConfirmNewPass.length > 0 && (
+                    <div className='flex items-center gap-2 text-red-500 mt-2'>
+                      <RiErrorWarningLine/>
+                      <span className='text-sm'>{msgValidateConfirmNewPass}</span>
+                    </div>
+                  )
+                }
               </div>
 
               <div onClick={handleClickSavePassword} className={cx('btn')} style={{ marginTop: '16px' }}>

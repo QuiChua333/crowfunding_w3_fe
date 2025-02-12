@@ -31,6 +31,6 @@ export const updateProfileUser = async ({ formData }) => {
 
 // handleAPI
 export const updatePasswordUser = async ({ currentPassword, newPassword }) => {
-  const response = await CustomAxios.patch(`${baseUrl}/user/updatePassword`, { currentPassword, newPassword });
-  return response;
+  const response = await CustomAxios.patch(`${baseUrl}/auth/user/updatePassword`, { currentPassword, newPassword });
+  return response.data;
 };

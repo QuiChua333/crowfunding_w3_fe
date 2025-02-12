@@ -29,7 +29,7 @@ const StatiscalAdmin = () => {
   useEffect(() => {
     dispatch(
       setTabAdmin({
-        number: 5,
+        number: 6,
         content: 'Thống kê',
       }),
     );

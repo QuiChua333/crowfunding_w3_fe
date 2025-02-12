@@ -14,12 +14,10 @@ import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
 import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLogOutMutation } from '~/hooks/api/mutations/auth/auth.mutation';
-import { defaultAvt, logoTrangNho } from '~/assets/images';
-import { CustomAxios } from '~/config';
-import baseURL from '~/utils/baseURL';
-import { setNotifications } from '~/redux/slides/Notification';
+import { defaultAvt } from '~/assets/images';
+
 const cx = classNames.bind(styles);
-// Component dùng chung
+
 function Header({ type = 'page' }) {
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
@@ -143,7 +141,7 @@ function Header({ type = 'page' }) {
                     onClick={() => setShowDropdownUser((prev) => !prev)}
                     ref={boxFilterElement}
                   >
-                    <img className={cx('user-avatar')} src={defaultAvt} />
+                    <img className={cx('user-avatar')} src={user.avatar || defaultAvt} />
                     <span className={cx('user-name')}>
                       {user.fullName} <FaAngleDown className={cx('icon', { active: showDropdownUser })} />
                     </span>

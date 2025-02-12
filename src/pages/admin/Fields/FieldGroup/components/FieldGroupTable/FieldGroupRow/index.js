@@ -1,14 +1,20 @@
 import classNames from 'classnames/bind';
-import styles from '../ComplaintTable.module.scss';
+import styles from '../FieldGroupTable.module.scss';
 import { PiDotsThreeBold } from 'react-icons/pi';
 import DropDown from '../Dropdown';
 import { useRef, useState, useEffect } from 'react';
-import { convertDateFromString } from '~/utils';
+import { useNavigate } from 'react-router-dom';
+import ModalEdit from '../../ModalEdit';
 
 const cx = classNames.bind(styles);
-function ComplaintRow({ index, report, handleViewReport }) {
+function FieldGroupRow({index, item, getAllFieldGroup}) {
+  const [openModal, setOpenModal] = useState(false);
   const [openDropDown, setOpenDropDown] = useState(false);
   const docElement = useRef(null);
+  const navigate = useNavigate();
+  const handleClickRow = () => {
+    navigate(`/admin/fields/field-group/${item?.id}`, { state: { id: item?.id } });
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -22,38 +28,12 @@ function ComplaintRow({ index, report, handleViewReport }) {
     };
   }, [docElement]);
 
-  const handleView = () => {
-    handleViewReport(index);
-  };
-
   return (
-    <tr>
-      <td
-        style={{
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          maxWidth: '250px',
-          padding: '0 30px',
-        }}
-      >
-        {report.campaign?.title}
-      </td>
-      <td style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: '150px' }}>
-        {report.title}
-      </td>
-
-      <td>{convertDateFromString(report.date)}</td>
-      {!report.reportResponse ? (
-        <td>
-          <div className={cx('un-response')}>Chưa phản hồi</div>
-        </td>
-      ) : (
-        <td>
-          <div className={cx('responsed')}>Đã phản hồi</div>
-        </td>
-      )}
-
+    <>
+    <tr onClick={handleClickRow}>
+      <td className={cx('endDate')}>{index + 1}</td>
+      <td className={cx('title')}>{item.name}</td>
+      <td className={cx('owner')}>{item.fieldCount}</td>
       <td className={cx('action')}>
         <div
           className={cx('action-doc')}
@@ -65,12 +45,16 @@ function ComplaintRow({ index, report, handleViewReport }) {
         >
           <PiDotsThreeBold style={{ fontSize: '20px', color: '#7a69b3' }} />
           <div className={cx('dropdown-wrapper')} style={{ display: openDropDown && 'block' }}>
-            <DropDown handleView={handleView} report={report} />
+            <DropDown item={item} getAllFieldGroup={getAllFieldGroup} handleOpenModal={() => setOpenModal(true)}/>
           </div>
         </div>
       </td>
     </tr>
+    {
+      openModal && <ModalEdit setOpenModal={setOpenModal} getAllFieldGroup={getAllFieldGroup} item={item}/>
+    }
+    </>
   );
 }
 
-export default ComplaintRow;
+export default FieldGroupRow;

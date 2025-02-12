@@ -1,6 +1,5 @@
 import classNames from 'classnames/bind';
-import { useEffect, useState } from 'react';
-import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
+import { FaAngleDown } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 
 import styles from './AdminSidebar.module.scss';
@@ -45,56 +44,66 @@ function AdminSidebar() {
 
             <div className={cx('navSection-children')}>
               <Link
-                to="/admin/campaigns"
-                className={cx('navItem--child', 'navItem', {
-                  'navItem--current': tabAdmin.number === 1,
-                })}
-              >
-                <div className={cx('navItem-link')}>
-                  <div>1. Chiến dịch</div>
-                </div>
+                  to="/admin/fields/field-group"
+                  className={cx('navItem--child', 'navItem', {
+                    'navItem--current': tabAdmin.number === 1,
+                  })}
+                >
+                  <div className={cx('navItem-link')}>
+                    <div>1. Lĩnh vực</div>
+                  </div>
               </Link>
               <Link
-                to="/admin/users"
+                to="/admin/campaigns"
                 className={cx('navItem--child', 'navItem', {
                   'navItem--current': tabAdmin.number === 2,
                 })}
               >
                 <div className={cx('navItem-link')}>
-                  <div>2. Người dùng</div>
+                  <div>2. Chiến dịch</div>
+                </div>
+              </Link>
+              <Link
+                to="/admin/users"
+                className={cx('navItem--child', 'navItem', {
+                  'navItem--current': tabAdmin.number === 3,
+                })}
+              >
+                <div className={cx('navItem-link')}>
+                  <div>3. Người dùng</div>
                 </div>
               </Link>
 
               <Link
                 to="/admin/complaint"
                 className={cx('navItem--child', 'navItem', {
-                  'navItem--current': tabAdmin.number === 3,
+                  'navItem--current': tabAdmin.number === 4,
                 })}
               >
                 <div className={cx('navItem-link')}>
-                  <div>3. Báo cáo vi phạm</div>
+                  <div>4. Báo cáo vi phạm</div>
                 </div>
               </Link>
 
               <Link
                 to="/admin/send-refund"
                 className={cx('navItem--child', 'navItem', {
-                  'navItem--current': tabAdmin.number === 4,
+                  'navItem--current': tabAdmin.number === 5,
                 })}
               >
                 <div className={cx('navItem-link')}>
-                  <div>4. Gửi - Trả</div>
+                  <div>5. Gửi - Trả</div>
                 </div>
               </Link>
 
               <Link
                 to="/admin/statistic"
                 className={cx('navItem--child', 'navItem', {
-                  'navItem--current': tabAdmin.number === 5,
+                  'navItem--current': tabAdmin.number === 6,
                 })}
               >
                 <div className={cx('navItem-link')}>
-                  <div>5. Thống kê</div>
+                  <div>6. Thống kê</div>
                 </div>
               </Link>
             </div>
