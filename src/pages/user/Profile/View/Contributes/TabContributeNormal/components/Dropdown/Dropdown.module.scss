@@ -1,0 +1,22 @@
+.wrapper {
+    border: 1px solid #949494;
+    width: 160px;
+    background-color: #fff;
+    box-shadow: 0 0 8px #ccc;
+
+    .action {
+        font-size: 15px;
+        text-align: left;
+        padding: 14px 16px;
+        letter-spacing: 0;
+        color: #515151;
+        a {
+            color: #515151;
+        }
+        &:hover {
+            background-color: #f5f5f5;
+        }
+
+       
+    }
+}

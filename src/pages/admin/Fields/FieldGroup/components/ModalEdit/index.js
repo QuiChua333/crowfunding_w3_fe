@@ -30,6 +30,11 @@ function ModalEdit({ setOpenModal, item, getAllFieldGroup}) {
               toast.success("Cập nhật thành công.")
             },
             onError: (error) => {
+              if (error.status === 400) {
+                toast.error(error.response.data.message);
+              } else {
+                toast.error(error.response.data.message);
+              }
               console.log('error', error);
             },
             onSettled: () => {

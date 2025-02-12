@@ -30,6 +30,7 @@ function ModalEdit({ setOpenModal, item, getAllFieldByGroup}) {
               toast.success("Cập nhật thành công.")
             },
             onError: (error) => {
+              toast.error("Lĩnh vực này đã tồn tại hoặc thuộc một nhóm lĩnh vực khác. Vui lòng nhập một lĩnh vực khác.");
               console.log('error', error);
             },
             onSettled: () => {

@@ -33,6 +33,7 @@ function ModalAdd({ setOpenModal, getAllFieldByGroup}) {
               toast.success("Thêm mới thành công.")
             },
             onError: (error) => {
+              toast.error("Lĩnh vực này đã tồn tại hoặc thuộc một nhóm lĩnh vực khác. Vui lòng nhập một lĩnh vực khác.");
               console.log('error', error);
             },
             onSettled: () => {
@@ -46,14 +47,14 @@ function ModalAdd({ setOpenModal, getAllFieldByGroup}) {
     <div className="fixed inset-0 z-[2000] flex justify-center bg-black bg-opacity-50" onClick={() => setOpenModal(false)}>
       <div className="w-1/2 bg-white rounded-lg shadow-lg p-8 mt-[100px] h-fit" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center border-b pb-2">
-          <h2 className="text-[20px] font-medium">Thêm mới nhóm lĩnh vực</h2>
+          <h2 className="text-[20px] font-medium">Thêm mới lĩnh vực</h2>
           <button onClick={() => {}} className="p-2 hover:bg-gray-200 rounded-full">
             <IoMdClose size={20} onClick={() => setOpenModal(false)}/>
           </button>
         </div>
 
         <div className="mt-10 p-5">
-          <label className="block text-[14px] font-medium text-gray-500">Nhập nhóm lĩnh vực:</label>
+          <label className="block text-[14px] font-medium text-gray-500">Nhập lĩnh vực:</label>
           <input
             type="text"
             value={input}

@@ -22,7 +22,6 @@ import {
   SettingCampaign,
   TeamCampaign,
   ViewCampaigns,
-  ViewContributes,
 } from '~/pages/user';
 import DetailProject from '~/pages/user/DetailProject';
 import DetailPerk from '~/pages/user/DetailPerk';
@@ -39,6 +38,9 @@ import SendRefund from '~/pages/admin/SendRefund';
 import ViewComplaints from '~/pages/user/Profile/View/Complaints';
 import FieldGroupManagement from '~/pages/admin/Fields/FieldGroup';
 import FieldManagement from '~/pages/admin/Fields/Field';
+import ViewContributesNFT from '~/pages/user/Profile/View/Contributes/TabContributeNFT';
+import ViewContributesNormal from '~/pages/user/Profile/View/Contributes/TabContributeNormal';
+import ViewContributes from '~/pages/user/Profile/View/Contributes';
 
 const loginRoutes = [
   { path: '/sign-up', component: SignUp, layout: null },
@@ -93,6 +95,8 @@ const privateUserRoutes = {
     { path: '/individuals/:id/edit/profile', component: EditProfile, layout: NormalLayout },
     { path: '/individuals/:id/edit/settings', component: EditSetting, layout: NormalLayout },
     { path: '/individuals/:id/contributions', component: ViewContributes, layout: NormalLayout },
+    { path: '/individuals/:id/contributions/normal', component: ViewContributesNormal, layout: NormalLayout },
+    { path: '/individuals/:id/contributions/nft', component: ViewContributesNFT, layout: NormalLayout },
     { path: '/individuals/:id/statistic', component: Statiscal, layout: NormalLayout },
     { path: '/individuals/:id/complaints', component: ViewComplaints, layout: NormalLayout },
   ],

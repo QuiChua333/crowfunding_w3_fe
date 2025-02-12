@@ -21,6 +21,7 @@ function FieldGroupTable({ getAllFieldGroup, fieldGroup }) {
     });
   }, [fieldGroup]);
 
+
   return (
     <div className={cx('wrapper')}>
       <table>

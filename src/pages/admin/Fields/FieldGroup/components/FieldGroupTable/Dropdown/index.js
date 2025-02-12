@@ -1,62 +1,14 @@
 import classNames from 'classnames/bind';
 import styles from './Dropdown.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { setLoading, setMessageBox } from '~/redux/slides/GlobalApp';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useDeleteFieldGroupMutation } from '~/hooks/api/mutations/admin/admin.fieldGroup.mutation';
-import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
-function DropDown({item, getAllFieldGroup, handleOpenModal}) {
-  const dispatch = useDispatch();
-  const messageBox = useSelector((state) => state.globalApp.messageBox);
-
-  const handleDelete = () => {
-    dispatch(
-      setMessageBox({
-        title: 'Xóa nhóm lĩnh vực này?',
-        content: 'Thao tác này sẽ xóa hoàn toàn khỏi hệ thống và không thể hoàn tác được.',
-        contentOK: 'XÁC NHẬN',
-        contentCancel: 'HỦY',
-        isShow: true,
-        type: "deleteFieldGroup"
-      }),
-    );
-  };
-
-  const deleteFieldGroup = useDeleteFieldGroupMutation();
-  const deleteFieldGroupSelected = async () => {
-    dispatch(setLoading(true));
-    deleteFieldGroup.mutate(
-      { id: item?.id },
-      {
-        onSuccess: (res) => {
-          getAllFieldGroup();
-          dispatch(setLoading(false));
-          toast.success("Xóa thành công.")
-        },
-        onError: (error) => {
-          console.log('error', error);
-        },
-        onSettled: () => {
-          dispatch(setLoading(false));
-        },
-      },
-    );
-  }
-  useEffect(() => {
-    if (messageBox.result) {
-      if (messageBox.type === "deleteFieldGroup") {
-        if (messageBox.result === true) {
-          deleteFieldGroupSelected();
-        }
-      }
-    }
-  }, [messageBox.result])
-
+function DropDown({item, setOpenModalDelete, handleOpenModal}) {
   const navigate = useNavigate();
+  const handleDelete = () => {
+    setOpenModalDelete(true);
+  };
 
   return (
     <div className={cx('wrapper')}>
