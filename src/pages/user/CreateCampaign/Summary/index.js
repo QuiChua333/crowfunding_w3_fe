@@ -35,7 +35,7 @@ function SummaryCampaign() {
   useEffect(() => {
     dispatch(
       setTab({
-        number: 9,
+        number: 10,
         content: 'Tổng kết',
       }),
     );

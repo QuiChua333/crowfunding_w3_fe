@@ -32,6 +32,8 @@ import { setFollowCampaigns } from '~/redux/slides/User';
 import { useGetQuantityFollowsOfCampaignQuery } from '~/hooks/api/queries/user/follow-campaign.query';
 import { setActiveChat, setActiveUser, setChatList, setListUser, setNewChat, setOpenChat } from '~/redux/slides/Chat';
 import { ClipLoader } from 'react-spinners';
+import { useGetNFTsByCampaignIdQuery } from '~/hooks/api/queries/user/nft.query';
+import NFTItem from '~/components/NFTItem';
 
 const cx = classNames.bind(styles);
 
@@ -41,6 +43,7 @@ function DetailProject() {
   const [isOpenModalReport, setIsOpenModalReport] = useState(false);
   const [ItemProject, setItemProject] = useState({});
   const [listPerkByCampaignId, setListPerkByCampaignId] = useState([]);
+  const [listNFTByCampaignId, setListNFTByCampaignId] = useState([]);
   const [members, setMembers] = useState([]);
   const [quantityFollowsOfCampaign, setQuantityFollowsCampaign] = useState(0);
   const [indexImage, setIndexImage] = useState(0);
@@ -49,6 +52,7 @@ function DetailProject() {
   const [isOpenModalOption, setIsOpenModalOption] = useState(false);
   const [perkInModal, setPerkInModal] = useState(false);
   const [itemPerkSelected, setItemPerkSelected] = useState({});
+  const [itemNFTSelected, setItemNFTSelected] = useState({});
   const [openDropDown, setOpenDropDown] = useState(false);
   const docElement = useRef(null);
   const [endDate, setEndDate] = useState('');
@@ -76,6 +80,7 @@ function DetailProject() {
   };
 
   const { data: dataListPerksByCampaignId } = useGetPerksHasListItemsByCampaignIdQuery(id);
+  const { data: dataListNFTsByCampaignId } = useGetNFTsByCampaignIdQuery(id);
   const { data: dataProjectById, isLoading } = useGetCampaignByIdQuery(id);
   const { data: quantitySuccessCampaign } = useGetQuantitySuccessCampaignByCampaignId(id);
   const { data: dataQuantityFollowsOfCampaign, refetch: refetchGetQuantityFollow } =
@@ -127,8 +132,12 @@ function DetailProject() {
         // }
         setListPerkByCampaignId(dataListPerksByCampaignId);
       }
+
+      if (dataListNFTsByCampaignId) {
+        setListNFTByCampaignId(dataListNFTsByCampaignId);
+      }
     }
-  }, [dataProjectById, dataListPerksByCampaignId]);
+  }, [dataProjectById, dataListPerksByCampaignId, dataListNFTsByCampaignId]);
 
   const [favourite, setFavourite] = useState(false);
   const dispatch = useDispatch();
@@ -499,6 +508,37 @@ function DetailProject() {
                 </div>
               </div>
             </div>
+            {listNFTByCampaignId.length > 0 && ItemProject.cryptocurrencyMode && (
+              <div className={cx('container-under-right')}>
+                <div style={{ position: 'sticky', top: '20px' }}>
+                  <p style={{ fontSize: '18px', marginLeft: '10px', fontWeight: 'bold', marginBottom: '20px' }}>
+                    Chọn NFT
+                  </p>
+                  <div style={{ maxHeight: '920px', overflowY: 'scroll' }}>
+                    {listNFTByCampaignId.map((item, index) => {
+                      return (
+                        <div
+                          style={{
+                            pointerEvents:
+                              (ItemProject.status === 'Thất bại' ||
+                                ItemProject.status === 'Thành công' ||
+                                ItemProject.status === 'Tạm dừng') &&
+                              'none',
+                          }}
+                        >
+                          <NFTItem
+                            index={index}
+                            item={item}
+                            key={index}
+                            cryptocurrencyMode={ItemProject.cryptocurrencyMode}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}

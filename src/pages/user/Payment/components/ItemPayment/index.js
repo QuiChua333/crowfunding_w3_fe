@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-function ItemPayment({ item, cryptocurrencyMode, modalContribution }) {
+function ItemPayment({ item, cryptocurrencyMode, modalContribution, method }) {
   return (
     <div
       className={cx('wrapper')}
@@ -24,14 +24,22 @@ function ItemPayment({ item, cryptocurrencyMode, modalContribution }) {
             <span> {item.name}</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', fontSize: '14px' }}>
-            {item.options.map((option, index) => {
-              return (
-                <span key={index}>
-                  {`${option.quantity} ${option.name}`}
-                  {option.optionsString && ':'} {option.optionsString}
-                </span>
-              );
-            })}
+            {!item.isNFT &&
+              item.options.map((option, index) => {
+                return (
+                  <span key={index}>
+                    {`${option.quantity} ${option.name}`}
+                    {option.optionsString && ':'} {option.optionsString}
+                  </span>
+                );
+              })}
+            {item.isNFT && (
+              <>
+                <span>Màu sắc: {item.color}</span>
+                <span>Chất liệu: {item.materials}</span>
+                <span>Phong cách: {item.styles}</span>
+              </>
+            )}
           </div>
           {modalContribution && item.isNFT && (
             <div className="text-[14px]">
@@ -56,7 +64,7 @@ function ItemPayment({ item, cryptocurrencyMode, modalContribution }) {
             <span className="font-[600] mr-1">{`${item.ethPrice}`} ETH </span>
           </>
         )}
-        {modalContribution && item.isNFT && (
+        {modalContribution && (item.isNFT || method === 'crypto') && (
           <>
             <span className="font-[600] mr-1">{`${item.ethPrice}`} ETH </span>
           </>

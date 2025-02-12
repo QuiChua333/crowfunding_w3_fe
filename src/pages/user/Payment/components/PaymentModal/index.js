@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { eth, momo, stripe } from '~/assets/images';
 const cx = classNames.bind(styles);
-function PaymentModal({ setShowPaymentModal, handlePaymentMethod, cryptocurrencyMode }) {
+function PaymentModal({ setShowPaymentModal, handlePaymentMethod, cryptocurrencyMode, hasNFT }) {
   const dispatch = useDispatch();
   const [method, setMethod] = useState('stripe');
   const handleClickAccept = () => {
@@ -15,26 +15,30 @@ function PaymentModal({ setShowPaymentModal, handlePaymentMethod, cryptocurrency
     <div className={cx('wrapper')}>
       <div className={cx('body')}>
         <h3 className={cx('title')}>CHỌN CÁCH THỨC THANH TOÁN</h3>
-        <div style={{ marginTop: '36px' }}>
-          <label className={cx('inputRadioGroup-radio')} onClick={() => setMethod('stripe')}>
-            <input type="radio" value={'stripe'} name="paymentMethod" defaultChecked />
-            <span className={cx('inputRadioGroup-radio-button')}></span>
-            <div className={cx('inputRadioGroup-radio-label')}>
-              <img src={stripe} className={cx('img')} />
-              <span>Thanh toán qua cổng thanh toán Stripe</span>
+        {!hasNFT && (
+          <>
+            <div style={{ marginTop: '36px' }}>
+              <label className={cx('inputRadioGroup-radio')} onClick={() => setMethod('stripe')}>
+                <input type="radio" value={'stripe'} name="paymentMethod" defaultChecked />
+                <span className={cx('inputRadioGroup-radio-button')}></span>
+                <div className={cx('inputRadioGroup-radio-label')}>
+                  <img src={stripe} className={cx('img')} />
+                  <span>Thanh toán qua cổng thanh toán Stripe</span>
+                </div>
+              </label>
             </div>
-          </label>
-        </div>
-        <div style={{ marginTop: '16px' }}>
-          <label className={cx('inputRadioGroup-radio')} onClick={() => setMethod('momo')}>
-            <input type="radio" value={'momo'} name="paymentMethod" />
-            <span className={cx('inputRadioGroup-radio-button')}></span>
-            <div className={cx('inputRadioGroup-radio-label')}>
-              <img src={momo} className={cx('img')} />
-              <span>Thanh toán qua Momo</span>
+            <div style={{ marginTop: '16px' }}>
+              <label className={cx('inputRadioGroup-radio')} onClick={() => setMethod('momo')}>
+                <input type="radio" value={'momo'} name="paymentMethod" />
+                <span className={cx('inputRadioGroup-radio-button')}></span>
+                <div className={cx('inputRadioGroup-radio-label')}>
+                  <img src={momo} className={cx('img')} />
+                  <span>Thanh toán qua Momo</span>
+                </div>
+              </label>
             </div>
-          </label>
-        </div>
+          </>
+        )}
         {cryptocurrencyMode && (
           <div style={{ marginBottom: '32px', marginTop: '16px' }}>
             <label className={cx('inputRadioGroup-radio')} onClick={() => setMethod('crypto')}>

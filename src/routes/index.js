@@ -37,6 +37,9 @@ import Statiscal from '~/pages/user/Profile/Statiscal';
 import StatiscalAdmin from '~/pages/admin/StatiscalAdmin';
 import SendRefund from '~/pages/admin/SendRefund';
 import ViewComplaints from '~/pages/user/Profile/View/Complaints';
+import NFTCampaign from '~/pages/user/CreateCampaign/NFT';
+import NewNFT from '~/pages/user/CreateCampaign/NFT/NewNFT';
+import DetailNFTCheckout from '~/pages/user/DetailNFTCheckout';
 
 const loginRoutes = [
   { path: '/sign-up', component: SignUp, layout: null },
@@ -50,6 +53,7 @@ const publicRoutes = [
   { path: '/auth/reset-password', component: ResetPassword, layout: null },
   { path: '/project/:id/detail', component: DetailProject, layout: NormalLayout },
   { path: '/project/:id/perk/detail', component: DetailPerk, layout: null },
+  { path: '/project/:id/nft/detail', component: DetailNFTCheckout, layout: null },
   { path: '/project/:id/payments/new/checkout', component: Payment, layout: null },
   { path: '/individuals/:id/campaigns', component: ViewCampaigns, layout: NormalLayout },
   { path: '/individuals/:id/profile', component: ProfilePersonal, layout: NormalLayout },
@@ -79,6 +83,9 @@ const privateUserRoutes = {
     { path: '/campaigns/:id/edit/perks/:idPerk', component: NewPerkCampaign, layout: CampaignLayout, item: true },
     { path: '/campaigns/:id/edit/items/table', component: ItemsCampaign, layout: CampaignLayout },
     { path: '/campaigns/:id/edit/items/:idItem', component: NewItemCampaign, layout: CampaignLayout, item: true },
+    { path: '/campaigns/:id/edit/nfts/table', component: NFTCampaign, layout: CampaignLayout },
+    { path: '/campaigns/:id/edit/nfts/:idNFT', component: NewNFT, layout: CampaignLayout, item: true },
+
     { path: '/campaigns/:id/edit/team', component: TeamCampaign, layout: CampaignLayout },
     { path: '/campaigns/:id/edit/funding', component: FundingCampaign, layout: CampaignLayout },
     { path: '/campaigns/:id/edit/settings', component: SettingCampaign, layout: CampaignLayout },

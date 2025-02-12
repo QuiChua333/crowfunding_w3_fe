@@ -169,7 +169,7 @@ function ViewContributes() {
                   </div>
 
                   {data?.totalPages > 0 && (
-                    <div className={cx('pagination-wrapper')}>
+                    <div className={cx('pagination-wrapper')} style={{marginTop: '16px'}}>
                       <div className={cx('pagination')}>
                         <span
                           className={cx(

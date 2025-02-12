@@ -37,20 +37,39 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                   <div className={cx('form-group')}>
                     <label>{contribution.perks?.length > 0 ? 'Tiền đặc quyền: ' : 'Tiền thanh toán: '} </label>
                     <div className={cx('info-value')}>
-                      {formatMoney(Number(contribution.amount))} VNĐ{' '}
-                      {contribution.method === 'crypto' && `(${contribution.amountCrypto} ETH)`}
+                      {!contribution.nfts?.length > 0 && `${formatMoney(Number(contribution.amount))} VNĐ `}
+                      {contribution.method === 'crypto' &&
+                        !contribution.nfts?.length > 0 &&
+                        `(${contribution.amountCrypto} ETH)`}
+                      {contribution.nfts?.length > 0 && `${contribution.amountCrypto} ETH`}
                     </div>
                   </div>
                 </div>
                 <div style={{ width: '40%' }}>
-                  <div className={cx('form-group')}>
-                    <label>Số đặc quyền: </label>
-                    <div className={cx('info-value')}>{contribution.perks?.length || 0}</div>
-                  </div>
+                  {!contribution.nfts?.length > 0 && (
+                    <div className={cx('form-group')}>
+                      <label>Số đặc quyền: </label>
+                      <div className={cx('info-value')}>{contribution.perks?.length || 0}</div>
+                    </div>
+                  )}
+                  {contribution.nfts?.length > 0 && (
+                    <div className={cx('form-group')}>
+                      <label>Số NFT: </label>
+                      <div className={cx('info-value')}>{contribution.nfts?.length || 0}</div>
+                    </div>
+                  )}
                   <div className={cx('form-group')}>
                     <label>Phí ship:</label>
                     <div className={cx('info-value')}>
-                      {formatMoney(Number(contribution.totalPayment) - Number(contribution.amount))} VNĐ
+                      {!contribution.nfts?.length > 0 &&
+                        contribution.method !== 'crypto' &&
+                        `${formatMoney(Number(contribution.totalPayment) - Number(contribution.amount))} VNĐ`}
+                      {!contribution.nfts?.length > 0 &&
+                        contribution.method === 'crypto' &&
+                        `${formatMoney(
+                          Number(contribution.totalPayment) - Number(contribution.amount),
+                        )} VNĐ (Miễn phí)`}
+                      {contribution.nfts?.length > 0 && `Không có`}
                     </div>
                   </div>
                 </div>
@@ -58,11 +77,22 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
               <div style={{ display: 'flex', gap: '48px' }}>
                 <div className={cx('form-group', 'single')} style={{ width: '40%' }}>
                   <label>Tổng tiền: </label>
-                  <div className={cx('info-value')}>{formatMoney(Number(contribution.totalPayment))} VNĐ</div>
+                  {!contribution.nfts?.length > 0 && (
+                    <div className={cx('info-value')}>{formatMoney(Number(contribution.totalPayment))} VNĐ</div>
+                  )}
+                  {contribution.nfts?.length > 0 && `${contribution.amountCrypto} ETH`}
                 </div>
                 <div className={cx('form-group', 'single')} style={{ width: '40%' }}>
                   <label>Ngày giao dự kiến: </label>
-                  <div className={cx('info-value')}>{convertDateFromString(contribution.date, 'less')}</div>
+                  {!contribution.nfts?.length > 0 && contribution.perks?.length > 0 && (
+                    <div className={cx('info-value')}>
+                      {convertDateFromString(contribution.estDeliveryDate, 'less')}
+                    </div>
+                  )}
+                  {!contribution.nfts?.length > 0 && !contribution.perks?.length > 0 && (
+                    <div className={cx('info-value')}>Không có</div>
+                  )}
+                  {contribution.nfts?.length > 0 && <div className={cx('info-value')}>Không có</div>}
                 </div>
               </div>
 
@@ -111,11 +141,19 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                 <div style={{ display: 'flex', overflow: 'hidden', marginTop: '16px' }}>
                   <div style={{ marginTop: '16px', width: '45%', marginRight: '32px' }}>
                     <label style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
-                      Danh sách sản phẩm
+                      Danh sách đặc quyền
                     </label>
                     <div className={cx('order-item-wrapper')}>
                       {contribution.perks?.map((item, index) => {
-                        return <ItemPayment key={index} index={index} item={item} modalContribution={true} />;
+                        return (
+                          <ItemPayment
+                            key={index}
+                            index={index}
+                            item={item}
+                            modalContribution={true}
+                            method={contribution.method}
+                          />
+                        );
                       })}
                     </div>
                     <div></div>
@@ -253,6 +291,28 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
                     </div>
                     <div></div>
                   </div>
+                </div>
+              )}
+              {contribution.nfts?.length > 0 && (
+                <div style={{ display: 'flex', overflow: 'hidden', marginTop: '16px' }}>
+                  <div style={{ marginTop: '16px', width: '80%', marginRight: '32px' }}>
+                    <label style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>Danh sách NFT</label>
+                    <div className={cx('order-item-wrapper')}>
+                      {contribution.nfts?.map((item, index) => {
+                        return (
+                          <ItemPayment
+                            key={index}
+                            index={index}
+                            item={item}
+                            modalContribution={true}
+                            method={contribution.method}
+                          />
+                        );
+                      })}
+                    </div>
+                    <div></div>
+                  </div>
+                  <div style={{ marginTop: '16px', marginLeft: '32px', flex: '1' }}></div>
                 </div>
               )}
             </div>

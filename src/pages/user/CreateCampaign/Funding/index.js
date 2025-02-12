@@ -173,7 +173,7 @@ function FundingCampaign() {
   useEffect(() => {
     dispatch(
       setTab({
-        number: 6,
+        number: 7,
         content: 'Gây quỹ',
       }),
     );

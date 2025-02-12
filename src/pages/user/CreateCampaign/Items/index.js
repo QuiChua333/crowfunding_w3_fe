@@ -85,7 +85,7 @@ function ItemsCampaign() {
 
       {listItems?.length > 0 && (
         <div className={cx('btn-final')}>
-          <Link to={`/campaigns/${id}/edit/items/team`} className={cx('btn', 'btn-ok')}>
+          <Link to={`/campaigns/${id}/edit/nfts/table`} className={cx('btn', 'btn-ok')}>
             TIẾP TỤC
           </Link>
         </div>

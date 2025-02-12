@@ -39,8 +39,12 @@ function Payment() {
   let ethPrice = null;
   let cryptocurrencyMode = false;
   let ethToVnd = 0;
+  let hasNFT = false;
   if (lct.state.hasPerk) {
     payment = lct.state.res;
+  } else if (lct.state.hasNFT) {
+    payment = lct.state.res;
+    hasNFT = true;
   } else {
     money = lct.state.money;
     ethPrice = lct.state.ethPrice;
@@ -59,25 +63,46 @@ function Payment() {
   const [showConnectWalletModal, setShowConnectWalletModal] = useState(false);
 
   const [contribution, setContribution] = useState(() => {
-    return {
-      shippingInfo: {
-        estDeliveryDate: payment?.estDeliveryDate,
-      },
-      email: '',
-      bankName: '',
-      bankAccountNumber: '',
-      bankUsername: '',
-      campaignId: id,
-      money: payment ? payment.total : money,
-      perks: payment?.listPerkPayment.map((item) => {
-        const newItem = { ...item };
-        delete newItem.shippingFees;
-        return {
-          ...newItem,
-          price: Number(newItem.price),
-        };
-      }),
-    };
+    let contributionRes = {};
+    if (hasNFT) {
+      contributionRes = {
+        email: '',
+        bankName: '',
+        bankAccountNumber: '',
+        bankUsername: '',
+        campaignId: id,
+        money: payment ? payment.total : money,
+        nfts: payment?.listNFTPayment.map((item) => {
+          const newItem = { ...item };
+          return {
+            ...newItem,
+            price: Number(newItem.price),
+          };
+        }),
+      };
+    } else {
+      contributionRes = {
+        shippingInfo: {
+          estDeliveryDate: payment?.estDeliveryDate,
+        },
+        email: '',
+        bankName: '',
+        bankAccountNumber: '',
+        bankUsername: '',
+        campaignId: id,
+        money: payment ? payment.total : money,
+        perks: payment?.listPerkPayment.map((item) => {
+          const newItem = { ...item };
+          delete newItem.shippingFees;
+          return {
+            ...newItem,
+            price: Number(newItem.price),
+          };
+        }),
+      };
+    }
+
+    return contributionRes;
   });
   useEffect(() => {
     console.log(contribution);
@@ -129,28 +154,30 @@ function Payment() {
   useEffect(() => {
     if (!payment) return;
     let max = 0;
-    if (location) {
-      console.log(location);
-      for (let i = 0; i < payment.listPerkPayment.length; i++) {
-        const perk = payment.listPerkPayment[i];
+    if (!hasNFT) {
+      if (location) {
+        console.log(location);
+        for (let i = 0; i < payment.listPerkPayment.length; i++) {
+          const perk = payment.listPerkPayment[i];
 
-        let fee = perk.shippingFees.find((x) => x.location === location)?.fee || 0;
-        if (!fee) {
-          fee = perk.shippingFees.find(
-            (x) => x.location === 'Các tỉnh thành còn lại' || x.location === 'Tất cả các tỉnh thành',
-          )?.fee;
+          let fee = perk.shippingFees.find((x) => x.location === location)?.fee || 0;
+          if (!fee) {
+            fee = perk.shippingFees.find(
+              (x) => x.location === 'Các tỉnh thành còn lại' || x.location === 'Tất cả các tỉnh thành',
+            )?.fee;
+          }
+          fee = Number(fee);
+          max = fee > max ? fee : max;
         }
-        fee = Number(fee);
-        max = fee > max ? fee : max;
+        setShipFee(max);
+        setContribution((prev) => ({
+          ...prev,
+          shippingInfo: {
+            ...prev.shippingInfo,
+            province: location,
+          },
+        }));
       }
-      setShipFee(max);
-      setContribution((prev) => ({
-        ...prev,
-        shippingInfo: {
-          ...prev.shippingInfo,
-          province: location,
-        },
-      }));
     }
   }, [location]);
   useEffect(() => {
@@ -243,111 +270,74 @@ function Payment() {
     if (currentUser.id) contribution.email = currentUser.email;
     console.log(contribution);
 
-    if (!contribution.perks) {
+    if (!contribution.nfts) {
       transferFund();
-    } else if (contribution.perks?.length > 0) {
-      transferPerk();
+    } else if (contribution.nfts?.length > 0) {
+      transferNFTs();
     }
   };
 
   const transferFund = async () => {
     dispatch(setLoading(true));
-    try {
-      const priceWei = parseEther(ethPriceState);
-      const tx = await factoryContract.transferFund({ value: priceWei });
-      console.log('Transaction sent:', tx);
-      const receipt = await tx.wait();
-      const transactionHash = tx.hash;
-      contribution.transactionHash = transactionHash;
+    console.log(contribution);
 
-      if (receipt.status === 1) {
-        paymentCryptoMutation.mutate(contribution, {
-          onSuccess(data) {
-            navigate('/payment/thanks');
-            dispatch(setLoading(false));
-          },
-          onError(error) {
-            console.log(error);
-            toast.error('Giao dịch không thành công');
-            dispatch(setLoading(false));
-          },
-        });
-      } else {
-        toast.error('Có lỗi khi thanh toán');
+    paymentCryptoMutation.mutate(contribution, {
+      async onSuccess(contributionId) {
+        try {
+          const priceWei = parseEther(contribution.amountCrypto);
+          const tx = await factoryContract.transferFund(contributionId, { value: priceWei });
+          await tx.wait();
+          navigate('/payment/thanks');
+          dispatch(setLoading(false));
+        } catch (error) {
+          console.log(error);
+          toast.error('Có lỗi khi thanh toán');
+          dispatch(setLoading(false));
+        }
+      },
+      onError(error) {
+        console.log(error);
+        toast.error('Giao dịch không thành công');
         dispatch(setLoading(false));
-      }
-    } catch (error) {
-      toast.error('Có lỗi khi thanh toán');
-      dispatch(setLoading(false));
-    }
+      },
+    });
   };
 
   const mintNFTMutation = useMintNFTMutation();
 
-  const transferPerk = async () => {
+  const transferNFTs = async () => {
     const userId = currentUser.id ?? '';
-    const mintPerks = contribution.perks
+    const minNFTs = contribution.nfts
       .filter((item) => item.isNFT)
       .map((item) => ({
-        perkId: item.id,
+        nftCreationId: item.id,
         quantity: item.quantity,
       }));
     dispatch(setLoading(true));
     mintNFTMutation.mutate(
       {
         userId,
-        perks: mintPerks,
+        nfts: minNFTs,
+        contribution: contribution,
       },
       {
         async onSuccess(data) {
-          const perks = contribution.perks.map((perk) => {
-            const perkResponse = data.find((item) => item.perkId === perk.id);
+          const nfts = contribution.nfts.map((nft) => {
+            const nftResponse = data.nfts?.find((item) => item.nftCreationId === nft.id);
             return {
-              quantity: perk.quantity,
-              isNFT: perk.isNFT,
-              priceWhenNotNFT: parseEther(perk.ethPrice),
-              nftContractAddress: perkResponse?.nftContractAddress ?? '0x0000000000000000000000000000000000000000',
-              tokenIds: perkResponse?.tokenIds ?? [],
+              quantity: nft.quantity,
+              contractAddress: nftResponse?.contractAddress ?? '0x0000000000000000000000000000000000000000',
+              tokenIds: nftResponse?.tokenIds ?? [],
             };
           });
           console.log(payment.totalETH.toString());
           try {
             const totalAmountWei = parseEther(payment.totalETH.toString());
-            console.log(perks);
-            const tx = await factoryContract.transferPerk(perks, { value: totalAmountWei });
+            const tx = await factoryContract.transferNFTs(nfts, data.contributionId, { value: totalAmountWei });
             console.log('Transaction sent:', tx);
-            const receipt = await tx.wait();
-
-            const transactionHash = tx.hash;
-            contribution.transactionHash = transactionHash;
-
-            if (receipt.status === 1) {
-              const newContribution = {
-                ...contribution,
-                perks: contribution.perks.map((perk) => {
-                  const perkResponse = data.find((item) => item.perkId === perk.id);
-                  return {
-                    ...perk,
-                    uri: perkResponse?.uri ?? '',
-                    tokenIds: perkResponse?.tokenIds ?? [],
-                  };
-                }),
-              };
-              paymentCryptoMutation.mutate(newContribution, {
-                onSuccess(data) {
-                  navigate('/payment/thanks');
-                  dispatch(setLoading(false));
-                },
-                onError(error) {
-                  console.log(error);
-                  toast.error('Giao dịch không thành công');
-                  dispatch(setLoading(false));
-                },
-              });
-            } else {
-              toast.error('Có lỗi khi thanh toán');
-              dispatch(setLoading(false));
-            }
+            await tx.wait();
+            navigate('/payment/thanks');
+            dispatch(setLoading(false));
           } catch (error) {
             console.log(error);
           }
@@ -494,6 +484,10 @@ function Payment() {
 
   const handlePayment = () => {
     // validate
+    if (hasNFT) {
+      setShowPaymentModal(true);
+      return;
+    }
     if (payment) {
       let flagFullname = validateFullname(contribution.shippingInfo?.fullName);
       let flagProvince = validateProvince(contribution.shippingInfo?.province);
@@ -592,7 +586,7 @@ function Payment() {
               </div>
             </div>
           )}
-          {payment && (
+          {!hasNFT && payment && (
             <div className={cx('shipping-address')}>
               <div className={cx('title')}>Thông tin giao nhận</div>
               <div className={cx('entreField')}>
@@ -722,62 +716,64 @@ function Payment() {
               </div>
             </div>
           )}
-          <div className={cx('shipping-address')}>
-            <div className={cx('title')}>Thông tin tài khoản ngân hàng</div>
-            <div className={cx('.entreField-subLabel')} style={{ marginBottom: '16px' }}>
-              Cung cấp cho chúng tôi phương thức liên lạc cũng như cách hoàn trả nếu chiến dịch gây quỹ thất bại. Tất
-              nhiên, bạn sẽ phải trả một khoản phí nhất định.
-            </div>
-            <div className={cx('entreField')}>
-              <div style={{ display: 'flex', gap: '16px' }}>
-                <div style={{ flex: '1' }}>
-                  <label className={cx('entreField-label')}>
-                    Tên ngân hàng<span className={cx('entreField-required')}> *</span>
-                  </label>
-                  <input
-                    type="text"
-                    maxLength="50"
-                    className={cx('itext-field')}
-                    name="bankName"
-                    value={contribution.bankName}
-                    onChange={handleChangeInputBank}
-                  />
-                  <span className={cx('entreField-error')}>{textValidateBankName}</span>
+          {!hasNFT && (
+            <div className={cx('shipping-address')}>
+              <div className={cx('title')}>Thông tin tài khoản ngân hàng</div>
+              <div className={cx('.entreField-subLabel')} style={{ marginBottom: '16px' }}>
+                Cung cấp cho chúng tôi phương thức liên lạc cũng như cách hoàn trả nếu chiến dịch gây quỹ thất bại. Tất
+                nhiên, bạn sẽ phải trả một khoản phí nhất định.
+              </div>
+              <div className={cx('entreField')}>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <div style={{ flex: '1' }}>
+                    <label className={cx('entreField-label')}>
+                      Tên ngân hàng<span className={cx('entreField-required')}> *</span>
+                    </label>
+                    <input
+                      type="text"
+                      maxLength="50"
+                      className={cx('itext-field')}
+                      name="bankName"
+                      value={contribution.bankName}
+                      onChange={handleChangeInputBank}
+                    />
+                    <span className={cx('entreField-error')}>{textValidateBankName}</span>
+                  </div>
+                  <div style={{ flex: '1' }}>
+                    <label className={cx('entreField-label')}>
+                      Số tài khoản ngân hàng<span className={cx('entreField-required')}> *</span>
+                    </label>
+                    <input
+                      type="text"
+                      maxLength="50"
+                      className={cx('itext-field')}
+                      name="bankAccountNumber"
+                      value={contribution.bankAccountNumber}
+                      onChange={handleChangeInputBank}
+                    />
+                    <span className={cx('entreField-error')}>{textValidateBankAccountNumber}</span>
+                  </div>
                 </div>
-                <div style={{ flex: '1' }}>
-                  <label className={cx('entreField-label')}>
-                    Số tài khoản ngân hàng<span className={cx('entreField-required')}> *</span>
-                  </label>
-                  <input
-                    type="text"
-                    maxLength="50"
-                    className={cx('itext-field')}
-                    name="bankAccountNumber"
-                    value={contribution.bankAccountNumber}
-                    onChange={handleChangeInputBank}
-                  />
-                  <span className={cx('entreField-error')}>{textValidateBankAccountNumber}</span>
+                <div style={{ display: 'flex', gap: '16px', marginTop: '12px' }}>
+                  <div style={{ flex: '1' }}>
+                    <label className={cx('entreField-label')}>
+                      Tên tài khoản ngân hàng<span className={cx('entreField-required')}> *</span>
+                    </label>
+                    <input
+                      type="text"
+                      maxLength="50"
+                      className={cx('itext-field')}
+                      name="bankUsername"
+                      value={contribution.bankUsername}
+                      onChange={handleChangeInputBank}
+                    />
+                    <span className={cx('entreField-error')}>{textValidateBankUsername}</span>
+                  </div>
+                  <div style={{ flex: '1' }}></div>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '16px', marginTop: '12px' }}>
-                <div style={{ flex: '1' }}>
-                  <label className={cx('entreField-label')}>
-                    Tên tài khoản ngân hàng<span className={cx('entreField-required')}> *</span>
-                  </label>
-                  <input
-                    type="text"
-                    maxLength="50"
-                    className={cx('itext-field')}
-                    name="bankUsername"
-                    value={contribution.bankUsername}
-                    onChange={handleChangeInputBank}
-                  />
-                  <span className={cx('entreField-error')}>{textValidateBankUsername}</span>
-                </div>
-                <div style={{ flex: '1' }}></div>
-              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className={cx('payment-summary')}>
           <div className={cx('shipping-address')}>
@@ -801,9 +797,14 @@ function Payment() {
             {payment && (
               <>
                 <div style={{ marginTop: '32px' }}>
-                  {payment?.listPerkPayment.map((item, index) => {
-                    return <ItemPayment item={item} key={index} cryptocurrencyMode={payment.cryptocurrencyMode} />;
-                  })}
+                  {!hasNFT &&
+                    payment?.listPerkPayment.map((item, index) => {
+                      return <ItemPayment item={item} key={index} cryptocurrencyMode={payment.cryptocurrencyMode} />;
+                    })}
+                  {hasNFT &&
+                    payment?.listNFTPayment.map((item, index) => {
+                      return <ItemPayment item={item} key={index} cryptocurrencyMode={payment.cryptocurrencyMode} />;
+                    })}
                 </div>
 
                 <div className={cx('separate')}></div>
@@ -823,18 +824,20 @@ function Payment() {
                     <div className="text-right text-[16px]">{`${payment.totalETH}`} ETH </div>
                   )}
                 </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    fontSize: '16px',
-                    marginTop: '6px',
-                  }}
-                >
-                  <span>Tiền ship</span>
-                  <span>{formatMoney(shipFee)}VNĐ</span>
-                </div>
+                {!hasNFT && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: '16px',
+                      marginTop: '6px',
+                    }}
+                  >
+                    <span>Tiền ship</span>
+                    <span>{formatMoney(shipFee)}VNĐ</span>
+                  </div>
+                )}
               </>
             )}
             <div
@@ -908,6 +911,7 @@ function Payment() {
 
       {showPaymentModal && (
         <PaymentModal
+          hasNFT={hasNFT}
           setShowPaymentModal={setShowPaymentModal}
           handlePaymentMethod={handlePaymentMethod}
           cryptocurrencyMode={cryptocurrencyMode || payment.cryptocurrencyMode}

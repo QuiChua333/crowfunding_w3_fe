@@ -133,7 +133,7 @@ function NewPerk() {
           : convertDateFromString(new Date(), 'less'),
         isShipping: response.isShipping || false,
         shippingFees: response.shippingFees || [],
-        isNFT: response.isNFT || false,
+
         ethPrice: response.ethPrice,
       });
       setPerk({
@@ -155,23 +155,9 @@ function NewPerk() {
           : convertDateFromString(new Date()),
         isShipping: response.isShipping || false,
         shippingFees: response.shippingFees || [],
-        isNFT: response.isNFT || false,
+
         ethPrice: response.ethPrice,
       });
-
-      setCreateNFT(response.isNFT);
-
-      if (response.isNFT) {
-        setNFTData({
-          nftName: response.nftCreation?.name,
-          nftSymbol: response.nftCreation?.symbol,
-          nftAddress: response.nftCreation?.nftContractAddress,
-          nftTransactionHash: response.nftCreation?.transactionHash,
-          nftContractAddress: response.nftCreation?.nftContractAddress,
-        });
-      } else {
-        setNFTData({});
-      }
     } else {
       setPerkState({
         name: '',
@@ -187,7 +173,6 @@ function NewPerk() {
         isNFT: false,
         ethPrice: 0,
       });
-      setNFTData({});
     }
   }, [response]);
 
@@ -518,7 +503,7 @@ function NewPerk() {
 
   const createNFTMutation = useCreateNFTMutation();
 
-  const handleClickSaveNft = () => {
+  const handleClickSaveNft = async () => {
     if (!metamask.account) {
       dispatch(setContentError('Vui lòng kết nối ví Metamask'));
       dispatch(setShowErrorDelete(true));
@@ -535,7 +520,6 @@ function NewPerk() {
         dispatch(setLoading(true));
         createNFTMutation.mutate(data, {
           onSuccess(data) {
-            dispatch(setLoading(false));
             toast.success('Chuyển đổi NFT thành công');
             navigate(`/campaigns/${id}/edit/perks/table`);
           },
@@ -545,6 +529,14 @@ function NewPerk() {
             toast.error('Có lỗi xảy ra trong quá trình tạo NFT');
           },
         });
+        try {
+          const valuePriceInWei = ethers.parseEther(perkState.ethPrice.toString());
+          const tx = await factoryContract.createNFT(nftData.nftName, nftData.nftSymbol, 'sfsdfdsf', valuePriceInWei);
+        } catch (error) {
+          dispatch(setLoading(false));
+        }
+
+        // const tx = await factoryContract.createNFT(perks, { value: totalAmountWei });
       } else {
         return;
       }
@@ -572,6 +564,14 @@ function NewPerk() {
       dispatch(setErrofOf(''));
     }
   }, [errorOf, metamask.account]);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }, []);
 
   return (
     <>
@@ -654,7 +654,7 @@ function NewPerk() {
             </div>
           </div>
 
-          <div className={cx('entreField', `${perkState.isNFT && 'pointer-events-none'}`)}>
+          <div className={cx('entreField')}>
             <label className={cx('entreField-label')}>
               Trị giá<span className={cx('entreField-required')}>*</span>
             </label>
@@ -689,7 +689,7 @@ function NewPerk() {
             </div>
           </div>
 
-          <div className={cx('entreField', `${perkState.isNFT && 'pointer-events-none'}`)}>
+          <div className={cx('entreField')}>
             <label className={cx('entreField-label')}>
               Tiêu đề <span className={cx('entreField-required')}>*</span>
             </label>
@@ -707,7 +707,7 @@ function NewPerk() {
             {/* <div className={cx('entreField-validationLabel')}>50</div> */}
           </div>
 
-          <div className={cx('entreField', `${perkState.isNFT && 'pointer-events-none'}`)}>
+          <div className={cx('entreField')}>
             <label className={cx('entreField-label')}>
               Các vật phẩm <span className={cx('entreField-required')}>*</span>
             </label>
@@ -778,7 +778,7 @@ function NewPerk() {
             </div>
           </div>
 
-          <div className={cx('entreField', `${perkState.isNFT && 'pointer-events-none'}`)}>
+          <div className={cx('entreField')}>
             <label className={cx('entreField-label')}>
               Mô tả <span className={cx('entreField-required')}>*</span>
             </label>
@@ -796,7 +796,7 @@ function NewPerk() {
             {/* <div className={cx('entreField-validationLabel')}>350</div> */}
           </div>
 
-          <div className={cx('entreField', `${perkState.isNFT && 'pointer-events-none'}`)}>
+          <div className={cx('entreField')}>
             <label className={cx('entreField-label')}>Ảnh đặc quyền</label>
             <div className={cx('entreField-subLabel')}>
               Vui lòng không sử dụng hình ảnh có chứa văn bản như giá cả và mức giảm giá hoặc màu sắc của thương hiệu
@@ -1015,141 +1015,6 @@ function NewPerk() {
           )}
           <div style={{ marginTop: '60px', borderTop: '1px solid #C8C8C8', textAlign: 'right' }}></div>
         </div>
-
-        {idPerk !== 'new' && campaign.status === 'Đang gây quỹ' && (
-          <div className={cx('entreSection')}>
-            <div className={cx('entreField-header')}>NFT</div>
-            <div className={cx('entreField-subHeader')}>
-              Chuyển đổi đặc quyền thành NFT - Tạo tài khoản kỹ thuật số trên không gian Blockchain.
-            </div>
-
-            {!isCreateNFT && (
-              <a
-                onClick={handleClickCreateNFT}
-                className={cx('btn', 'btn-ok')}
-                style={{ marginLeft: '0px', marginTop: '12px', display: 'inline-block' }}
-              >
-                CHUYỂN ĐỔI THÀNH NFT
-              </a>
-            )}
-            {isCreateNFT && (
-              <>
-                {!metamask.account && <ConnectWalletButton />}
-                {metamask.account && (
-                  <div>
-                    <div>
-                      <span>Tài khoản ví kết nối: </span>
-                      <span>{metamask.account}</span>
-                    </div>
-                    <div>
-                      <span>Số dư hiện tại: </span>
-                      <span>{metamask.balance}</span>
-                    </div>
-                  </div>
-                )}
-                <div className={cx('entreField')}>
-                  <label className={cx('entreField-label')}>
-                    Tên NFT <span className={cx('entreField-required')}>*</span>
-                  </label>
-                  <div className={cx('entreField-subLabel')}>
-                    Là tiêu đề đại diện cho NFT mà bạn tạo ra, giúp người khác dễ dàng nhận biết và hiểu về giá trị, nội
-                    dung hoặc ý nghĩa của NFT đó.
-                  </div>
-                  <input
-                    type="text"
-                    className={cx('itext-field')}
-                    name="nftName"
-                    value={nftData.nftName}
-                    onChange={handleChangeInfoNft}
-                    disabled={perkState.isNFT}
-                  />
-                </div>
-                <div className={cx('entreField')}>
-                  <label className={cx('entreField-label')}>
-                    Mã Symbol <span className={cx('entreField-required')}>*</span>
-                  </label>
-                  <div className={cx('entreField-subLabel')}>
-                    Symbol là một chuỗi ký tự ngắn (thường giống như một mã token) dùng để đại diện cho loại NFT của
-                    bạn.
-                  </div>
-                  <input
-                    type="text"
-                    className={cx('itext-field')}
-                    name="nftSymbol"
-                    value={nftData.nftSymbol}
-                    onChange={handleChangeInfoNft}
-                    disabled={perkState.isNFT}
-                  />
-                </div>
-                {perkState.isNFT && (
-                  <>
-                    <div className={cx('entreField')}>
-                      <label className={cx('entreField-label')}>Mã giao dịch</label>
-                      <div className={cx('entreField-subLabel')}>
-                        Mã giao dịch tạo hợp đồng NFT. Bạn có thể dùng mã này tra cứu lịch sử giao dịch trên các nền
-                        tảng Blockchain Explorer.
-                      </div>
-
-                      <div className="flex gap-5 items-center">
-                        <input
-                          type="text"
-                          className={cx('itext-field')}
-                          name="nftSymbol"
-                          value={nftData.nftTransactionHash}
-                          onChange={handleChangeInfoNft}
-                          disabled={perkState.isNFT}
-                        />
-
-                        <a
-                          href={`https://sepolia.etherscan.io/tx/${nftData.nftTransactionHash}`}
-                          target="_blank"
-                          title="Khám phá"
-                        >
-                          <FaExternalLinkAlt className="text-[24px] cursor-pointer hover:opacity-80" />
-                        </a>
-                      </div>
-                    </div>
-                    <div className={cx('entreField')}>
-                      <label className={cx('entreField-label')}>Địa chỉ hợp đồng NFT</label>
-                      <div className={cx('entreField-subLabel')}>
-                        Dùng địa chỉ này để tra cứu các giao dịch liên quan đến NFT của bạn trên các nền tảng Blockchain
-                        Explorer
-                      </div>
-
-                      <div className="flex gap-5 items-center">
-                        <input
-                          type="text"
-                          className={cx('itext-field')}
-                          name="nftSymbol"
-                          value={nftData.nftContractAddress}
-                          onChange={handleChangeInfoNft}
-                          disabled={perkState.isNFT}
-                        />
-
-                        <a
-                          href={`https://sepolia.etherscan.io/address/${nftData.nftContractAddress}`}
-                          target="_blank"
-                          title="Khám phá"
-                        >
-                          <FaExternalLinkAlt className="text-[24px] cursor-pointer hover:opacity-80" />
-                        </a>
-                      </div>
-                    </div>
-                  </>
-                )}
-                {!perkState.isNFT && (
-                  <a
-                    onClick={handleClickSaveNft}
-                    className={cx('btn', 'btn-ok')}
-                    style={{ marginLeft: '0px', marginTop: '12px', display: 'inline-block' }}
-                  >
-                    LƯU NFT
-                  </a>
-                )}
-              </>
-            )}
-          </div>
-        )}
       </div>
       {showModal && (
         <ModalItem

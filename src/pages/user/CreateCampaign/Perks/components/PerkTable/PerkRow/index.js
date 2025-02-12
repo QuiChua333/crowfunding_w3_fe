@@ -83,7 +83,7 @@ function PerkRow({ index, perk, setChecked, getPerksByCampaignId, isEditComponen
           </>
         )}
       </td>
-      <td className={cx('nft')}>{perk.isNFT && <IoCheckboxSharp style={{ fontSize: '26px', color: '#000' }} />}</td>
+
       <td className={cx('price')}>{perk.price} VNĐ</td>
       <td className={cx('type')}>{perk.isFeatured && <span className={cx('featured')}>NỔI BẬT</span>}</td>
       <td className={cx('quantity')}>{perk.claimed + '/' + perk.quantity}</td>

@@ -24,7 +24,7 @@ function PerkItem({
   const [showMore, setShowMore] = useState(!isPage);
   const handleClickItem = () => {
     if (isPage) {
-      setShowMore(true);
+      setShowMore((prev) => !prev);
     }
   };
   const { id } = useParams();
@@ -56,7 +56,11 @@ function PerkItem({
       <img src={item.image} alt="img" />
       <div className={cx('container-body')}>
         <h2 style={{ fontSize: '20px', fontWeight: '600' }}>{item.name}</h2>
-        <p className={cx('des')}>{`- ${item.description}`}</p>
+        <p
+          className={cx('des', {
+            showMore,
+          })}
+        >{`- ${item.description}`}</p>
         <div className="mt-2">
           <div>
             <span className="text-[18px] font-[600]">Trị giá:</span>
@@ -86,7 +90,9 @@ function PerkItem({
                   CHỌN QUÀ NÀY
                 </button>
               ) : (
-                <span className={cx('text-error')}>Số lượng đã hết</span>
+                <span className={cx('text-error')} style={{ marginTop: '8px' }}>
+                  Số lượng đã hết
+                </span>
               ))}
           </div>
         )}

@@ -179,7 +179,6 @@ function DetailPerk() {
         quantity: item.quantityOrder,
         ethPrice: item.ethPrice,
         price: item.price,
-        isNFT: item.isNFT,
         options: item.detailPerks.reduce((acc, cur) => {
           if (cur.optionsSelected && cur.optionsSelected.length > 0) {
             return [

@@ -155,7 +155,7 @@ function TeamCampaign() {
   useEffect(() => {
     dispatch(
       setTab({
-        number: 5,
+        number: 6,
         content: 'Team',
       }),
     );

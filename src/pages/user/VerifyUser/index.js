@@ -290,6 +290,9 @@ function VerifyUser() {
     if (data) {
       setUser({
         ...data,
+        fullName: data.fullName || data.userInfo?.fullName,
+        phoneNumber: data.phoneNumber || data.userInfo?.phoneNumber,
+        address: data.address || data.userInfo?.address,
         bod:
           (data.bod && new Date(data.bod).toISOString().substring(0, 10)) || new Date().toISOString().substring(0, 10),
       });

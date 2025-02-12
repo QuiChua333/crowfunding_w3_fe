@@ -157,11 +157,11 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                   >
                     <div
                       onClick={() => {
-                        navigate(`/campaigns/${id}/edit/team`);
+                        navigate(`/campaigns/${id}/edit/nfts/table`);
                       }}
                       className={cx('navItem-link')}
                     >
-                      <div>5. Team</div>
+                      <div>5. NFT</div>
                     </div>
                   </div>
                   <div
@@ -171,16 +171,31 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                   >
                     <div
                       onClick={() => {
+                        navigate(`/campaigns/${id}/edit/team`);
+                      }}
+                      className={cx('navItem-link')}
+                    >
+                      <div>6. Team</div>
+                    </div>
+                  </div>
+
+                  <div
+                    className={cx('navItem--child', 'navItem', 'cursor-pointer', {
+                      'navItem--current': tab.number === 7,
+                    })}
+                  >
+                    <div
+                      onClick={() => {
                         navigate(`/campaigns/${id}/edit/funding`);
                       }}
                       className={cx('navItem-link')}
                     >
-                      <div>6. Gây quỹ</div>
+                      <div>7. Gây quỹ</div>
                     </div>
                   </div>
                   <div
                     className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                      'navItem--current': tab.number === 7,
+                      'navItem--current': tab.number === 8,
                     })}
                   >
                     <div
@@ -189,14 +204,14 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                       }}
                       className={cx('navItem-link')}
                     >
-                      <div>7. CÀI ĐẶT</div>
+                      <div>8. CÀI ĐẶT</div>
                     </div>
                   </div>
 
                   {status !== 'Bản nháp' && status !== 'Chờ xác nhận' && (
                     <div
                       className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                        'navItem--current': tab.number === 8,
+                        'navItem--current': tab.number === 9,
                       })}
                     >
                       <div
@@ -205,7 +220,7 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                         }}
                         className={cx('navItem-link')}
                       >
-                        <div>8. ĐÓNG GÓP</div>
+                        <div>9. ĐÓNG GÓP</div>
                       </div>
                     </div>
                   )}
@@ -213,7 +228,7 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                   {(status === 'Thất bại' || status === 'Thành công') && (
                     <div
                       className={cx('navItem--child', 'navItem', 'cursor-pointer', {
-                        'navItem--current': tab.number === 9,
+                        'navItem--current': tab.number === 10,
                       })}
                     >
                       <div
@@ -222,7 +237,7 @@ function SidebarCampaign({ status, title, cardImage, id }) {
                         }}
                         className={cx('navItem-link')}
                       >
-                        <div>9. Tổng kết</div>
+                        <div>10. Tổng kết</div>
                       </div>
                     </div>
                   )}

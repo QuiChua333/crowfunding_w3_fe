@@ -18,7 +18,7 @@ function ItemDetailPerk({ item, setPerkSelected, setIsOpenModal, index, setIsOpe
       className={cx('itemPerk', { disabled: item.isSelected || item.quantity === item.claimed })}
     >
       {item.isFeatured && <span className={cx('featured')}>NỔI BẬT</span>}
-      {item.isNFT && <span className={cx('nft')}>NFT</span>}
+
       <div>
         <img src={item.image} alt="img" />
         <div className={cx('content')}>

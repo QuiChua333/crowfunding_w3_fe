@@ -115,20 +115,39 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                   <div className={cx('form-group')}>
                     <label>{contribution.perks?.length > 0 ? 'Tiền đặc quyền: ' : 'Tiền thanh toán: '} </label>
                     <div className={cx('info-value')}>
-                      {formatMoney(Number(contribution.amount))} VNĐ{' '}
-                      {contribution.method === 'crypto' && `(${contribution.amountCrypto} ETH)`}
+                      {!contribution.nfts?.length > 0 && `${formatMoney(Number(contribution.amount))} VNĐ `}
+                      {contribution.method === 'crypto' &&
+                        !contribution.nfts?.length > 0 &&
+                        `(${contribution.amountCrypto} ETH)`}
+                      {contribution.nfts?.length > 0 && `${contribution.amountCrypto} ETH`}
                     </div>
                   </div>
                 </div>
                 <div style={{ width: '40%' }}>
-                  <div className={cx('form-group')}>
-                    <label>Số đặc quyền: </label>
-                    <div className={cx('info-value')}>{contribution.perks?.length || 0}</div>
-                  </div>
+                  {!contribution.nfts?.length > 0 && (
+                    <div className={cx('form-group')}>
+                      <label>Số đặc quyền: </label>
+                      <div className={cx('info-value')}>{contribution.perks?.length || 0}</div>
+                    </div>
+                  )}
+                  {contribution.nfts?.length > 0 && (
+                    <div className={cx('form-group')}>
+                      <label>Số NFT: </label>
+                      <div className={cx('info-value')}>{contribution.nfts?.length || 0}</div>
+                    </div>
+                  )}
                   <div className={cx('form-group')}>
                     <label>Phí ship:</label>
                     <div className={cx('info-value')}>
-                      {formatMoney(contribution.totalPayment - contribution.amount)}
+                      {!contribution.nfts?.length > 0 &&
+                        contribution.method !== 'crypto' &&
+                        `${formatMoney(Number(contribution.totalPayment) - Number(contribution.amount))} VNĐ`}
+                      {!contribution.nfts?.length > 0 &&
+                        contribution.method === 'crypto' &&
+                        `${formatMoney(
+                          Number(contribution.totalPayment) - Number(contribution.amount),
+                        )} VNĐ (Miễn phí)`}
+                      {contribution.nfts?.length > 0 && `Không có`}
                     </div>
                   </div>
                 </div>
@@ -136,16 +155,23 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
               <div style={{ display: 'flex', gap: '48px' }}>
                 <div className={cx('form-group', 'single')} style={{ width: '40%' }}>
                   <label>Tổng tiền: </label>
-                  <div className={cx('info-value')}>{formatMoney(contribution.totalPayment)} VNĐ</div>
+                  {!contribution.nfts?.length > 0 && (
+                    <div className={cx('info-value')}>{formatMoney(Number(contribution.totalPayment))} VNĐ</div>
+                  )}
+                  {contribution.nfts?.length > 0 && `${contribution.amountCrypto} ETH`}
                 </div>
 
                 <div className={cx('form-group', 'single')} style={{ width: '40%' }}>
-                  {contribution.perks && contribution.perks.length > 0 && (
-                    <>
-                      <label>Ngày giao dự kiến: </label>
-                      <div className={cx('info-value')}>{convertDateFromString(contribution.date)}</div>
-                    </>
+                  <label>Ngày giao dự kiến: </label>
+                  {!contribution.nfts?.length > 0 && contribution.perks?.length > 0 && (
+                    <div className={cx('info-value')}>
+                      {convertDateFromString(contribution.estDeliveryDate, 'less')}
+                    </div>
                   )}
+                  {!contribution.nfts?.length > 0 && !contribution.perks?.length > 0 && (
+                    <div className={cx('info-value')}>Không có</div>
+                  )}
+                  {contribution.nfts?.length > 0 && <div className={cx('info-value')}>Không có</div>}
                 </div>
               </div>
               {contribution.method === 'crypto' && (
@@ -189,14 +215,26 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                 </div>
               </div>
               <div style={{ display: 'flex', overflow: 'hidden', marginTop: '16px' }}>
-                <div style={{ marginTop: '16px', width: '45%', marginRight: '32px' }}>
+                <div
+                  style={{
+                    marginTop: '16px',
+                    width: contribution.nfts?.length > 0 ? '80%' : '45%',
+                    marginRight: '32px',
+                  }}
+                >
                   <label style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
-                    Danh sách sản phẩm
+                    {contribution.perks?.length > 0 && 'Danh sách đặc quyền'}
+                    {contribution.nfts?.length > 0 && 'Danh sách NFT'}
                   </label>
                   <div className={cx('order-item-wrapper')}>
-                    {contribution.perks?.map((item, index) => {
-                      return <ItemPayment key={index} index={index} item={item} modalContribution={true} />;
-                    })}
+                    {contribution.perks?.length > 0 &&
+                      contribution.perks?.map((item, index) => {
+                        return <ItemPayment key={index} index={index} item={item} modalContribution={true} />;
+                      })}
+                    {contribution.nfts?.length > 0 &&
+                      contribution.nfts?.map((item, index) => {
+                        return <ItemPayment key={index} index={index} item={item} modalContribution={true} />;
+                      })}
                   </div>
                   <div></div>
                 </div>
@@ -323,73 +361,80 @@ function ModalContribution({ setShowModal, contribution, handleChangeStatus, isE
                       </div>
                     </div>
                   )}
-                  <div style={{ marginTop: '48px' }}>
-                    <label style={{ fontSize: '16px', fontWeight: '600', marginLeft: '32px', marginBottom: '16px' }}>
-                      Thông tin tài khoản ngân hàng
-                    </label>
-                    <div
-                      style={{ borderLeft: '3px solid #4bac4d', height: '100%', paddingLeft: '32px', fontSize: '14px' }}
-                    >
-                      <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center' }}>
-                        <img
-                          style={{ width: '100px', height: '100px' }}
-                          src="https://cdn-icons-png.flaticon.com/512/8634/8634075.png"
-                        />
+                  {!contribution.nfts?.length > 0 && (
+                    <div style={{ marginTop: '48px' }}>
+                      <label style={{ fontSize: '16px', fontWeight: '600', marginLeft: '32px', marginBottom: '16px' }}>
+                        Thông tin tài khoản ngân hàng
+                      </label>
+                      <div
+                        style={{
+                          borderLeft: '3px solid #4bac4d',
+                          height: '100%',
+                          paddingLeft: '32px',
+                          fontSize: '14px',
+                        }}
+                      >
+                        <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center' }}>
+                          <img
+                            style={{ width: '100px', height: '100px' }}
+                            src="https://cdn-icons-png.flaticon.com/512/8634/8634075.png"
+                          />
 
-                        <div style={{ marginLeft: '16px', fontSize: '14px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <IoPersonOutline style={{ marginRight: '6px' }} />
+                          <div style={{ marginLeft: '16px', fontSize: '14px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
+                                <span>
+                                  <IoPersonOutline style={{ marginRight: '6px' }} />
+                                </span>
+                                Tên ngân hàng:
                               </span>
-                              Tên ngân hàng:
-                            </span>
-                            <span>{contribution.bankName}</span>
-                          </div>
+                              <span>{contribution.bankName}</span>
+                            </div>
 
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <BiPhoneCall style={{ marginRight: '6px' }} />
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
+                                <span>
+                                  <BiPhoneCall style={{ marginRight: '6px' }} />
+                                </span>
+                                Số tài khoản:
                               </span>
-                              Số tài khoản:
-                            </span>
-                            <span>{contribution.bankAccountNumber}</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <BiPhoneCall style={{ marginRight: '6px' }} />
+                              <span>{contribution.bankAccountNumber}</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <span
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  width: '150px',
+                                  fontWeight: '600',
+                                }}
+                              >
+                                <span>
+                                  <BiPhoneCall style={{ marginRight: '6px' }} />
+                                </span>
+                                Tên tài khoản:
                               </span>
-                              Tên tài khoản:
-                            </span>
-                            <span>{contribution.bankUsername}</span>
+                              <span>{contribution.bankUsername}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

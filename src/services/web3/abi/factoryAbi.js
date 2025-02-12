@@ -118,6 +118,12 @@ export const factoryAbi = [
         name: 'uri',
         type: 'string',
       },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'nftCreationId',
+        type: 'string',
+      },
     ],
     name: 'NewNFT',
     type: 'event',
@@ -237,6 +243,12 @@ export const factoryAbi = [
         name: 'amount',
         type: 'uint256',
       },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'contributionId',
+        type: 'string',
+      },
     ],
     name: 'TransferFund',
     type: 'event',
@@ -308,11 +320,6 @@ export const factoryAbi = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'author',
-        type: 'address',
-      },
-      {
         internalType: 'string',
         name: 'name',
         type: 'string',
@@ -331,6 +338,16 @@ export const factoryAbi = [
         internalType: 'uint256',
         name: 'price',
         type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'maxSupply',
+        type: 'uint256',
+      },
+      {
+        internalType: 'string',
+        name: 'nftCreationId',
+        type: 'string',
       },
     ],
     name: 'createNFT',
@@ -594,7 +611,13 @@ export const factoryAbi = [
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'contributionId',
+        type: 'string',
+      },
+    ],
     name: 'transferFund',
     outputs: [],
     stateMutability: 'payable',
@@ -610,19 +633,9 @@ export const factoryAbi = [
             type: 'uint256',
           },
           {
-            internalType: 'bool',
-            name: 'isNFT',
-            type: 'bool',
-          },
-          {
             internalType: 'address',
-            name: 'nftContractAddress',
+            name: 'contractAddress',
             type: 'address',
-          },
-          {
-            internalType: 'uint256',
-            name: 'priceWhenNotNFT',
-            type: 'uint256',
           },
           {
             internalType: 'uint256[]',
@@ -630,12 +643,17 @@ export const factoryAbi = [
             type: 'uint256[]',
           },
         ],
-        internalType: 'struct NFTFactory.PerkPurchase[]',
-        name: 'perks',
+        internalType: 'struct NFTFactory.NFTPurchase[]',
+        name: 'nfts',
         type: 'tuple[]',
       },
+      {
+        internalType: 'string',
+        name: 'contributionId',
+        type: 'string',
+      },
     ],
-    name: 'transferPerk',
+    name: 'transferNFTs',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',

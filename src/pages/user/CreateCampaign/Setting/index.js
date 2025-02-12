@@ -95,7 +95,7 @@ function SettingCampaign() {
   useEffect(() => {
     dispatch(
       setTab({
-        number: 7,
+        number: 8,
         content: 'Gây quỹ',
       }),
     );

@@ -50,7 +50,7 @@ function ContributionCampaign() {
   useEffect(() => {
     dispatch(
       setTab({
-        number: 8,
+        number: 9,
         content: 'Đóng góp',
       }),
     );
