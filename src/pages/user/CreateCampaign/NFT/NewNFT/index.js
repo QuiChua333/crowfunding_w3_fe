@@ -170,7 +170,11 @@ function NewNFT() {
   const handleChangeInputText = async (e) => {
     const name = e.target.name;
     const value = e.target.value;
-
+    if (name === 'price' || name === 'supply') {
+      if (value !== '' && !/^[1-9]\d*$/.test(value)) {
+        return;
+      }
+    }
     if (name === 'price') {
       debounced(value);
     }
@@ -433,7 +437,7 @@ function NewNFT() {
             Hãy đản bảo rằng các thông tin của NFT là hợp lệ vì nó không thể chỉnh sửa.
           </div>
 
-          <div className={cx('entreField')}>
+          <div className={cx('entreField')} style={{ pointerEvents: idNFT !== 'new' && 'none' }}>
             <label className={cx('entreField-label')}>
               Trị giá<span className={cx('entreField-required')}>*</span>
             </label>

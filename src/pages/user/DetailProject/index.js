@@ -408,7 +408,7 @@ function DetailProject() {
                         'none',
                     }}
                   >
-                    XEM QUÀ TẶNG
+                    XEM ĐẶC QUYỀN
                   </button>
                   <button className={cx('hover-btn-follow')} type="button" onClick={handleClickFollowCampaign}>
                     {favourite ? (

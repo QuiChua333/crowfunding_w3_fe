@@ -20,11 +20,17 @@ function FundingCampaign() {
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+    if (name === 'goal' || name === 'bankAccountNumber') {
+      if (value !== '' && !/^[1-9]\d*$/.test(value)) {
+        return;
+      }
+    }
     setCampaignState((prev) => ({ ...prev, [name]: value }));
   };
 
   const [isEditComponent, setEditComponent] = useState(true);
   const campaign = useSelector((state) => state.userCampaign.campaign);
+  const currentUser = useSelector((state) => state.user.currentUser);
   useEffect(() => {
     if (campaign) {
       let infoBasic = {
@@ -45,6 +51,7 @@ function FundingCampaign() {
   }, [campaign]);
 
   const handleClickVerifyUser = async () => {
+    if (campaign.owner?.id !== currentUser.id) return;
     window.location.href = '/givefun/verify';
   };
 
@@ -193,7 +200,7 @@ function FundingCampaign() {
           <div className={cx('inputCurrencyField')}>
             <input
               placeholder={'Ví dụ: 10000000'}
-              type="number"
+              type="text"
               maxlength="50"
               className={cx('itext-field', 'inputCurrencyField-input')}
               value={campaignState.goal}

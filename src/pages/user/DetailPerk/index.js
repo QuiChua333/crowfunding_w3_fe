@@ -265,7 +265,7 @@ function DetailPerk() {
       <p className={cx('title-website')}>GIVE-FUN</p>
       <div className={cx('container-body')}>
         <div className={cx('container-body-1')}>
-          <p className={cx('title')}>Danh sách quà tặng có thể thêm</p>
+          <p className={cx('title')}>Danh sách đặc quyền có thể thêm</p>
           <div className={cx('custom-scroll')}>
             {listPerkByCampaignId.map((item, index) => {
               return (

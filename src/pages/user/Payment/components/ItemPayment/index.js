@@ -58,7 +58,7 @@ function ItemPayment({ item, cryptocurrencyMode, modalContribution, method }) {
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', fontSize: '16px' }}>
-        <div style={{ fontWeight: '600', textAlign: 'right' }}>{formatMoney(item.price)}VNĐ</div>
+        {!item.isNFT && <div style={{ fontWeight: '600', textAlign: 'right' }}>{formatMoney(item.price)}VNĐ</div>}
         {cryptocurrencyMode && (
           <>
             <span className="font-[600] mr-1">{`${item.ethPrice}`} ETH </span>

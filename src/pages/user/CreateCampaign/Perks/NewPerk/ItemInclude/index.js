@@ -24,6 +24,9 @@ function ItemInclude({
   };
   const handleChangeItem = (e) => {
     const quantity = e.target.value;
+    if (quantity !== '' && !/^[1-9]\d*$/.test(quantity)) {
+      return;
+    }
     onChangeItem({ ...itemData, quantity: quantity }, index);
   };
 

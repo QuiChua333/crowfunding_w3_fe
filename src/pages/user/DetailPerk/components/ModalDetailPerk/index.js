@@ -94,7 +94,7 @@ function ModalDetailPerk({
     >
       <div className={cx('container-body')} onClick={(e) => e.stopPropagation()}>
         <div className={cx('container-1')}>
-          <span className={cx('title')}>Quà của bạn</span>
+          <span className={cx('title')}>Đặc quyền của bạn</span>
           <span
             role="button"
             className={cx('btn-close')}
@@ -111,7 +111,7 @@ function ModalDetailPerk({
           </div>
 
           <div style={{ width: '50%' }}>
-            <p>Chọn quà của bạn</p>
+            <p>Chọn đặc quyền của bạn</p>
             {itemPerk.detailPerks.map((itemA, indexA) => {
               return (
                 <div className={cx('container-list-perk')} key={indexA}>

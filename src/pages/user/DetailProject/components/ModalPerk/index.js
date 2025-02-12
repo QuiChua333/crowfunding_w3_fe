@@ -89,7 +89,7 @@ function ModalPerk({ close, setIsOpenModalOption, setPerkInModal, listPerk, setI
             </div>
             <p className={cx('title-under-input')}>Đóng góp sẽ không liên quan tới đặc quyền</p>
           </div>
-          <p className={cx('title-contribute')}>Chọn một quà</p>
+          <p className={cx('title-contribute')}>Chọn một đặc quyền</p>
 
           <div className={cx('container-list-perks')}>
             {listPerk.map((item, index) => {

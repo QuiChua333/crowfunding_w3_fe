@@ -24,10 +24,12 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
         <div style={{ marginBottom: '32px' }}>
           <div className={cx('product-container')}>
             <div className={cx('order-container')}>
-              <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#4bac4d', display: 'flex', gap: '14px' }}>
-                Trạng thái:
-                <span style={{ color: '#4bac4d' }}>{contribution.isFinish ? 'Đã nhận' : 'Chưa nhận'}</span>
-              </div>
+              {contribution.perks?.length > 0 && (
+                <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#4bac4d', display: 'flex', gap: '14px' }}>
+                  Trạng thái:
+                  <span style={{ color: '#4bac4d' }}>{contribution.isFinish ? 'Đã nhận' : 'Chưa nhận'}</span>
+                </div>
+              )}
               <div style={{ display: 'flex', gap: '48px', marginTop: '8px' }}>
                 <div style={{ width: '40%' }}>
                   <div className={cx('form-group')}>

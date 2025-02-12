@@ -94,7 +94,7 @@ function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk, cryptoc
     >
       <div className={cx('container-body')} onClick={(e) => e.stopPropagation()}>
         <div className={cx('container-body-1')}>
-          <span className={cx('text-title')}>Quà của bạn</span>
+          <span className={cx('text-title')}>Đặc quyền của bạn</span>
           <span
             role="button"
             className={cx('btn-close')}
@@ -112,7 +112,7 @@ function ModalOptionPerk({ close, setIsOpenModal, perkInModal, itemPerk, cryptoc
           </div>
 
           <div className={cx('container')}>
-            <p className={cx('text-title-topic')}>Chọn quà của bạn</p>
+            <p className={cx('text-title-topic')}>Chọn đặc quyền của bạn</p>
             {itemPerk.detailPerks.map((itemA, indexA) => {
               return (
                 <div className={cx('container-content')} key={indexA}>

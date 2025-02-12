@@ -69,7 +69,7 @@ function PerkItem({
             {isShowButton &&
               (item.quantity !== item.claimed ? (
                 <button type="button" className={cx('btn-getPerk')} onClick={handleClickPerk}>
-                  CHỌN QUÀ NÀY
+                  CHỌN
                 </button>
               ) : (
                 <span className={cx('text-error')}>Số lượng đã hết</span>
