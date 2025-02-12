@@ -1,16 +1,14 @@
 import classNames from 'classnames/bind';
 import styles from './ModalDetailContribution.module.scss';
 import { IoCloseSharp } from 'react-icons/io5';
-import { IoPersonOutline } from 'react-icons/io5';
-import { BiMap, BiMapPin, BiSitemap, BiPhoneCall, BiMessageSquareDetail } from 'react-icons/bi';
 import ItemPayment from '~/pages/user/Payment/components/ItemPayment';
-import formatMoney from '~/utils/formatMoney';
-import { convertDateFromString } from '~/utils';
 import { FaExternalLinkAlt } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
 function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
+  const currentUser = useSelector((state) => state.user.currentUser);
   const handleClose = () => {
     setIsOpenModalDetail(false);
   };
@@ -19,56 +17,40 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
     <div className={cx('wrapper')} onClick={handleClose}>
       <div className={cx('body')} onClick={(e) => e.stopPropagation()}>
         <h3 className={cx('title')}>PHIÊN ĐÓNG GÓP</h3>
-        <p className={cx('description')}>Tên người dùng hệ thống: {contribution.fullName}</p>
-        <p className={cx('description')}>Email: {contribution.email}</p>
+        <p className={cx('description')}>Tên người dùng hệ thống: {currentUser?.fullName}</p>
+        <p className={cx('description')}>Email: {currentUser?.email}</p>
         <div style={{ marginBottom: '32px' }}>
           <div className={cx('product-container')}>
             <div className={cx('order-container')}>
-              <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#4bac4d', display: 'flex', gap: '14px' }}>
-                Trạng thái:
-                <span style={{ color: '#4bac4d' }}>{contribution.isFinish ? 'Đã nhận' : 'Chưa nhận'}</span>
-              </div>
               <div style={{ display: 'flex', gap: '48px', marginTop: '8px' }}>
-                <div style={{ width: '40%' }}>
+                <div className='w-full flex flex-col'>
                   <div className={cx('form-group')}>
-                    <label>Ngày đóng góp: </label>
-                    <div className={cx('info-value')}>{convertDateFromString(contribution.date)}</div>
+                    <label>Tên: </label>
+                    <div className={cx('info-value')}>{contribution.name}</div>
                   </div>
                   <div className={cx('form-group')}>
-                    <label>{contribution.perks?.length > 0 ? 'Tiền đặc quyền: ' : 'Tiền thanh toán: '} </label>
+                    <label>Giá</label>
                     <div className={cx('info-value')}>
-                      {formatMoney(Number(contribution.amount))} VNĐ{' '}
-                      {contribution.method === 'crypto' && `(${contribution.amountCrypto} ETH)`}
+                      {
+                        contribution.ethPrice
+                      } ETH
                     </div>
                   </div>
                 </div>
-                <div style={{ width: '40%' }}>
+                <div className='w-full flex flex-col'>
                   <div className={cx('form-group')}>
-                    <label>Số đặc quyền: </label>
-                    <div className={cx('info-value')}>{contribution.perks?.length || 0}</div>
+                    <label>Mã: </label>
+                    <div className={cx('info-value')}>{contribution.symbol}</div>
                   </div>
                   <div className={cx('form-group')}>
-                    <label>Phí ship:</label>
+                    <label>Số lượng:</label>
                     <div className={cx('info-value')}>
-                      {formatMoney(Number(contribution.totalPayment) - Number(contribution.amount))} VNĐ
+                      {contribution.nfts.length}
                     </div>
                   </div>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '48px' }}>
-                <div className={cx('form-group', 'single')} style={{ width: '40%' }}>
-                  <label>Tổng tiền: </label>
-                  <div className={cx('info-value')}>{formatMoney(Number(contribution.totalPayment))} VNĐ</div>
-                </div>
-                <div className={cx('form-group', 'single')} style={{ width: '40%' }}>
-                  <label>Ngày giao dự kiến: </label>
-                  <div className={cx('info-value')}>{convertDateFromString(contribution.date, 'less')}</div>
-                </div>
-              </div>
-
-              {contribution.method === 'crypto' && (
-                <>
-                  <div style={{ display: 'flex', gap: '48px' }}>
+              <div style={{ display: 'flex', gap: '48px'}}>
                     <div className={cx('form-group', 'single')}>
                       <label>Mã giao dịch: </label>
                       <div className={cx('info-value')}>{contribution.transactionHash}</div>
@@ -85,178 +67,63 @@ function ModalDetailContribution({ setIsOpenModalDetail, contribution }) {
 
                   <div style={{ display: 'flex', gap: '48px' }}>
                     <div className={cx('form-group', 'single')}>
-                      <label>Ví giao dịch: </label>
-                      <div className={cx('info-value')}>{contribution.customerWalletAddress}</div>
+                      <label>Địa chỉ hợp đồng: </label>
+                      <div className={cx('info-value')}>{contribution.contractAddress}</div>
                     </div>
                   </div>
-                </>
-              )}
 
               <div style={{ display: 'flex', gap: '48px' }}>
                 <div
-                  className={cx('form-group', 'single')}
-                  style={{ width: contribution.method !== 'crypto' ? '40%' : '100%' }}
+                  className={cx('form-group', 'single', 'w-full')}
+                
                 >
                   <label style={{ width: '200px' }}>Phương thức thanh toán: </label>
                   <div className={cx('info-value')}>
-                    {contribution.method === 'momo'
-                      ? 'Momo'
-                      : contribution.method === 'stripe'
-                      ? 'Stripe'
-                      : 'Tiền ảo ETH'}{' '}
+                  Tiền ảo ETH
                   </div>
                 </div>
               </div>
-              {contribution.perks?.length > 0 && (
+              {contribution.nfts?.length > 0 && (
                 <div style={{ display: 'flex', overflow: 'hidden', marginTop: '16px' }}>
-                  <div style={{ marginTop: '16px', width: '45%', marginRight: '32px' }}>
+                  <div style={{ width: '100%', marginRight: '32px' }}>
                     <label style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
                       Danh sách sản phẩm
                     </label>
-                    <div className={cx('order-item-wrapper')}>
-                      {contribution.perks?.map((item, index) => {
-                        return <ItemPayment key={index} index={index} item={item} modalContribution={true} />;
+                    <div className={cx('order-item-wrapper', 'mt-5')}>
+                      {contribution.nfts?.map((item, index) => {
+                        return (
+                          <div className='flex gap-x-5 items-center' key={index}>
+                            <img className='w-[140px] h-[140px]' src={contribution.image} alt='img nft'/>
+                            <div className='flex flex-col gap-y-1'>
+                              <div className='flex flex-row items-center gap-2'>
+                                <label className='text-[14px]'>Màu sắc:</label>
+                                <span className='text-[14px]'>{contribution.color}</span>
+                              </div>
+                              <div className='flex flex-row items-center gap-2'>
+                                <label className='text-[14px]'>Chất liệu:</label>
+                                <span className='text-[14px]'>{contribution.materials}</span>
+                              </div>
+                              <div className='flex flex-row items-center gap-2'>
+                                <label className='text-[14px]'>Phong cách:</label>
+                                <span className='text-[14px]'>{contribution.styles}</span>
+                              </div>
+                              <div className='flex flex-row items-center gap-2'>
+                                <label className='text-[14px]'>Token:</label>
+                                <span className='text-[14px]'>{item.tokenId}</span>
+                              </div>
+                              <div className='flex flex-row items-center gap-2'>
+                                <label className='text-[14px]'>Địa chỉ chủ sở hữu:</label>
+                                <span className='text-[14px]'>{item.ownerAddress}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
                       })}
                     </div>
-                    <div></div>
-                  </div>
-                  <div style={{ marginTop: '16px', marginLeft: '32px', flex: '1' }}>
-                    <label
-                      style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        marginLeft: '32px',
-                        marginBottom: '16px',
-                      }}
-                    >
-                      Thông tin giao hàng
-                    </label>
-                    <div
-                      style={{
-                        borderLeft: '3px solid #4bac4d',
-                        height: '100%',
-                        paddingLeft: '32px',
-                        fontSize: '14px',
-                      }}
-                    >
-                      <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center' }}>
-                        <img
-                          style={{ width: '100px', height: '100px' }}
-                          alt="avatar shiper mặc định"
-                          src="https://png.pngtree.com/png-vector/20191101/ourmid/pngtree-cartoon-color-simple-male-avatar-png-image_1934459.jpg"
-                        />
-
-                        <div style={{ marginLeft: '16px', fontSize: '14px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <IoPersonOutline style={{ marginRight: '6px' }} />
-                              </span>
-                              Người nhận:
-                            </span>
-                            <span>{contribution.shippingInfo?.fullName || 'Chưa cập nhật'}</span>
-                          </div>
-
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <BiPhoneCall style={{ marginRight: '6px' }} />
-                              </span>
-                              SĐT:
-                            </span>
-                            <span>{contribution.shippingInfo?.phoneNumber || 'Chưa cập nhật'}</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <BiMap style={{ marginRight: '6px' }} />
-                              </span>
-                              Tỉnh / TP:
-                            </span>
-
-                            <span>{contribution.shippingInfo?.province || 'Chưa cập nhật'}</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <BiMapPin style={{ marginRight: '6px' }} />
-                              </span>
-                              Quận / Huyện:
-                            </span>
-
-                            <span>{contribution.shippingInfo?.district || 'Chưa cập nhật'}</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <BiSitemap style={{ marginRight: '6px' }} />
-                              </span>
-                              Xã / Thị trấn:
-                            </span>
-
-                            <span>{contribution.shippingInfo?.ward || 'Chưa cập nhật'}</span>
-                          </div>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                width: '150px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              <span>
-                                <BiMessageSquareDetail style={{ marginRight: '6px' }} />
-                              </span>
-                              Chi tiết:
-                            </span>
-
-                            <span>{contribution.shippingInfo?.detail || 'Chưa cập nhật'}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div></div>
                   </div>
                 </div>
               )}
             </div>
-            {/* Chức năng */}
           </div>
         </div>
         <div className={cx('section-button')}>

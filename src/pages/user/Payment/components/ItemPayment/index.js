@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import formatMoney from '~/utils/formatMoney';
 import styles from './ItemPayment.module.scss';
 import classNames from 'classnames/bind';

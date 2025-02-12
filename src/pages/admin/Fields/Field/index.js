@@ -63,7 +63,7 @@ function FieldManagement() {
           <Search handleChangeInput={handleChangeSearchInput} placeholder={'Tìm kiếm tên nhóm lĩnh vực'} />
         </div>
 
-        <div onClick={() => setOpenModal(true)} className='p-5 border text-white text-[14px] bg-[#7a69b3] rounded hover:cursor-pointer hover:opacity-90'>Thêm mới</div>
+        <div onClick={() => setOpenModal(true)} className='p-5 border text-white font-semibold text-[15px] bg-[#7a69b3] rounded hover:cursor-pointer hover:opacity-90'>Thêm mới</div>
       </div>
 
       <div style={{ marginTop: '40px' }}>

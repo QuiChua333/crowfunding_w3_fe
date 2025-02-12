@@ -23,10 +23,11 @@ function ContributeTable({ contributesOfUer, handleViewContribution, isLoading }
       {!isLoading && listContributionsOfUser?.length > 0 && (
         <table>
           <thead>
-            <th>NGÀY</th>
-            <th>CHIẾN DỊCH</th>
-            <th>TỔNG TIỀN</th>
-            <th>TRẠNG THÁI</th>
+            <th>TÊN</th>
+            <th>MÃ KÝ HIỆU</th>
+            <th>SỐ LƯỢNG</th>
+            <th>ĐỊA CHỈ HỢP ĐỒNG</th>
+            <th>GIÁ</th>
             <th></th>
           </thead>
           <tbody>

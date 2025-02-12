@@ -7,21 +7,12 @@ import ContributeTable from './components/ContributeTable';
 import Search from '~/pages/admin/components/Search';
 import Filter from '~/pages/admin/components/Filter';
 import ModalDetailContribution from './components/ModalDetailContribution';
-import { useGetAllContributesOfUserQuery, useGetInfoUserQuery } from '~/hooks/api/queries/user/user.query';
+import { useGetAllContributesOfUserQuery } from '~/hooks/api/queries/user/user.query';
 
 const cx = classNames.bind(styles);
 
 function ViewContributesNormal() {
   const { id } = useParams();
-  const [user, setUser] = useState({});
-
-  const { data: dataUser } = useGetInfoUserQuery(id);
-  useEffect(() => {
-    if (dataUser) {
-      setUser(dataUser);
-    }
-  }, [dataUser]);
-
   const [filter, setFilter] = useState({
     searchString: '',
     status: 'Tất cả',
