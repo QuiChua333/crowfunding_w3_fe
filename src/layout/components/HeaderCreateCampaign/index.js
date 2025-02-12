@@ -13,8 +13,7 @@ import { IoMdClose } from 'react-icons/io';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGetFieldGroupByCategoryQuery } from '~/hooks/api/queries/user/field.query';
 import { useLogOutMutation } from '~/hooks/api/mutations/auth/auth.mutation';
-import avt from '~/assets/images/png/default-avt.png';
-import { defaultAvt, logoHongNho, logoTrangNho, paypal } from '~/assets/images';
+import { defaultAvt} from '~/assets/images';
 import { Bell } from '../Header/components';
 const cx = classNames.bind(styles);
 // Component dùng chung

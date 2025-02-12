@@ -1,0 +1,43 @@
+.wrapper {
+    min-height: 100vh;
+    .pagination-wrapper {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+  
+      .pagination {
+        display: flex;
+        align-items: center;
+        padding: 2px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+  
+        .icon {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 8px;
+          border-radius: 8px;
+          transition: all 0.1s linear;
+        }
+  
+        .curent {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 12px;
+          margin: 8px 2px;
+          border-right: 1px solid #ccc;
+          border-left: 1px solid #ccc;
+        }
+      }
+    }
+    .table-wrapper {
+      min-height: 300px;
+    }
+  }
+  

@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   tabAdmin: {
     number: 1,
-    content: 'Quản lý chiến dịch',
+    content: 'Quản lý lĩnh vực chiến dịch',
   },
 };
 

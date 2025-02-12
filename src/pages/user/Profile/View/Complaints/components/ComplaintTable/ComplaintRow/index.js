@@ -4,7 +4,6 @@ import { PiDotsThreeBold } from 'react-icons/pi';
 import DropDown from '../Dropdown';
 import { useRef, useState, useEffect } from 'react';
 import { convertDateFromString } from '~/utils';
-import { defaultAvt } from '~/assets/images';
 
 const cx = classNames.bind(styles);
 function ComplaintRow({ index, report, handleViewReport }) {

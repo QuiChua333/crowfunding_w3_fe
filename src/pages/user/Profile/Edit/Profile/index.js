@@ -9,18 +9,15 @@ import { setLoading } from '~/redux/slides/GlobalApp';
 import { toast } from 'react-toastify';
 import { defaultAvt } from '~/assets/images';
 import { useUpdateProfileUserMutation } from '~/hooks/api/mutations/user/user.mutation';
-import { useQueryClient } from '@tanstack/react-query';
 import { useGetCurrentUserQuery } from '~/hooks/api/queries/user/user.query';
 import { setCurrentUser } from '~/redux/slides/User';
+import { RiErrorWarningLine } from 'react-icons/ri';
+
 const cx = classNames.bind(styles);
 function EditProfile() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.currentUser);
-  const queryClient = useQueryClient();
-  const refetchUserData = () => {
-    queryClient.invalidateQueries('getCurrentUser'); // Key của query
-  };
   const { data: dataUser, refetch } = useGetCurrentUserQuery();
   useEffect(() => {
     if (dataUser) {
@@ -28,13 +25,21 @@ function EditProfile() {
     }
   }, [dataUser]);
   const [file, setFile] = useState();
-  const [userState, setUserState] = useState({});
+  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || '');
+  const [msgValidateName, setMsgValidateName] = useState('');
+  const [msgValidatePhone, setMsgValidatePhone] = useState('');
+  const [userState, setUserState] = useState({
+    fullName: user.fullName || '',
+    address: user.address || '',
+    story: user.story || '',
+    avatar: user.avatar || '',
+    facebookLink: user.facebookLink || '',
+  });
   useEffect(() => {
     setUserState((prev) => {
       const state = {
         fullName: user.fullName || '',
         address: user.address || '',
-        phoneNumber: user.phoneNumber || '',
         story: user.story || '',
         avatar: user.avatar || '',
         facebookLink: user.facebookLink || '',
@@ -42,16 +47,48 @@ function EditProfile() {
 
       return state;
     });
+    setPhoneNumber(user.phoneNumber);
   }, [user]);
   const elementInputProfileAvt = useRef(null);
 
+  const handleChangePhoneNumber = (e) => {
+    const value = e.target.value.trim();
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
+    setPhoneNumber(value);
+  };
   const handleChangeInputBasic = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
+    const { name, value } = e.target;
     setUserState((prev) => ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  const setMsgValidate = () => {
+    if (validateName(userState.fullName)) {
+      setMsgValidateName('');
+    } else {
+      setMsgValidateName('Vui lòng nhập họ tên. Không được bỏ trống.');
+    }
+
+    if (phoneNumber && phoneNumber.length >= 0) {
+      if (validatePhone(phoneNumber)) {
+        setMsgValidatePhone('');
+      } else {
+        setMsgValidatePhone('Số điện thoại không hợp lệ.');
+      }
+    }
+  };
+
+  const validateName = (name) => {
+    return name.trim().length > 0;
+  };
+  const validatePhone = (phone) => {
+    const phoneNumber = phone.toString().trim();
+    const vietnamPhoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+    return vietnamPhoneRegex.test(phoneNumber);
   };
 
   const handleChangeAvatar = (e) => {
@@ -70,9 +107,21 @@ function EditProfile() {
   };
 
   const updateProfileUserMutation = useUpdateProfileUserMutation();
-  const handleSave = async () => {
+  const handleSave = () => {
+    setMsgValidate();
+    if (phoneNumber.trim().length > 0) {
+      if (validatePhone(phoneNumber)) {
+        handleSaveInfo();
+      }
+    } else {
+      if (validateName(userState.fullName)) {
+        handleSaveInfo();
+      }
+    }
+  };
+  const handleSaveInfo = async () => {
     dispatch(setLoading(true));
-    const body = { ...userState };
+    const body = { ...userState, phoneNumber };
     delete body.avatar;
 
     const formData = new FormData();
@@ -88,7 +137,7 @@ function EditProfile() {
       { formData },
       {
         onSuccess(response) {
-          console.log(response);
+          dispatch(setLoading(false));
           refetch();
           toast.success('Cập nhật thông tin thành công');
         },
@@ -136,7 +185,7 @@ function EditProfile() {
             <h1 className={cx('section-title')}>Thông Tin Cơ Bản</h1>
 
             <div style={{ marginTop: '24px' }}>
-              <div className={cx('field')} style={{ maxWidth: '600px' }}>
+              <div className={cx('field')} style={{ maxWidth: '600px', marginTop: '16px' }}>
                 <label className={cx('field-label')}>Họ và tên</label>
                 <input
                   className={cx('itext-field')}
@@ -144,6 +193,12 @@ function EditProfile() {
                   onChange={handleChangeInputBasic}
                   name="fullName"
                 />
+                {msgValidateName.length > 0 && (
+                  <div className="flex items-center gap-2 text-red-500 mt-2">
+                    <RiErrorWarningLine />
+                    <span className="text-sm">{msgValidateName}</span>
+                  </div>
+                )}
               </div>
 
               <div className={cx('field')} style={{ maxWidth: '600px', marginTop: '16px' }}>
@@ -159,10 +214,16 @@ function EditProfile() {
                 <label className={cx('field-label')}>Số điện thoại</label>
                 <input
                   className={cx('itext-field')}
-                  value={userState.phoneNumber}
-                  onChange={handleChangeInputBasic}
+                  value={phoneNumber}
+                  onChange={handleChangePhoneNumber}
                   name="phoneNumber"
                 />
+                {msgValidatePhone.length > 0 && (
+                  <div className="flex items-center gap-2 text-red-500 mt-2">
+                    <RiErrorWarningLine />
+                    <span className="text-sm">{msgValidatePhone}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -204,7 +265,7 @@ function EditProfile() {
                   className={cx('btn')}
                   style={{ marginTop: '32px' }}
                 >
-                  {userState.avatar?.url ? 'Đổi ảnh' : 'Thêm ảnh'}
+                  {userState.avatar ? 'Đổi ảnh' : 'Thêm ảnh'}
                 </div>
               </div>
             </div>

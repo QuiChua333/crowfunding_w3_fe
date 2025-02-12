@@ -8,6 +8,7 @@ import { useLogOutMutation } from '~/hooks/api/mutations/auth/auth.mutation';
 import { useQueryClient } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';
 import { setCurrentUser } from '~/redux/slides/User';
+import { defaultAvt } from '~/assets/images';
 const cx = classNames.bind(styles);
 
 const MenuDropdown = ({ fullHeader, isLogin, user }) => {
@@ -63,7 +64,7 @@ const MenuDropdown = ({ fullHeader, isLogin, user }) => {
               onClick={() => setShowDropdownUser((prev) => !prev)}
               ref={boxFilterElement}
             >
-              <img className={cx('user-avatar')} src={user.avatar?.url} />
+              <img className={cx('user-avatar')} src={user.avatar || defaultAvt} />
               <span className={cx('user-name')}>
                 {user.fullName} <FaAngleDown className={cx('icon', { active: showDropdownUser })} />
               </span>

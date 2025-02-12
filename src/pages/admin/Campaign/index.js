@@ -49,7 +49,7 @@ function CampaignManagement() {
   useEffect(() => {
     dispatch(
       setTabAdmin({
-        number: 1,
+        number: 2,
         content: 'Quản lý chiến dịch',
       }),
     );

@@ -102,7 +102,7 @@ function UserManagement() {
   useEffect(() => {
     dispatch(
       setTabAdmin({
-        number: 2,
+        number: 3,
         content: 'Quản lý thông tin người dùng',
       }),
     );

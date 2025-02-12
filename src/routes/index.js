@@ -22,7 +22,6 @@ import {
   SettingCampaign,
   TeamCampaign,
   ViewCampaigns,
-  ViewContributes,
 } from '~/pages/user';
 import DetailProject from '~/pages/user/DetailProject';
 import DetailPerk from '~/pages/user/DetailPerk';
@@ -37,6 +36,11 @@ import Statiscal from '~/pages/user/Profile/Statiscal';
 import StatiscalAdmin from '~/pages/admin/StatiscalAdmin';
 import SendRefund from '~/pages/admin/SendRefund';
 import ViewComplaints from '~/pages/user/Profile/View/Complaints';
+import FieldGroupManagement from '~/pages/admin/Fields/FieldGroup';
+import FieldManagement from '~/pages/admin/Fields/Field';
+import ViewContributesNFT from '~/pages/user/Profile/View/Contributes/TabContributeNFT';
+import ViewContributesNormal from '~/pages/user/Profile/View/Contributes/TabContributeNormal';
+import ViewContributes from '~/pages/user/Profile/View/Contributes';
 import NFTCampaign from '~/pages/user/CreateCampaign/NFT';
 import NewNFT from '~/pages/user/CreateCampaign/NFT/NewNFT';
 import DetailNFTCheckout from '~/pages/user/DetailNFTCheckout';
@@ -68,10 +72,12 @@ const publicRoutes = [
   { path: '/not-found', component: PageNotFound, layout: null },
 ];
 const adminRoutes = [
+  { path: '/admin/fields/field-group', component: FieldGroupManagement, layout: AdminLayout },
+  { path: '/admin/fields/field-group/:id', component: FieldManagement, layout: AdminLayout },
   { path: '/admin/campaigns', component: CampaignManagement, layout: AdminLayout },
   { path: '/admin/users', component: UserManagement, layout: AdminLayout },
   { path: '/admin/complaint', component: ComplaintManagement, layout: AdminLayout },
-  { path: '/admin', component: CampaignManagement, layout: AdminLayout },
+  { path: '/admin', component: FieldGroupManagement, layout: AdminLayout },
   { path: '/admin/statistic', component: StatiscalAdmin, layout: AdminLayout },
   { path: '/admin/send-refund', component: SendRefund, layout: AdminLayout },
 ];
@@ -96,6 +102,8 @@ const privateUserRoutes = {
     { path: '/individuals/:id/edit/profile', component: EditProfile, layout: NormalLayout },
     { path: '/individuals/:id/edit/settings', component: EditSetting, layout: NormalLayout },
     { path: '/individuals/:id/contributions', component: ViewContributes, layout: NormalLayout },
+    { path: '/individuals/:id/contributions/normal', component: ViewContributesNormal, layout: NormalLayout },
+    { path: '/individuals/:id/contributions/nft', component: ViewContributesNFT, layout: NormalLayout },
     { path: '/individuals/:id/statistic', component: Statiscal, layout: NormalLayout },
     { path: '/individuals/:id/complaints', component: ViewComplaints, layout: NormalLayout },
   ],

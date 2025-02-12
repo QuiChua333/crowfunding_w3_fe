@@ -46,7 +46,7 @@ function ComplaintManagement() {
   useEffect(() => {
     dispatch(
       setTabAdmin({
-        number: 3,
+        number: 4,
         content: 'Quản lý báo cáo vi phạm dự án',
       }),
     );

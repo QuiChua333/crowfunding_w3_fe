@@ -21,5 +21,5 @@ export { default as ContributionCampaign } from './CreateCampaign/Contribution';
 export { default as EditProfile } from './Profile/Edit/Profile';
 export { default as EditSetting } from './Profile/Edit/Setting';
 export { default as ViewCampaigns } from './Profile/View/Campaigns';
-export { default as ViewContributes } from './Profile/View/Contributes';
+export { default as ViewContributes } from './Profile/View/Contributes/TabContributeNormal';
 export { default as ProfilePersonal } from './Profile/View/ProfilePersonal';
