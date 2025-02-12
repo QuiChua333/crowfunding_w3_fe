@@ -32,7 +32,12 @@ function VerifyUser() {
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    console.log(value);
+
+    if (name === 'phoneNumber' || name === 'identifyNumber') {
+      if (value !== '' && !/^\d*$/.test(value)) {
+        return;
+      }
+    }
     setUser((prev) => ({
       ...prev,
       [name]: value,

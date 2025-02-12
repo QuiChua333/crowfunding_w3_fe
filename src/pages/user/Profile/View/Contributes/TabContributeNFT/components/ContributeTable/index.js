@@ -28,7 +28,7 @@ function ContributeTable({ contributesOfUer, handleViewContribution, isLoading }
             <th>SỐ LƯỢNG</th>
             <th>ĐỊA CHỈ HỢP ĐỒNG</th>
             <th>GIÁ</th>
-            <th></th>
+            <th className={cx('action')}></th>
           </thead>
           <tbody>
             {listContributionsOfUser?.map((item, index) => {

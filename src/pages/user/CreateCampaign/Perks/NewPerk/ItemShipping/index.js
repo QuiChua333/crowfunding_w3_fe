@@ -22,6 +22,9 @@ function ItemShipping({
   };
   const handleChangeValue = (e) => {
     const value = e.target.value;
+    if (value !== '' && !/^\d*$/.test(value)) {
+      return;
+    }
     onChangeItem({ ...itemData, fee: value }, index);
   };
   useEffect(() => {

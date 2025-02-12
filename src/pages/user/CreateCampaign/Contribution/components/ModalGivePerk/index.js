@@ -209,7 +209,11 @@ function ModalGivePerk({ setShowModalGivePerk, contribution, getAllGifts, userCo
   const handleChangeInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-
+    if (name === 'phoneNumber') {
+      if (value !== '' && !/^\d*$/.test(value)) {
+        return;
+      }
+    }
     setAddress((prev) => ({
       ...prev,
       [name]: value,

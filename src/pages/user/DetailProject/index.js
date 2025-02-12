@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 import formatPercent from '~/utils/formatPercent';
 import { PiDotsThreeBold } from 'react-icons/pi';
 import DropDown from './components/Dropdown';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
+import { FaRegHeart, FaHeart, FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import ModalTeamMembersDetail from './components/ModalTeamMembersDetail';
 import ModalReport from './components/ModalReport';
 import FAQSection from './components/FAQTab';
@@ -23,7 +23,9 @@ import { defaultAvt } from '~/assets/images';
 
 import {
   useGetCampaignByIdQuery,
+  useGetPopulateCampaigns,
   useGetQuantitySuccessCampaignByCampaignId,
+  useGetRelevantCampaigns,
 } from '~/hooks/api/queries/user/campaign.query';
 import { useGetTeamMemberByCampaignId } from '~/hooks/api/queries/user/team.query';
 import { useFollowCampaignMutation } from '~/hooks/api/mutations/user/follow-campaign.mutation';
@@ -34,6 +36,8 @@ import { setActiveChat, setActiveUser, setChatList, setListUser, setNewChat, set
 import { ClipLoader } from 'react-spinners';
 import { useGetNFTsByCampaignIdQuery } from '~/hooks/api/queries/user/nft.query';
 import NFTItem from '~/components/NFTItem';
+import Carousel from 'react-multi-carousel';
+import { ProjectCardItem } from '~/components';
 
 const cx = classNames.bind(styles);
 
@@ -59,6 +63,14 @@ function DetailProject() {
 
   const currentUser = useSelector((state) => state.user.currentUser);
   const chatList = useSelector((state) => state.chat.chatList);
+
+  const { data } = useGetRelevantCampaigns(id);
+  const [campaigns, setCampaigns] = useState([]);
+  useEffect(() => {
+    if (data) {
+      setCampaigns(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -205,13 +217,47 @@ function DetailProject() {
     dispatch(setOpenChat(true));
   };
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
-  }, []); // [] để chỉ gọi effect một lần khi component mount
+  // useEffect(() => {
+  //   window.scrollTo({
+  //     top: 0,
+  //     left: 0,
+  //     behavior: 'smooth',
+  //   });
+  // }, []);
+  const responsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 4,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 3,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 2,
+    },
+  };
+  const ButtonGroup = ({ next, previous, goToSlide, ...rest }) => {
+    const {
+      carouselState: { currentSlide },
+    } = rest;
+    return (
+      <div className={cx('flex', 'justify-between', 'button-group')} style={{ width: '100px' }}>
+        <div onClick={() => previous()} className={cx('icon-switch', 'icon-back')}>
+          <FaAngleLeft className={cx('icon')} />
+        </div>
+        <div onClick={() => next()} className={cx('icon-switch', 'icon-next')}>
+          <FaAngleRight className={cx('icon')} />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className={cx('container-main')}>
@@ -539,6 +585,33 @@ function DetailProject() {
                 </div>
               </div>
             )}
+          </div>
+          <div className="mx-[130px] mb-[100px]">
+            <div className={cx('list-popular-projects')} style={{ marginTop: '60px' }}>
+              <div className="flex justify-between">
+                <h3 className={cx('title')} style={{ fontSize: '20px' }}>
+                  MỘT SỐ DỰ ÁN PHÙ HỢP
+                </h3>
+              </div>
+
+              <div className={cx('carsousel-wrapper')} style={{ marginTop: '28px' }}>
+                <Carousel
+                  itemClass={cx('carousel')}
+                  responsive={responsive}
+                  arrows={false}
+                  renderButtonGroupOutside={true}
+                  customButtonGroup={<ButtonGroup />}
+                >
+                  {campaigns?.map((item, index) => {
+                    return (
+                      <div key={index} style={{ marginLeft: '16px' }}>
+                        <ProjectCardItem campaign={item} />
+                      </div>
+                    );
+                  })}
+                </Carousel>
+              </div>
+            </div>
           </div>
         </>
       )}

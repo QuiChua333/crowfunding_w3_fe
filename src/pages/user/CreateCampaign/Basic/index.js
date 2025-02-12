@@ -90,6 +90,12 @@ function BasicCampaign() {
   const handleChangeInputText = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+
+    if (name === 'duration') {
+      if (value !== '' && !/^\d*$/.test(value)) {
+        return;
+      }
+    }
     setCampaignState((prev) => {
       return { ...prev, [name]: value };
     });

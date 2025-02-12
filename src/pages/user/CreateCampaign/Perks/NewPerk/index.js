@@ -247,7 +247,7 @@ function NewPerk() {
     const name = e.target.name;
     const value = e.target.value;
     if (name === 'price' || name === 'quantity') {
-      if (value !== '' && !/^[1-9]\d*$/.test(value)) {
+      if (value !== '' && !/^\d*$/.test(value)) {
         return;
       }
     }

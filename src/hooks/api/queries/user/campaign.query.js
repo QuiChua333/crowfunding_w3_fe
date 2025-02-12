@@ -10,6 +10,7 @@ import {
   getQuantityCampaignsOfUser,
   getQuantitySuccessCampaignByCampaignId,
   getQuantitySuccessCampaignsOfUser,
+  getRelevantCampaigns,
 } from '~/api/user/campaign.api';
 
 // handleAPI
@@ -88,6 +89,15 @@ export const useGetPopulateCampaigns = () => {
   return useQuery({
     queryKey: [`getPopulateCampaigns`],
     queryFn: () => getPopulateCampaigns(),
+    refetchOnWindowFocus: false,
+  });
+};
+
+// handleAPI
+export const useGetRelevantCampaigns = (campaignId) => {
+  return useQuery({
+    queryKey: [`getRelevantCampaigns`],
+    queryFn: () => getRelevantCampaigns(campaignId),
     refetchOnWindowFocus: false,
   });
 };

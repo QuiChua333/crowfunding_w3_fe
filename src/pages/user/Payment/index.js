@@ -188,6 +188,12 @@ function Payment() {
   const handleChangeInput = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+
+    if (name === 'phoneNumber') {
+      if (value !== '' && !/^\d*$/.test(value)) {
+        return;
+      }
+    }
     setContribution((prev) => ({
       ...prev,
       shippingInfo: {
@@ -199,6 +205,12 @@ function Payment() {
   const handleChangeInputBank = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+
+    if (name === 'bankAccountNumber') {
+      if (value !== '' && !/^\d*$/.test(value)) {
+        return;
+      }
+    }
     setContribution((prev) => ({
       ...prev,
       [name]: value,

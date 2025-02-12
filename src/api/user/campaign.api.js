@@ -115,3 +115,9 @@ export const getPopulateCampaigns = async () => {
   const response = await CustomAxios.get(`${baseUrl}/campaign/popularity`);
   return response.data;
 };
+
+// handleAPI
+export const getRelevantCampaigns = async (campaignId) => {
+  const response = await CustomAxios.get(`${baseUrl}/campaign/relevant/${campaignId}`);
+  return response.data;
+};
